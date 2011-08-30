@@ -50,7 +50,6 @@ int const CHANGE_LASER_MODE = 2;
 	setOption(1,0);
 	setOption(2,0);
 	select_ = 0; 
-	max_delay_ = 600; //10minutes 
     sensorPin_ = LASER_SENSOR;
   }
 
@@ -59,6 +58,7 @@ int const CHANGE_LASER_MODE = 2;
     boolean laserStatus = false;
 
 	resetShutter(); //10 millisec delay, between high and low
+
 
     switch (option(TRIG_TYPE))
     {

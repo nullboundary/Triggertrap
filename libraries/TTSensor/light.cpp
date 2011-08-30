@@ -50,7 +50,6 @@ int const LIGHT_CHANGE_MODE = 2;
 //	delay_ = 0;
 //	type_ = 0;
 	select_ = 0; 
-	max_delay_ = 180; 
     sensorPin_ = AMBIENT_LIGHT_SENSOR;
 
 };
@@ -67,6 +66,7 @@ int const LIGHT_CHANGE_MODE = 2;
     boolean lightStatus = false;
 
 	resetShutter(); //10 millisec delay, between high and low
+	
 
     switch (option(TRIG_TYPE))
     {

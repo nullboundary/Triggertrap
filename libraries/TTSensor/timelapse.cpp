@@ -4,20 +4,20 @@
 const prog_char timeMenu[] PROGMEM= {"TimeLapse"};
 
  //option Menu titles
- const prog_char startdelay[] PROGMEM="delay";
- const prog_char delta[] PROGMEM="delta";
+const prog_char delta[] PROGMEM="delta";
+const prog_char startdelay[] PROGMEM="delay";
 const prog_char numShots[] PROGMEM = "#shots";
 
 const prog_char * timeSelectMenu[] PROGMEM  = 	   //options menu order
 {   
-startdelay,
 delta,
+startdelay,
 numShots,
 };
 
 //option order should match timeSelectMenu order
-const int TIME_DELAY = 0; 
-const int TIME_DELTA = 1;
+const int TIME_DELTA = 0;
+const int TIME_DELAY = 1; 
 const int TIME_NUMSHOTS = 2;
 
 /***********************************************************
@@ -31,11 +31,11 @@ TimeLapse::TimeLapse(){
 	
 	    triggerState_ = 0; //off
 
-		setOption(TIME_DELAY,0);    //set time delay to 0
 		setOption(TIME_DELTA,0);    //set time delta to 0
+		setOption(TIME_DELAY,0);    //set time delay to 0
 		setOption(TIME_NUMSHOTS,0); //set #shots to 0
 		select_ = 0;  //set 
-		max_delay_ = 600; //10minutes
+	
 	
 }
 
@@ -49,14 +49,15 @@ TimeLapse::TimeLapse(){
 boolean TimeLapse::trigger()
 {
   resetShutter(); //10 millisec delay, between high and low
-
+  
 	int currentTime = millis()/1000;
 	int elapsedTime = currentTime - startBttnTime/1000;
   
   if (elapsedTime >= option(TIME_DELTA)) 
   {
 	//times up,take a shot
-    startBttnTime = millis();
+	delayCount = millis(); //start counting till delay is up
+    startBttnTime =delayCount; //don't call millis twice.
 	shotCounter_++; 
 	return true;
   }

@@ -41,15 +41,9 @@ public:
 
 
 	Sound();
-	//virtual ~Sound();
-
-
 
 	int soundLevel();
 	
-	
-	
-
 	boolean trigger();
 	
   //to change the behavior of the following functions for the mic, edit here. 
@@ -68,24 +62,8 @@ public:
 
 	void getModeMenu(char buffer[]);
 
-//	void getSelectMenu(char buffer[]);
-
-//	void getSettingMenu(char buffer[]);
-
-
-
 private:
 
-/*
- int sensorState_; //On or OFF, based on above or below the threshold
-  int type_; //trigger on START,STOP or CHANGE
-  int select_; //select type delay threshold
-  int threshold_; //value is the change threshold, the pivot between On and OFF
-  int sensorLevel_; //incoming sensor value
-  int sensorPin_; //the sensor pin
-  int delay_; //time delay after sensor triggered
-  int max_delay_;
-*/
 
 
 };

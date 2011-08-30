@@ -243,8 +243,7 @@ protected:
   boolean shutterB_; //status of shutter B, high or low. Goes low for small amount of time at shot
   unsigned long shutterDelay; //keep track of the time the shutter has been low
   
-
-  int max_delay_; //?
+  unsigned long delayCount; //when trigger is ready, start counting, till delay time is up
   unsigned long startBttnTime; //the time when the start button is pressed. 
 
 private:

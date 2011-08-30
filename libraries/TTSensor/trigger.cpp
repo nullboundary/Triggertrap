@@ -174,30 +174,35 @@ void Trigger::decOption(int menuOption, int maxValue)
  ***********************************************************/
 void Trigger::shutter(boolean shutterA,boolean shutterB)
 {
+	int currentTime = millis()/1000;
+	int delaySec = delayCount/1000;
+	int elapsed = delaySec - currentTime;
 	
-	
-	if(shutterA == true)
+	if(elapsed > option(TRIG_DELAY)) //delay timer check
 	{
-		shutterA_ = shutterA;
-		shutterDelay = millis();
-		digitalWrite(CAMERA_TRIGGER_A,LOW); //trigger camera
+	
+		if(shutterA == true)
+		{
+			shutterA_ = shutterA;
+			shutterDelay = millis();
+			digitalWrite(CAMERA_TRIGGER_A,LOW); //trigger camera
 		
-		#ifdef SERIAL_DEBUG
-		Serial.println("CAMERA TRIGGER A");
-		#endif
+			#ifdef SERIAL_DEBUG
+			Serial.println("CAMERA TRIGGER A");
+			#endif
+		}
+	
+		if(shutterB == true)
+		{
+			shutterB_ = shutterB;
+			shutterDelay = millis(); 
+		 	digitalWrite(CAMERA_TRIGGER_B,LOW);
+	
+			#ifdef SERIAL_DEBUG
+			Serial.println("CAMERA TRIGGER B");
+			#endif
+		}
 	}
-	
-	if(shutterB == true)
-	{
-		shutterB_ = shutterB;
-		shutterDelay = millis(); 
-	 	digitalWrite(CAMERA_TRIGGER_B,LOW);
-	
-		#ifdef SERIAL_DEBUG
-		Serial.println("CAMERA TRIGGER B");
-		#endif
-	}
-	
 }
 
 
@@ -217,6 +222,7 @@ boolean Trigger::high()
       	if(sensorLevel_ > option(TRIG_THRESHOLD)) //sesnor data being received, any value above threshold 
 	      {
 	        return true;
+			delayCount = millis(); //start counting till delay is up
 	      }
 	      else //sensor, 0 value
 	      {
@@ -246,6 +252,7 @@ boolean Trigger::high()
      	 if(sensorLevel_ <= option(TRIG_THRESHOLD)) //sensor low, stopped
 	      {
 	        return true;
+			delayCount = millis(); //start counting till delay is up
 	      }
 	      else //sensor recieving data
 	      {
@@ -284,11 +291,12 @@ boolean Trigger::change()
       state = 0; 
     }
 
-    //sound trigger either on or off, not measuring soundValue
+    //trigger either on or off, not measuring soundValue
     if(state != triggerState_) 
     {
       triggerState_ = state;
-      return true; //sound changed its status above or below threshold
+      return true; //changed its status above or below threshold
+	  delayCount = millis(); //start counting till delay is up
     }
     else //nothing changing here
     {

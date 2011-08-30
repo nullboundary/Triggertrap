@@ -52,7 +52,6 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
 	setOption(2,0);
 
 	select_ = 0; 
-	max_delay_ = 180; 
     sensorPin_ = AUX;
 
 };

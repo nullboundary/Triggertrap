@@ -50,7 +50,6 @@ int const SOUND_CHANGE_MODE = 2;
 //	type_ = 0;
 //	delay_ = 0;
 	select_ = 0; 
-	max_delay_ = 600; //10minutes 
     sensorPin_ = SOUND_IN;
 
  }
@@ -65,6 +64,7 @@ int const SOUND_CHANGE_MODE = 2;
     boolean soundStatus = false;
 
 	resetShutter(); //10 millisec delay, between high and low
+	
 
     switch (option(TRIG_TYPE))
     {

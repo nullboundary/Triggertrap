@@ -68,7 +68,7 @@ TTUI* TTUI::pTTUI = 0;
     //restoreSettings(); //restore all menu settings from eeprom
 
     previousMillis_UIPower = 0; 
-    interval_UIPower = 30000; 
+    interval_UIPower = 30000;  //30 seconds till sleep mode with no use of device
     touch.begin(KEY_CHANGE);  //init touch UI with key change interrupt
    
 	trapActive_ = false; 	
@@ -154,7 +154,7 @@ void TTUI::update()
 
     }
 
-    uiPowerTimeOut(); //if there has been no activity turn off led power
+   // uiPowerTimeOut(); //if there has been no activity turn off led power
 
 }
 
@@ -172,7 +172,7 @@ void TTUI::initStart(unsigned long startTime)
 	{
 		Serial.println("trapActive");
 		triggers[currentTrigger]->start(startTime); //set start time for the active trigger 
-		uiPowerOff();
+		//uiPowerOff();
 		
 	}
 	else if(trapActive_ == false) 
@@ -314,7 +314,7 @@ void TTUI::uiPowerOff()
 
       if(currentMillis - previousMillis_UIPower > interval_UIPower) 
       {
-		//uiPowerOff();
+		uiPowerOff();
       }
     }
   }
