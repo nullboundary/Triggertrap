@@ -88,7 +88,6 @@ int const SOUND_CHANGE_MODE = 2;
 		delayCount = millis(); //start counting till delay is up
 		startBttnTime = delayCount; //don't call millis twice, just use delayCount, same value.
 		shutterReady = true;
-		shotCounter_++; 
 		return soundStatus;
 	}	
 	else

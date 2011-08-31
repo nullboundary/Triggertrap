@@ -186,6 +186,7 @@ void Trigger::shutter(boolean noDelay)
 	    //ready, but need to wait for delay timer, unless noDelay is true, then skip the delay
 		if(elapsed > option(TRIG_DELAY) || noDelay == true) 
 		{
+			shotCounter_++; 
 			shutterReady = false; 
 	
 			if(cameraA_ == true) //use cameraA?
@@ -476,5 +477,6 @@ void Trigger::start(unsigned long startTime)
 {
 	shotCounter_ = 0; //reset shot count. 
 	startBttnTime = startTime; 
+	delayCount = 0; 
 }
 

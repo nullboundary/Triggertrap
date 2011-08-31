@@ -82,7 +82,6 @@ int const CHANGE_LASER_MODE = 2;
     {
 		delayCount = millis(); //start counting till delay is up
 		shutterReady = true;
-		shotCounter_++; 
 		return laserStatus;
 	}	
 	else

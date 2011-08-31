@@ -34,6 +34,7 @@ TimeLapse::TimeLapse(){
 		setOption(TIME_DELTA,0);    //set time delta to 0
 		setOption(TIME_DELAY,0);    //set time delay to 0
 		setOption(TIME_NUMSHOTS,0); //set #shots to 0
+		delayCount = 0; 
 		select_ = 0;  //set 
 	
 	
@@ -53,42 +54,35 @@ boolean TimeLapse::trigger()
 	int currentTime = millis()/1000;
 	int elapsedTime = currentTime - startBttnTime/1000;
 
-    //wait for delay before first shot, but after first don't wait
 	if(shotCounter_ < 1)
 	{
-		if(elapsedTime > option(TIME_DELAY))
-		{
+			if(delayCount == 0) { delayCount = millis(); } //set this only the first time through the loop
 			startBttnTime = millis(); //reset startBttnTime, so interval starts here
-			initDelayActive = false; //time has passed, active shutter
-		}
+			shutterReady = true; //if delay is up, take the first shot
+			shutter(false); //set noDelay to true, delay is only for 1st shot
+			return false; 
 	}
-	else
+	else //run normal after the first shot
 	{
-		initDelayActive = false; //shot above 1, no delay
-	}
-	
+		  shutter(true); //set noDelay to true, delay is only for 1st shot
+			
+			
+	  	  if (elapsedTime >= option(TIME_DELTA)) 
+		  {
+			//times up,take a shot
+			delayCount = millis(); //start counting till delay is up
 
-   if(initDelayActive == false)
-   {
-  	shutter(true); //set noDelay to true, delay is only for 1st shot
- 
-  	  if (elapsedTime >= option(TIME_DELTA)) 
-	  {
-		//times up,take a shot
-		delayCount = millis(); //start counting till delay is up
-	
-		startBttnTime = delayCount; //don't call millis twice, just use delayCount, same value.
-		shotCounter_++; 
-		shutterReady = true;
-		return shutterReady;
-	  }
-	  else
-	  {
-		return false; 
-	  }
-  }
- 
-	
+			startBttnTime = delayCount; //don't call millis twice, just use delayCount, same value.
+			shutterReady = true;
+			return shutterReady;
+		  }
+		  else
+		  {
+			return false; 
+		  }
+	}
+
+
 	
 }
 

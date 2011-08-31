@@ -92,7 +92,6 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
     {
 		delayCount = millis(); //start counting till delay is up
 		shutterReady = true;
-		shotCounter_++; 
 		return auxStatus;
 	}	
 	else

@@ -90,7 +90,6 @@ int const LIGHT_CHANGE_MODE = 2;
     {
 		delayCount = millis(); //start counting till delay is up
 		shutterReady = true;
-		shotCounter_++; 
 		return lightStatus;
 	}	
 	else
