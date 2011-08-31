@@ -57,7 +57,7 @@ int const CHANGE_LASER_MODE = 2;
   {
     boolean laserStatus = false;
 
-	resetShutter(); //10 millisec delay, between high and low
+	shutter(); 
 
 
     switch (option(TRIG_TYPE))
@@ -78,7 +78,18 @@ int const CHANGE_LASER_MODE = 2;
       break;
     }
 
-    return triggerState_;
+    if(laserStatus == true)
+    {
+		delayCount = millis(); //start counting till delay is up
+		shutterReady = true;
+		shotCounter_++; 
+		return laserStatus;
+	}	
+	else
+	{
+    	return laserStatus;
+	}
+
   }
 
   //to change the behavior of these functions for laser, edit here

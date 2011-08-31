@@ -172,35 +172,43 @@ void Trigger::decOption(int menuOption, int maxValue)
  * 
  * 
  ***********************************************************/
-void Trigger::shutter(boolean shutterA,boolean shutterB)
+void Trigger::shutter(boolean noDelay)
 {
-	int currentTime = millis()/1000;
-	int delaySec = delayCount/1000;
-	int elapsed = delaySec - currentTime;
+	resetShutter(); //make the shutter close after 10ms delay
 	
-	if(elapsed > option(TRIG_DELAY)) //delay timer check
+	if(shutterReady == true) //trigger() set this to ready
 	{
 	
-		if(shutterA == true)
+		int currentTime = millis()/1000;
+		int delaySec = delayCount/1000;
+		int elapsed = currentTime - delaySec;
+
+	    //ready, but need to wait for delay timer, unless noDelay is true, then skip the delay
+		if(elapsed > option(TRIG_DELAY) || noDelay == true) 
 		{
-			shutterA_ = shutterA;
-			shutterDelay = millis();
-			digitalWrite(CAMERA_TRIGGER_A,LOW); //trigger camera
+			shutterReady = false; 
+	
+			if(cameraA_ == true) //use cameraA?
+			{
+				shutterDelay = millis();
+				shutterStateA_ = true;
+				digitalWrite(CAMERA_TRIGGER_A,LOW); //trigger camera
 		
-			#ifdef SERIAL_DEBUG
-			Serial.println("CAMERA TRIGGER A");
-			#endif
-		}
+				#ifdef SERIAL_DEBUG
+				Serial.println("CAMERA TRIGGER A");
+				#endif
+			}
 	
-		if(shutterB == true)
-		{
-			shutterB_ = shutterB;
-			shutterDelay = millis(); 
-		 	digitalWrite(CAMERA_TRIGGER_B,LOW);
+			if(cameraB_ == true) //or use CameraB?
+			{
+				shutterDelay = millis(); 
+				shutterStateB_ == true;
+			 	digitalWrite(CAMERA_TRIGGER_B,LOW);
 	
-			#ifdef SERIAL_DEBUG
-			Serial.println("CAMERA TRIGGER B");
-			#endif
+				#ifdef SERIAL_DEBUG
+				Serial.println("CAMERA TRIGGER B");
+				#endif
+			}
 		}
 	}
 }
@@ -401,21 +409,21 @@ void Trigger::formatString(int data, char buffer[])
 void Trigger::resetShutter()
 {
 	//reset trigger low after small delay
-  if(shutterA_ == true || shutterB_ == true)
+  if(shutterStateA_ == true || shutterStateB_ == true)
   {
 	 unsigned long currentTime = millis();
 	 if(currentTime - shutterDelay > 10) 
 	 {
-	    // save the last time you blinked the LED 
+	    // save the last time you took a photo
 	    shutterDelay = currentTime;
 		
 		#ifdef SERIAL_DEBUG
-		//Serial.println("clear Trigger");
+		Serial.println("clear Trigger");
 		#endif
 		
-		shutterA_ = false;
+		shutterStateA_ = false;
 		digitalWrite(CAMERA_TRIGGER_A,HIGH);
-		shutterB_ = false; 
+		shutterStateB_ = false; 
 		digitalWrite(CAMERA_TRIGGER_B,HIGH);
 	 }	
   }

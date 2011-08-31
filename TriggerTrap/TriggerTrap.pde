@@ -131,20 +131,18 @@ void laserTrigger()
 {
 	int currentMode = laser.select();
 	
-	if(laser.trigger() == true)
-	{
-		laser.shutter(false,true); //trigger camera
-	}
+	laser.trigger();
+	
 	
 }
 
 void timeLapseTrigger()
 {
  
+  timeLapse.setShutters(true,false);
   if(timeLapse.trigger() == true)
   {
     
-    timeLapse.shutter(true,false);
     Serial.print(timeLapse.shotCount());
     Serial.println("/inf");
    
@@ -163,7 +161,6 @@ void soundTrigger()
 
 	if(mic.trigger() == true) //returns true if sound changes based on current mode type
 	{
-		mic.shutter(true,false); //trigger camera
                 Serial.println("CAMERA TRIGGER A");
 	}
 
@@ -176,7 +173,7 @@ void lightTrigger()
   
 	if(light.trigger() == true) //returns true if sound changes based on current mode type
 	{
-                light.shutter(true,true);
+
 		//digitalWrite(CAMERA_TRIGGER_A,HIGH); //trigger camera
                 Serial.println(light.lightLevel());  
                 //Serial.println("CAMERA TRIGGER A");

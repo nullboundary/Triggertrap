@@ -86,7 +86,18 @@ int const LIGHT_CHANGE_MODE = 2;
       break;
     }
 
-    return lightStatus;
+	if(lightStatus == true)
+    {
+		delayCount = millis(); //start counting till delay is up
+		shutterReady = true;
+		shotCounter_++; 
+		return lightStatus;
+	}	
+	else
+	{
+    	 return lightStatus;
+	}
+   
   }
 
   //To change the behavior of these functions for the light sensor, edit here

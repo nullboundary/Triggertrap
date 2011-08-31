@@ -140,7 +140,7 @@ virtual boolean trigger() = 0;
  *  Take the picture, bring shutterA and B low
  * 
  ***********************************************************/
-void shutter(boolean shutterA, boolean shutterB);
+void shutter(boolean noDelay=false);
 
 /***********************************************************
  * 
@@ -231,6 +231,7 @@ virtual void start(unsigned long startTime);
  * 
  ***********************************************************/
 void resetShutter();
+void setShutters(boolean cameraA, boolean cameraB) { cameraA_ = cameraA; cameraB_ = cameraB; }
 
 protected: 
 	
@@ -239,10 +240,14 @@ protected:
   int sensorLevel_; //incoming sensor value
   int shotCounter_; // current shot since pressing the start button
   int sensorPin_; //the sensor pin
-  boolean shutterA_; //status of shutter A, high or low. Goes low for small amount of time at shot
-  boolean shutterB_; //status of shutter B, high or low. Goes low for small amount of time at shot
+ 
+  boolean shutterStateA_; //status of shutter A, high or low. Goes low for small amount of time at shot
+  boolean shutterStateB_; //status of shutter B, high or low. Goes low for small amount of time at shot
+  boolean cameraA_;  //camera A on
+  boolean cameraB_; //camera B on
+  boolean shutterReady; //trigger is ready, take a picture
+
   unsigned long shutterDelay; //keep track of the time the shutter has been low
-  
   unsigned long delayCount; //when trigger is ready, start counting, till delay time is up
   unsigned long startBttnTime; //the time when the start button is pressed. 
 

@@ -31,9 +31,9 @@
 #include "aux.h"
 
 const int AUX = A2;  //Aux Pin
-int const LIGHT_START_MODE = 0;
-int const LIGHT_STOP_MODE = 1;
-int const LIGHT_CHANGE_MODE = 2;
+int const AUX_START_MODE = 0;
+int const AUX_STOP_MODE = 1;
+int const AUX_CHANGE_MODE = 2;
 
 //Mode Menu Listing
 const prog_char auxMenu[] PROGMEM= {"Aux"};
@@ -68,19 +68,19 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
   {
     boolean auxStatus = false;
 
-	resetShutter(); //10 millisec delay, between high and low
+	shutter(); 
 
     switch (option(TRIG_TYPE))
     {
-    case LIGHT_START_MODE:
+    case AUX_START_MODE:
 
       auxStatus = high();
       break;
-    case LIGHT_STOP_MODE:
+    case AUX_STOP_MODE:
 
       auxStatus = low();
       break;
-    case LIGHT_CHANGE_MODE:
+    case AUX_CHANGE_MODE:
 
       auxStatus = change();
       break;
@@ -88,7 +88,17 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
       break;
     }
 
-    return auxStatus;
+     if(auxStatus == true)
+    {
+		delayCount = millis(); //start counting till delay is up
+		shutterReady = true;
+		shotCounter_++; 
+		return auxStatus;
+	}	
+	else
+	{
+    	return auxStatus;
+	}
   }
 
   //To change the behavior of these functions for the aux sensor, edit here

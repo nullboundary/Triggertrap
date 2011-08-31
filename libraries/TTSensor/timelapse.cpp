@@ -48,24 +48,46 @@ TimeLapse::TimeLapse(){
  ***********************************************************/
 boolean TimeLapse::trigger()
 {
-  resetShutter(); //10 millisec delay, between high and low
-  
+   
+	boolean initDelayActive = true;
 	int currentTime = millis()/1000;
 	int elapsedTime = currentTime - startBttnTime/1000;
-  
-  if (elapsedTime >= option(TIME_DELTA)) 
-  {
-	//times up,take a shot
-	delayCount = millis(); //start counting till delay is up
-    startBttnTime =delayCount; //don't call millis twice.
-	shotCounter_++; 
-	return true;
-  }
-  else
-  {
-	return false; 
-  }
 
+    //wait for delay before first shot, but after first don't wait
+	if(shotCounter_ < 1)
+	{
+		if(elapsedTime > option(TIME_DELAY))
+		{
+			startBttnTime = millis(); //reset startBttnTime, so interval starts here
+			initDelayActive = false; //time has passed, active shutter
+		}
+	}
+	else
+	{
+		initDelayActive = false; //shot above 1, no delay
+	}
+	
+
+   if(initDelayActive == false)
+   {
+  	shutter(true); //set noDelay to true, delay is only for 1st shot
+ 
+  	  if (elapsedTime >= option(TIME_DELTA)) 
+	  {
+		//times up,take a shot
+		delayCount = millis(); //start counting till delay is up
+	
+		startBttnTime = delayCount; //don't call millis twice, just use delayCount, same value.
+		shotCounter_++; 
+		shutterReady = true;
+		return shutterReady;
+	  }
+	  else
+	  {
+		return false; 
+	  }
+  }
+ 
 	
 	
 }

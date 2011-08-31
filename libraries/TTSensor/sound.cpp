@@ -63,8 +63,7 @@ int const SOUND_CHANGE_MODE = 2;
   {
     boolean soundStatus = false;
 
-	resetShutter(); //10 millisec delay, between high and low
-	
+	shutter();
 
     switch (option(TRIG_TYPE))
     {
@@ -84,7 +83,19 @@ int const SOUND_CHANGE_MODE = 2;
       break;
     }
 
-    return soundStatus;
+    if(soundStatus == true)
+    {
+		delayCount = millis(); //start counting till delay is up
+		startBttnTime = delayCount; //don't call millis twice, just use delayCount, same value.
+		shutterReady = true;
+		shotCounter_++; 
+		return soundStatus;
+	}	
+	else
+	{
+    	return soundStatus;
+	}
+		
   }
 
   //to change the behavior of the following functions for the mic, edit here. 
