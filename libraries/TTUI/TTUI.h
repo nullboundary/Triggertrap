@@ -44,8 +44,8 @@ byte const SELECT_BTTN = 3;//select bttn address
 byte const UP_BTTN = 6; //up bttn address
 byte const DOWN_BTTN = 5;  //down bttn address
 
-const int POWER_UI = A3;				// A3 = Digital out - UI power mosfet switch
-const int KEY_PAD_LEDS = 4;				// D4 = Digital out - LED on keypad
+const int POWER_UI = PORTB6;				// A3 = Digital out - UI power mosfet switch
+const int KEY_PAD_LEDS = PORTB7;				// D4 = Digital out - LED on keypad
 const int START_BUTTON = 2;				// D2 = Digital in - Start button 
 const int KEY_CHANGE = 3;				// D3 = Digital in - key change interrupt for touch ic
 

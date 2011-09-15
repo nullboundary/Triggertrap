@@ -30,7 +30,7 @@
 
 #include "laser.h"
 
-const int LASER_SENSOR = A0; 			// A0 = Analong in - Laser Sensor
+const int LASER_SENSOR = A6; 			// A6 = Analong in - Laser Sensor
 int const MAKE_LASER_MODE = 0;
 int const BREAK_LASER_MODE = 1;
 int const CHANGE_LASER_MODE = 2;

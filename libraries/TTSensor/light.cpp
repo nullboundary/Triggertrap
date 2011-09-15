@@ -30,7 +30,7 @@
 
 #include "light.h"
 
-const int AMBIENT_LIGHT_SENSOR = A1;
+const int AMBIENT_LIGHT_SENSOR = A0;
 int const LIGHT_START_MODE = 0;
 int const LIGHT_STOP_MODE = 1;
 int const LIGHT_CHANGE_MODE = 2;

@@ -1,10 +1,12 @@
 /************************************************************************************
  * 	
- * 	Name    : Trigger Trap Sound.h                         
+ * 	Name    : Trigger Trap aux.h                         
  * 	Author  : Noah Shibley, NoMi Design                         
  * 	Date    : July 10th 2011                                    
  * 	Version : 0.1                                              
- * 	Notes   : The sound input mic. Sub class of Sensor, inherits all Sensor functions           
+ * 	Notes   : The aux input port. Sub class of Sensor, inherits all Sensor functions 
+ *         	  by default Aux should trigger the camera from any analog input sensor, 
+ *			  based on the threshold set. 
  * 
  * 	 Copyright (c) 2011 NoMi Design All right reserved.
  * 
@@ -28,101 +30,98 @@
  * 
  ***********************************************************************************/
 
-#include "sound.h"
+#ifndef AUX_H
+#define AUX_H
 
-const int SOUND_IN = A7;
-int const SOUND_START_MODE = 0;
-int const SOUND_STOP_MODE = 1;
-int const SOUND_CHANGE_MODE = 2;
+#include "globals.h"
+#include "sensor.h"
+#include <WProgram.h>
 
-//Menu Sensor Strings
 
-   //Mode Menu Listing
-   const prog_char soundMenu[] PROGMEM= {"Sound"};
+class Aux : 
+public Sensor{
 
-  Sound::Sound() 
+public:
+
+
+  Aux()
   {
-    triggerState_ = 0; //off
- //   threshold_ = 0;
-	setOption(TRIG_TYPE,0);
-	setOption(1,0);
-	setOption(2,0);
-//	type_ = 0;
-//	delay_ = 0;
-	select_ = 0; 
-    sensorPin_ = SOUND_IN;
+    sensorState_ = 0; //off
+    threshold_ = 0; //the pivot point to measure start or stop
+    sensorPin_ = AUX; //the AUX pin on the arduino
 
- }
+  }
 
-  int Sound::soundLevel()
+  int auxLevel()
   {
     return sensorLevel_;
   }
 
-  boolean Sound::trigger()
+  boolean trigger() //if true, trigger the camera. 
   {
-    boolean soundStatus = false;
+    boolean auxStatus = false;
 
-	shutter();
-
-    switch (option(TRIG_TYPE))
+    switch (mode_)
     {
     case SOUND_START_MODE:
 
-      soundStatus = high();
+      auxStatus = start();
       break;
     case SOUND_STOP_MODE:
 
-      soundStatus = low();
+      auxStatus = stop();
       break;
     case SOUND_CHANGE_MODE:
 
-      soundStatus = change();
+      auxStatus = change();
       break;
     default: //no default option
       break;
     }
 
-    if(soundStatus == true)
-    {
-		delayCount = millis(); //start counting till delay is up
-		startBttnTime = delayCount; //don't call millis twice, just use delayCount, same value.
-		shutterReady = true;
-		return soundStatus;
-	}	
-	else
-	{
-    	return soundStatus;
-	}
-		
+    return auxStatus;
   }
 
-  //to change the behavior of the following functions for the mic, edit here. 
-  //the current functional behavior is in the base trigger class.
-  //Or add a new function here, to customize mic sensor
+  //to change the behavior of the following functions for the aux, edit here. 
+  //the current functional behavior is in the parent sensor class.
+  //Or add new functions here, to customize the aux sensor
   /*
-	boolean Sound::high()
+	boolean start()
    	{
    	
    	}
    	*/
 
   /*
-	boolean Sound::low()
+	boolean stop()
    	{
    	
    	}
    	*/
   /*
-	boolean Sound::change()
+	boolean change()
    	{
    	
    	}
    	*/
-void Sound::getModeMenu(char buffer[])
-{
-	 strcpy_P(buffer, soundMenu); 
-}
 
 
+
+
+
+private:
+
+
+  int sensorState_; //On or OFF, based on above or below the threshold
+  int mode_; //trigger on START,STOP or CHANGE
+  int threshold_; //value is the change threshold, the pivot between On and OFF
+  int sensorLevel_; //incoming aux analog value
+  int sensorPin_;
+
+
+
+
+};
+
+#endif
 

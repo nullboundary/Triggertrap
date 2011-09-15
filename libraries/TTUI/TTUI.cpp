@@ -58,8 +58,8 @@ TTUI* TTUI::pTTUI = 0;
     digitalWrite(START_BUTTON, HIGH);   // turn on pullup resistor for Start button
 	attachInterrupt(0,startHandler,FALLING); //trigger ISR function on start button press.
 	
-	 pinMode(KEY_PAD_LEDS, OUTPUT);      // LED on UI
-	 pinMode(POWER_UI,OUTPUT);
+	 DDRB = _BV (PORTB7);   //pinMode(KEY_PAD_LEDS, OUTPUT);      // LED on UI
+	 DDRB = _BV (PORTB6);   //pinMode(POWER_UI,OUTPUT);
 	 state_UIPower = false; 
 	 uiPowerOn(); //turn on power at startup
 
@@ -275,8 +275,8 @@ void TTUI::uiPowerOn()
 
 	  Serial.println("ui Power UP");
       previousMillis_UIPower = currentMillis;  //clock countdown start time
-	  digitalWrite(POWER_UI,LOW);
-      digitalWrite(KEY_PAD_LEDS,HIGH);      // turn on keypad LEDs
+	  PORTB &= ~ _BV(PORTB6);        //digitalWrite(POWER_UI,LOW);
+      PORTB |= _BV(PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
 	 
       //lcd->display(); //turn on LCD
     }
@@ -292,8 +292,8 @@ void TTUI::uiPowerOff()
     if(state_UIPower == true)
     {
       state_UIPower = false; 	
-      digitalWrite(POWER_UI,HIGH);
-      digitalWrite(KEY_PAD_LEDS,LOW);      // turn off keypad LEDs
+      PORTB |= _BV(PORTB6);	               //digitalWrite(POWER_UI,HIGH);
+      PORTB &= ~ _BV(PORTB7);              //digitalWrite(KEY_PAD_LEDS,LOW); // turn off keypad LEDs
 	  Serial.println("ui Power Down");
 	 
       //lcd->display(); //turn on LCD
