@@ -31,6 +31,7 @@
 #ifndef TTTUI_H
 #define TTUI_H
 
+#include <LiquidCrystal.h>
 //#include "globals.h"
 #include <EEPROM.h>
 #include <AtTouch.h>
@@ -48,6 +49,8 @@ const int POWER_UI = PORTB6;				// A3 = Digital out - UI power mosfet switch
 const int KEY_PAD_LEDS = PORTB7;				// D4 = Digital out - LED on keypad
 const int START_BUTTON = 2;				// D2 = Digital in - Start button 
 const int KEY_CHANGE = 3;				// D3 = Digital in - key change interrupt for touch ic
+
+const int LCD_CONTRAST = 60; 
 
 extern "C" void startHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
 
@@ -108,7 +111,7 @@ private:
 	  static TTUI* pTTUI; //ptr to TTUI class for the ISR
 
 	  byte modeDisplay; //the mode displayed. but not selected yet
-	  //LiquidCrystal * lcd; //pointer to lcd;
+	  LiquidCrystal * lcd; //pointer to lcd;
 	  AtTouch touch;  //touch sensor library object
 	
 	  Trigger *triggers[5]; //array of trigger object pointers

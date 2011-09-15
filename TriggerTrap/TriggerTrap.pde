@@ -27,7 +27,7 @@
 
 #define SERIAL_DEBUG
 
-//#include <LiquidCrystal.h>
+#include <LiquidCrystal.h>
 #include <Wire.h>
 #include <EEPROM.h>
 #include <AtTouch.h>
@@ -60,14 +60,16 @@ TimeLapse timeLapse;
 void setup() {   
 
   Serial.begin(9600);  
+  analogReference(INTERNAL);
 
-  pinMode(INFRARED_SENDER, OUTPUT);     // infrared sender
-  pinMode(CAMERA_TRIGGER_A, OUTPUT);     // Camera Trigger A
-  pinMode(CAMERA_TRIGGER_B, OUTPUT);     // Camera Trigger B
-  digitalWrite(CAMERA_TRIGGER_A,HIGH);
+ // pinMode(INFRARED_SENDER, OUTPUT);     // infrared sender
+//  pinMode(CAMERA_TRIGGER_A, OUTPUT);     // Camera Trigger A
+//  pinMode(CAMERA_TRIGGER_B, OUTPUT);     // Camera Trigger B
+//  digitalWrite(CAMERA_TRIGGER_A,HIGH);
   
   tui.begin(laser,mic,light,timeLapse); //setup touch input buttons, and lcd menus
   
+  interrupts();
 
 }
 

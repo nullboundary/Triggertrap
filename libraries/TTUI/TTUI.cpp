@@ -74,18 +74,25 @@ TTUI* TTUI::pTTUI = 0;
 	trapActive_ = false; 	
 	currentTrigger = 0;
 
-/*
-    pinMode(LCD_ENABLE, OUTPUT);      // LCD Enable
-    pinMode(LCD_DATALINE4, OUTPUT);      // LCD Dataline 4
-    pinMode(LCD_DATALINE5, OUTPUT);      // LCD Dataline 5
-    pinMode(LCD_DATALINE6, OUTPUT);      // LCD Dataline 6
-    pinMode(LCD_DATALINE7, OUTPUT);      // LCD Dataline 7
+
+	//LCD Stuff
+	TCCR1B = TCCR1B & 0b11111000 | 0x01; //-- sets the pwm base
+	// initialize the library with the numbers of the interface pins
+	pinMode (4, OUTPUT); // RW Pin 
+	digitalWrite (4, LOW); // ouput low - slow mode - write delay
+	pinMode (10, OUTPUT); // lcd contrast output 
+	analogWrite (10, LCD_CONTRAST); // ouput low pwm - negative voltage...
 
     // initialize the library with the numbers of the interface pins
-    LiquidCrystal _lcd(12, LCD_ENABLE, LCD_DATALINE4,LCD_DATALINE5, LCD_DATALINE6, LCD_DATALINE7);
+    LiquidCrystal _lcd(A3, 4, 5, 6, 7, 8, 9);
     lcd = &_lcd; //assign the adress of _lcd to the lcd pointer 
-*/
-    
+
+    // set up the LCD's number of columns and rows:
+    lcd->begin(8, 2);
+  	// Print a message to the LCD.
+  	lcd->print("Trigger");
+	lcd->setCursor(0,1);
+	lcd->print("Trap0v34");
 
 /*
     
@@ -197,6 +204,11 @@ void TTUI::initStart(unsigned long startTime)
 	char printBuffer[10];
 
 	triggers[currentTrigger]->getModeMenu(printBuffer);
+
+	//lcd->println(printBuffer);
+	analogWrite (10, LCD_CONTRAST);
+	lcd->setCursor(0,0);
+	lcd->print("this");
 
 	#ifdef SERIAL_DEBUG
 	Serial.println(printBuffer);

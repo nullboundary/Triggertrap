@@ -37,7 +37,7 @@
 
 //const int LASER_SENSOR = A0; 			// A0 = Analong in - Laser Sensor
 //const int AMBIENT_LIGHT_SENSOR = A1;	// A1 = Analong in - Ambient Light Sensor
-const int AUX = A2;						// A2 = Analong in - AUX in
+//const int AUX = A2;						// A2 = Analong in - AUX in
 //const int POWER_UI = A3;				// A3 = Digital out - UI power mosfet switch
 const int SDA_TOUCH = A4;				// A4 = I2C bus - SDA - touch controller  
 const int SCL_TOUCH = A5;				// A5 = I2C bus - SCL - touch controller  
@@ -54,8 +54,8 @@ const int LCD_DATALINE4 = 6;			// D6 = Digital out - LCD Dataline 4
 const int LCD_DATALINE5 = 7;			// D7 = Digital out - LCD Dataline 5
 const int LCD_DATALINE6 = 8;			// D8 = Digital out - LCD Dataline 6 
 const int LCD_DATALINE7 = 9; 			// D9 = Digital out - LCD Dataline 7 
-const int SPEAKER_OUT = 10;				// D10 = Digital out - Speaker
-const int INFRARED_SENDER = 11;			// D11 = Digital out - Infrared sender
+//const int SPEAKER_OUT = 10;				// D10 = Digital out - Speaker
+//const int INFRARED_SENDER = 11;			// D11 = Digital out - Infrared sender
 //const int CAMERA_TRIGGER_A = 12;		// D12 = Digital out - Camera Trigger A
 //const int CAMERA_TRIGGER_B = 13;		// D13 = Digital out - Camera Trigger B
 
