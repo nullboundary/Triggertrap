@@ -150,7 +150,7 @@ void TTUI::update()
 
     }
 
-   // uiPowerTimeOut(); //if there has been no activity turn off led power
+    uiPowerTimeOut(); //if there has been no activity turn off led power
 
 }
 
@@ -168,7 +168,7 @@ void TTUI::initStart(unsigned long startTime)
 	{
 		Serial.println("trapActive");
 		triggers[currentTrigger]->start(startTime); //set start time for the active trigger 
-		//uiPowerOff();
+		uiPowerOff();
 		
 	}
 	else if(trapActive_ == false) 
@@ -296,7 +296,7 @@ void TTUI::uiPowerOn()
 	  PORTB &= ~ _BV(PORTB6);        //digitalWrite(POWER_UI,LOW);
       PORTB |= _BV(PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
 	 
-      //lcd->display(); //turn on LCD
+      display(); //turn on LCD
     }
 }
 
@@ -314,7 +314,7 @@ void TTUI::uiPowerOff()
       PORTB &= ~ _BV(PORTB7);              //digitalWrite(KEY_PAD_LEDS,LOW); // turn off keypad LEDs
 	  Serial.println("ui Power Down");
 	 
-      //lcd->display(); //turn on LCD
+      noDisplay(); //turn on LCD
     }
 }
 
