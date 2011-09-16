@@ -40,7 +40,7 @@
 #include <trigger.h>
 #include <sound.h>
 #include <timeLapse.h>
-
+#include <auxiliary.h>
 
 
 
@@ -67,7 +67,7 @@ void setup() {
 //  pinMode(CAMERA_TRIGGER_B, OUTPUT);     // Camera Trigger B
 //  digitalWrite(CAMERA_TRIGGER_A,HIGH);
   
-  tui.begin(laser,mic,light,timeLapse); //setup touch input buttons, and lcd menus
+  tui.setup(laser,mic,light,timeLapse); //setup touch input buttons, and lcd menus
   
   interrupts();
 

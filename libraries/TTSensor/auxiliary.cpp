@@ -28,7 +28,7 @@
  * 
  ***********************************************************************************/
 
-#include "aux.h"
+#include "auxiliary.h"
 
 const int AUX = A2;  //Aux Pin
 int const AUX_START_MODE = 0;

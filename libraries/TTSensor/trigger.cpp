@@ -36,7 +36,7 @@
  //Option Menu default
  const prog_char trigType[] PROGMEM="type";
  const prog_char trigDelay[] PROGMEM="delay";
-const prog_char trigThreshold[] PROGMEM = "threshold";
+const prog_char trigThreshold[] PROGMEM = "threshld";
 
 const prog_char * selectMenu[] PROGMEM  = 	   //options menu
 {   
@@ -49,7 +49,7 @@ trigThreshold,
  //Value setting titles for values that are not just numbers (ex. type option)
  const prog_char onMake[] PROGMEM="On Make";
  const prog_char onBreak[] PROGMEM="On Break";	
- const prog_char onChange[] PROGMEM="On Change";
+ const prog_char onChange[] PROGMEM="On Chnge";
  const prog_char updown[] PROGMEM="^v";	
 
  const prog_char * settingMenu[] PROGMEM  = 	   // select menu options
@@ -333,7 +333,7 @@ void Trigger::decSetting(char buffer[])
 	    case TRIG_DELAY:
 	      decOption(TRIG_DELAY, 18600);
 	      formatString(option(TRIG_DELAY),buffer);
-	 	 // itoa (option(TRIG_DELAY),buffer,10);
+	 	  //itoa (option(TRIG_DELAY),buffer,10);
 	      break;
 	    case TRIG_THRESHOLD:
 	      decOption(TRIG_THRESHOLD, 1023); 
@@ -386,18 +386,24 @@ void Trigger::incSetting(char buffer[])
  ***********************************************************/
 void Trigger::formatString(int data, char buffer[])
 {
-		//TODO: optimize this, could be done more simply aka faster/smaller
-		//don't use String class if you can..
-		String minute =  String(data/60, DEC);
-		String minUnit = String(minute + "\'");
+	//setting the first char to 0 causes str functions to think 
+	//of the buffer as empty, like a clear buffer.
+	buffer[0] = 0;
+	char tempBuffer[5];
+	//transform delay seconds into min and add to tempbuffer
+	itoa (data/60,tempBuffer,10);
+	//add minute data to buffer
+	strcat(buffer, tempBuffer);
+	//add minute symbol to buffer
+	strcat(buffer,"\'");
+	//transform delay seconds into remainder seconds
+	itoa(data%60,tempBuffer,10);
+	//add second data to buffer
+	strcat(buffer,tempBuffer);
+	//add second symbol to buffer
+	strcat(buffer,"\"");
+	strcat(buffer,'\0');
 		
-		String second =  String(data%60, DEC);
-		String secUnit = String(second + "\"");
-		
-		String final = String(minUnit + secUnit);
-		final.toCharArray(buffer, final.length()+1); //need to add +1 to length..seems like bug?
-	
-	
 }
 
 /***********************************************************

@@ -1,7 +1,7 @@
 #include "timelapse.h"
 
 //mode menu title
-const prog_char timeMenu[] PROGMEM= {"TimeLapse"};
+const prog_char timeMenu[] PROGMEM= {"TimeLaps"};
 
  //option Menu titles
 const prog_char delta[] PROGMEM="delta";

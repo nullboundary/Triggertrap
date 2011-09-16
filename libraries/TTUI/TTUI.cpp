@@ -30,11 +30,13 @@
 
 #include <TTUI.h>
 
+  //for the ISR
+  TTUI* TTUI::pTTUI = 0; 
 
-TTUI* TTUI::pTTUI = 0; 
-
-  TTUI::TTUI()
+  //call the parent class constructor as well
+  TTUI::TTUI():LiquidCrystal(A3,5, 6, 7, 8, 9) 
   {
+	
 	pTTUI = this;	//the ptr points to this object
 	trapActive_ = false; 
   }
@@ -44,7 +46,7 @@ TTUI* TTUI::pTTUI = 0;
    * begin
    * 
    ***********************************************************/
-  void TTUI::begin(Trigger& laser, Trigger& sound, Trigger& light,Trigger& timeLapse )
+  void TTUI::setup(Trigger& laser, Trigger& sound, Trigger& light,Trigger& timeLapse )
   {
 
 	triggers[0] = &laser;
@@ -74,7 +76,6 @@ TTUI* TTUI::pTTUI = 0;
 	trapActive_ = false; 	
 	currentTrigger = 0;
 
-
 	//LCD Stuff
 	TCCR1B = TCCR1B & 0b11111000 | 0x01; //-- sets the pwm base
 	// initialize the library with the numbers of the interface pins
@@ -83,29 +84,17 @@ TTUI* TTUI::pTTUI = 0;
 	pinMode (10, OUTPUT); // lcd contrast output 
 	analogWrite (10, LCD_CONTRAST); // ouput low pwm - negative voltage...
 
-    // initialize the library with the numbers of the interface pins
-    LiquidCrystal _lcd(A3, 4, 5, 6, 7, 8, 9);
-    lcd = &_lcd; //assign the adress of _lcd to the lcd pointer 
-
-    // set up the LCD's number of columns and rows:
-    lcd->begin(8, 2);
+	//this class inherits from LCD, so call lcd functions as part of this class
+	// set up the LCD's number of columns and rows:
+	
+    begin(8, 2);
   	// Print a message to the LCD.
-  	lcd->print("Trigger");
-	lcd->setCursor(0,1);
-	lcd->print("Trap0v34");
+  	print("Trigger");
+	setCursor(0,1);
+	print("Trap0v34");
 
-/*
-    
-    // set up the LCD's number of columns and rows: 
-    lcd->begin(8, 2);
-    // Print a message to the LCD.
-    lcd->autoscroll();
-    lcd->print("Trigger");
-    lcd->print("Trap");
-    lcd->print("v0.01");
-*/
     #ifdef SERIAL_DEBUG
-	Serial.println("Trigger Trap v.02");
+	Serial.println("Trigger Trap 0v34");
     #endif
   }
 
@@ -205,16 +194,15 @@ void TTUI::initStart(unsigned long startTime)
 
 	triggers[currentTrigger]->getModeMenu(printBuffer);
 
-	//lcd->println(printBuffer);
-	analogWrite (10, LCD_CONTRAST);
-	lcd->setCursor(0,0);
-	lcd->print("this");
-
 	#ifdef SERIAL_DEBUG
 	Serial.println(printBuffer);
 	#endif
 	
-	//lcd->print(printBuffer);
+	//LCD
+	clear();
+	setCursor(0,0);
+	print(printBuffer);
+
 	
 	
 
@@ -227,7 +215,7 @@ void TTUI::initStart(unsigned long startTime)
 ***********************************************************/
   void TTUI::bttnSelect()
   {
-	char printBuffer[30];
+	char printBuffer[10];
 
 	triggers[currentTrigger]->incSelect(); //set sensor to next select mode
 	triggers[currentTrigger]->getSelectMenu(printBuffer); //load printBuffer with string to print
@@ -235,6 +223,12 @@ void TTUI::initStart(unsigned long startTime)
 	#ifdef SERIAL_DEBUG
 	Serial.println(printBuffer);
 	#endif
+	
+	//LCD
+	
+	clear();
+	setCursor(0,0);
+	print(printBuffer);
 
   }
 
@@ -246,12 +240,18 @@ void TTUI::initStart(unsigned long startTime)
 void TTUI::bttnUp()
 {
 
-	char printBuffer[30];
+	char printBuffer[10];
 	triggers[currentTrigger]->incSetting(printBuffer); //increment the current selected value, pass printBuffer
 
 	#ifdef SERIAL_DEBUG
 		Serial.println(printBuffer);
 	#endif
+	
+	//LCD
+	setCursor(0,1);
+	print("        ");
+	setCursor(0,1);
+	print(printBuffer);
 
 
 }
@@ -263,13 +263,19 @@ void TTUI::bttnUp()
 ***********************************************************/
 void TTUI::bttnDown()
 {
-	char printBuffer[30];
+	char printBuffer[10];
 
 	triggers[currentTrigger]->decSetting(printBuffer); //increment the current selected value, pass char buffer
 
 	#ifdef SERIAL_DEBUG
 	Serial.println(printBuffer);
 	#endif
+	
+	//LCD
+	setCursor(0,1);
+	print("        ");
+	setCursor(0,1);
+	print(printBuffer);
 
 }
 

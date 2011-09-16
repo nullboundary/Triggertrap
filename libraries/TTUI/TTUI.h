@@ -54,13 +54,13 @@ const int LCD_CONTRAST = 60;
 
 extern "C" void startHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
 
-class TTUI {
+class TTUI: public LiquidCrystal {
 
 
 public:
 
 
-TTUI();
+	TTUI();
 
 friend void startHandler(void); //make the ISR routine a friend of this class
 
@@ -71,7 +71,7 @@ friend void startHandler(void); //make the ISR routine a friend of this class
  * pass every Trigger object to the UI
  * 
  ***********************************************************/
-void begin(Trigger& laser, Trigger& sound, Trigger& light, Trigger& timeLapse );
+void setup(Trigger& laser, Trigger& sound, Trigger& light, Trigger& timeLapse );
 
 /***********************************************************
  * 
@@ -111,7 +111,6 @@ private:
 	  static TTUI* pTTUI; //ptr to TTUI class for the ISR
 
 	  byte modeDisplay; //the mode displayed. but not selected yet
-	  LiquidCrystal * lcd; //pointer to lcd;
 	  AtTouch touch;  //touch sensor library object
 	
 	  Trigger *triggers[5]; //array of trigger object pointers
