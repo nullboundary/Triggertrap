@@ -58,9 +58,10 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
  
   
 
-  int Aux::auxLevel()
+  int Aux::sensorLevel()
   {
-    return sensorLevel_;
+    sensorLevel_ = analogRead(sensorPin_) >> 2;
+	return sensorLevel_;
   }
 
 

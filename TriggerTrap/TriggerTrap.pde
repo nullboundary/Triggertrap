@@ -177,7 +177,7 @@ void lightTrigger()
 	{
 
 		//digitalWrite(CAMERA_TRIGGER_A,HIGH); //trigger camera
-                Serial.println(light.lightLevel());  
+                Serial.println(light.sensorLevel());  
                 //Serial.println("CAMERA TRIGGER A");
 	}
 

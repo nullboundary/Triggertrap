@@ -44,7 +44,7 @@ public:
 	//virtual ~Laser();
 	
 
-	
+	int sensorLevel();
 	
 
 	boolean trigger();

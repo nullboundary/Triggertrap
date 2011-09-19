@@ -1,7 +1,7 @@
 /************************************************************************************
  * 	
  * 	Name    : Trigger Trap touchUI.h                        
- * 	Author  : Noah Shibley, Michael Grant,  NoMi Design                         
+ * 	Author  : Noah Shibley, NoMi Design                         
  * 	Date    : July 10th 2011                                    
  * 	Version : 0.1                                              
  * 	Notes   :  All the interface stuff for trigger trap, buttons and screen menus                 
@@ -50,7 +50,7 @@ const int KEY_PAD_LEDS = PORTB7;				// D4 = Digital out - LED on keypad
 const int START_BUTTON = 2;				// D2 = Digital in - Start button 
 const int KEY_CHANGE = 3;				// D3 = Digital in - key change interrupt for touch ic
 
-const int LCD_CONTRAST = 60; 
+const int LCD_CONTRAST = 45; 
 
 extern "C" void startHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
 

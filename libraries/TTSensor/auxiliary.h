@@ -41,7 +41,7 @@ public:
 
 	Aux();
 
-	int auxLevel();
+	int sensorLevel();
 
 	boolean trigger();
 	

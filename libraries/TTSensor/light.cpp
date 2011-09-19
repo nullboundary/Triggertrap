@@ -56,9 +56,10 @@ int const LIGHT_CHANGE_MODE = 2;
  
   
 
-  int Light::lightLevel()
+  int Light::sensorLevel()
   {
-    return sensorLevel_;
+    sensorLevel_ = analogRead(sensorPin_) >> 2;
+	return sensorLevel_;
   }
 
   boolean Light::trigger()

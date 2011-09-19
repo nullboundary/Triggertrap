@@ -124,6 +124,16 @@ void decOption(int menuOption, int maxValue);
  ***********************************************************/
 int shotCount(){ return shotCounter_; }
 
+
+/***********************************************************
+ * 
+ * sensorLevel
+ *
+ * returns the analog level of the sensor being used, this is virtual 
+ * 
+ ***********************************************************/
+virtual int sensorLevel() { return 0; }
+
 /***********************************************************
  * 
  * trigger
@@ -187,12 +197,21 @@ virtual void decSetting(char buffer[]);
 
 /***********************************************************
  * 
- * formatString
+ * formatTimeString
  *
  * format seconds into minutes and seconds place in char buffer. 
  * 
  ***********************************************************/
-void formatString(int data, char buffer[]);
+void formatTimeString(int data, char buffer[]);
+
+/***********************************************************
+ * 
+ * formatThresholdString
+ *
+ * format into current sensor level : setting level. 
+ * 
+ ***********************************************************/
+void formatThresholdString(int data, char buffer[]);
 
 /***********************************************************
  * 

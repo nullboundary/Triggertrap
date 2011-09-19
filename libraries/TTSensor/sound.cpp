@@ -54,9 +54,10 @@ int const SOUND_CHANGE_MODE = 2;
 
  }
 
-  int Sound::soundLevel()
+  int Sound::sensorLevel()
   {
-    return sensorLevel_;
+   	sensorLevel_ = analogRead(sensorPin_) >> 2;
+	return sensorLevel_;
   }
 
   boolean Sound::trigger()

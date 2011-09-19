@@ -287,7 +287,8 @@ boolean Trigger::change()
     int state = triggerState_; 
 	int threshold = option(TRIG_THRESHOLD); //get setting option 2 threshold
 
-    sensorLevel_ = analogRead(sensorPin_); 
+	sensorLevel_ = analogRead(sensorPin_) >> 2; //shift 1024 to 255
+	
 	
     //state is high, or state is low, depending on change above or below threshold
     if(sensorLevel_ > threshold) 
@@ -332,12 +333,12 @@ void Trigger::decSetting(char buffer[])
 	      break;
 	    case TRIG_DELAY:
 	      decOption(TRIG_DELAY, 18600);
-	      formatString(option(TRIG_DELAY),buffer);
+	      formatTimeString(option(TRIG_DELAY),buffer);
 	 	  //itoa (option(TRIG_DELAY),buffer,10);
 	      break;
 	    case TRIG_THRESHOLD:
-	      decOption(TRIG_THRESHOLD, 1023); 
-		  itoa (option(TRIG_THRESHOLD),buffer,10);
+	      decOption(TRIG_THRESHOLD, 255); 
+		  formatThresholdString(option(TRIG_THRESHOLD),buffer);
 	      break;
 	    default: 
 	      break;
@@ -364,12 +365,12 @@ void Trigger::incSetting(char buffer[])
 	      break;
 	    case TRIG_DELAY:
 	      incOption(TRIG_DELAY, 18600);
-		  formatString(option(TRIG_DELAY),buffer);
+		  formatTimeString(option(TRIG_DELAY),buffer);
 	 	  //itoa (option(TRIG_DELAY),buffer,10);
 	      break;
 	    case TRIG_THRESHOLD:
-	      incOption(TRIG_THRESHOLD, 1023); 
-		  itoa (option(TRIG_THRESHOLD),buffer,10);
+	      incOption(TRIG_THRESHOLD, 255); 
+		  formatThresholdString(option(TRIG_THRESHOLD),buffer);
 	      break;
 	    default: 
 	      break;
@@ -384,7 +385,7 @@ void Trigger::incSetting(char buffer[])
  * 
  * 
  ***********************************************************/
-void Trigger::formatString(int data, char buffer[])
+void Trigger::formatTimeString(int data, char buffer[])
 {
 	//setting the first char to 0 causes str functions to think 
 	//of the buffer as empty, like a clear buffer.
@@ -404,6 +405,26 @@ void Trigger::formatString(int data, char buffer[])
 	strcat(buffer,"\"");
 	strcat(buffer,'\0');
 		
+}
+
+void Trigger::formatThresholdString(int data, char buffer[])
+{
+	buffer[0] = 0;
+	char tempBuffer[5];
+	int level = sensorLevel();
+	
+	itoa (level,tempBuffer,10);
+	
+	strcat(buffer,tempBuffer);
+	
+	strcat(buffer,":");
+	
+	itoa(data,tempBuffer,10);
+	
+	strcat(buffer,tempBuffer);
+	
+	strcat(buffer,'\0');
+	
 }
 
 /***********************************************************

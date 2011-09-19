@@ -125,11 +125,11 @@ void TimeLapse::decSetting(char buffer[])
 	    {
 	     case TIME_DELAY:
 	 	  decOption(TIME_DELAY, 18600); //max secs
-		   formatString(option(TIME_DELAY),buffer); //format and save string in buffer
+		   formatTimeString(option(TIME_DELAY),buffer); //format and save string in buffer
 	      break;
 	    case TIME_DELTA:
 	      decOption(TIME_DELTA, 18600);
-	 	  formatString(option(TIME_DELTA),buffer);
+	 	  formatTimeString(option(TIME_DELTA),buffer);
 	      break;
 	    case TIME_NUMSHOTS:
 	      decOption(TIME_NUMSHOTS, 5000); 
@@ -156,11 +156,11 @@ void TimeLapse::incSetting(char buffer[])
 	    {
 	     case TIME_DELAY:
 	 	   incOption(TIME_DELAY, 18600); //max secs
-		   formatString(option(TIME_DELAY),buffer); 
+		   formatTimeString(option(TIME_DELAY),buffer); 
 	      break;
 	    case TIME_DELTA:
 	      incOption(TIME_DELTA, 18600);
-	 	  formatString(option(TIME_DELTA),buffer);
+	 	  formatTimeString(option(TIME_DELTA),buffer);
 	      break;
 	    case TIME_NUMSHOTS:
 	      incOption(TIME_NUMSHOTS, 5000); 

@@ -34,7 +34,7 @@
   TTUI* TTUI::pTTUI = 0; 
 
   //call the parent class constructor as well
-  TTUI::TTUI():LiquidCrystal(A3,4, 5, 6, 7, 8, 9) 
+  TTUI::TTUI():LiquidCrystal(A3,4,5, 6, 7, 8, 9) 
   {
 	
 	pTTUI = this;	//the ptr points to this object
@@ -79,6 +79,8 @@
 	//LCD Stuff
 	TCCR1B = TCCR1B & 0b11111000 | 0x01; //-- sets the pwm base
 	// initialize the library with the numbers of the interface pins
+//	pinMode (4, OUTPUT); // RW Pin 
+//	digitalWrite (4, LOW); // ouput low - slow mode - write delay
 	pinMode (10, OUTPUT); // lcd contrast output 
 	analogWrite (10, LCD_CONTRAST); // ouput low pwm - negative voltage...
 
@@ -148,7 +150,7 @@ void TTUI::update()
 
     }
 
-    uiPowerTimeOut(); //if there has been no activity turn off led power
+    //uiPowerTimeOut(); //if there has been no activity turn off led power
 
 }
 
@@ -166,12 +168,12 @@ void TTUI::initStart(unsigned long startTime)
 	{
 		Serial.println("trapActive");
 		triggers[currentTrigger]->start(startTime); //set start time for the active trigger 
-		uiPowerOff();
+	//	uiPowerOff();
 		
 	}
 	else if(trapActive_ == false) 
 	{
-		uiPowerOn();
+	//	uiPowerOn();
 	}
 	
 
@@ -201,7 +203,10 @@ void TTUI::initStart(unsigned long startTime)
 	setCursor(0,0);
 	print(printBuffer);
 
+	triggers[currentTrigger]->getSelectMenu(printBuffer);
 	
+	setCursor(0,1);
+	print(printBuffer);
 	
 
   }
@@ -223,8 +228,12 @@ void TTUI::initStart(unsigned long startTime)
 	#endif
 	
 	//LCD
-	
 	clear();
+	setCursor(0,1);
+	print(printBuffer);
+
+	triggers[currentTrigger]->getModeMenu(printBuffer);
+	
 	setCursor(0,0);
 	print(printBuffer);
 
@@ -239,19 +248,24 @@ void TTUI::bttnUp()
 {
 
 	char printBuffer[10];
-	triggers[currentTrigger]->incSetting(printBuffer); //increment the current selected value, pass printBuffer
 
-	#ifdef SERIAL_DEBUG
-		Serial.println(printBuffer);
-	#endif
-	
-	//LCD
-	setCursor(0,1);
-	print("        ");
-	setCursor(0,1);
+	//set the value title in line 1
+	triggers[currentTrigger]->getSelectMenu(printBuffer); //load printBuffer with string to print
+	clear();
+	setCursor(0,0);
 	print(printBuffer);
 
 
+	triggers[currentTrigger]->incSetting(printBuffer); //increment the current selected value, pass char buffer
+
+	//set the value in line 2	
+	setCursor(0,1);
+	print(printBuffer);
+
+	#ifdef SERIAL_DEBUG
+	Serial.println(printBuffer);
+	#endif
+	
 }
    
 /***********************************************************
@@ -263,17 +277,28 @@ void TTUI::bttnDown()
 {
 	char printBuffer[10];
 
+	//set the value title in line 1
+	triggers[currentTrigger]->getSelectMenu(printBuffer); //load printBuffer with string to print
+	clear();
+	setCursor(0,0);
+	print(printBuffer);
+
+
+	
 	triggers[currentTrigger]->decSetting(printBuffer); //increment the current selected value, pass char buffer
+
+	//set the value in line 2	
+	setCursor(0,1);
+	print(printBuffer);
 
 	#ifdef SERIAL_DEBUG
 	Serial.println(printBuffer);
 	#endif
 	
-	//LCD
-	setCursor(0,1);
-	print("        ");
-	setCursor(0,1);
-	print(printBuffer);
+	
+
+	
+
 
 }
 
@@ -291,13 +316,15 @@ void TTUI::uiPowerOn()
 
 	  Serial.println("ui Power UP");
       previousMillis_UIPower = currentMillis;  //clock countdown start time
+
+	
 	  PORTB &= ~ _BV(PORTB6);        //digitalWrite(POWER_UI,LOW);
       PORTB |= _BV(PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
-	 
-   	//  init(1,A3,4,5,6,7,8,9,0,0,0,0);
-	//  begin(8,2);
-	//  touch.begin(KEY_CHANGE);
-   //   display(); //turn on LCD
+      //init(1, A3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0);
+    
+	  //begin(8,2);	
+      //analogWrite (10, LCD_CONTRAST);
+  //    display(); //turn on LCD
     }
 }
 
@@ -313,22 +340,18 @@ void TTUI::uiPowerOff()
       state_UIPower = false; 	
       PORTB |= _BV(PORTB6);	               //digitalWrite(POWER_UI,HIGH);
       PORTB &= ~ _BV(PORTB7);              //digitalWrite(KEY_PAD_LEDS,LOW); // turn off keypad LEDs
-		
-	//make all LCD pins LOW
-/*		digitalWrite(A3,LOW); //RS
-		digitalWrite(4,LOW); //RW
-		digitalWrite(5,LOW); //enable
-		digitalWrite(6,LOW); //d0 - d4
+	 /*
+		digitalWrite(A3,LOW);
+		digitalWrite(5,LOW);
+		digitalWrite(6,LOW);
 		digitalWrite(7,LOW);
 		digitalWrite(8,LOW);
 		digitalWrite(9,LOW);
-		
-		digitalWrite(A4,LOW); //i2c
-		digitalWrite(A5,LOW);
-*/
+		analogWrite (10, 0);
+	*/
 	  Serial.println("ui Power Down");
 	 
-    //  noDisplay(); //clear LCD
+ //     noDisplay(); //turn on LCD
     }
 }
 

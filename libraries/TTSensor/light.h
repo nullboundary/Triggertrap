@@ -42,7 +42,7 @@ public:
 
 	Light();
 
-	int lightLevel();
+	int sensorLevel();
 
 	boolean trigger();
 	

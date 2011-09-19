@@ -42,7 +42,7 @@ public:
 
 	Sound();
 
-	int soundLevel();
+	int sensorLevel();
 	
 	boolean trigger();
 	

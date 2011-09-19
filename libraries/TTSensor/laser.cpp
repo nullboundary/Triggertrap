@@ -53,6 +53,12 @@ int const CHANGE_LASER_MODE = 2;
     sensorPin_ = LASER_SENSOR;
   }
 
+  int Laser::sensorLevel()
+  {
+	  sensorLevel_ = analogRead(sensorPin_) >> 2;
+	  return sensorLevel_;
+  }
+
   boolean Laser::trigger()
   {
     boolean laserStatus = false;
