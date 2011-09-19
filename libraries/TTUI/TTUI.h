@@ -1,7 +1,7 @@
 /************************************************************************************
  * 	
  * 	Name    : Trigger Trap touchUI.h                        
- * 	Author  : Noah Shibley, NoMi Design                         
+ * 	Author  : Noah Shibley, Michael Grant,  NoMi Design                         
  * 	Date    : July 10th 2011                                    
  * 	Version : 0.1                                              
  * 	Notes   :  All the interface stuff for trigger trap, buttons and screen menus                 

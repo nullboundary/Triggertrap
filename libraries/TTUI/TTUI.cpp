@@ -34,7 +34,7 @@
   TTUI* TTUI::pTTUI = 0; 
 
   //call the parent class constructor as well
-  TTUI::TTUI():LiquidCrystal(A3,5, 6, 7, 8, 9) 
+  TTUI::TTUI():LiquidCrystal(A3,4, 5, 6, 7, 8, 9) 
   {
 	
 	pTTUI = this;	//the ptr points to this object
@@ -79,8 +79,6 @@
 	//LCD Stuff
 	TCCR1B = TCCR1B & 0b11111000 | 0x01; //-- sets the pwm base
 	// initialize the library with the numbers of the interface pins
-	pinMode (4, OUTPUT); // RW Pin 
-	digitalWrite (4, LOW); // ouput low - slow mode - write delay
 	pinMode (10, OUTPUT); // lcd contrast output 
 	analogWrite (10, LCD_CONTRAST); // ouput low pwm - negative voltage...
 
@@ -296,7 +294,10 @@ void TTUI::uiPowerOn()
 	  PORTB &= ~ _BV(PORTB6);        //digitalWrite(POWER_UI,LOW);
       PORTB |= _BV(PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
 	 
-      display(); //turn on LCD
+   	//  init(1,A3,4,5,6,7,8,9,0,0,0,0);
+	//  begin(8,2);
+	//  touch.begin(KEY_CHANGE);
+   //   display(); //turn on LCD
     }
 }
 
@@ -312,9 +313,22 @@ void TTUI::uiPowerOff()
       state_UIPower = false; 	
       PORTB |= _BV(PORTB6);	               //digitalWrite(POWER_UI,HIGH);
       PORTB &= ~ _BV(PORTB7);              //digitalWrite(KEY_PAD_LEDS,LOW); // turn off keypad LEDs
+		
+	//make all LCD pins LOW
+/*		digitalWrite(A3,LOW); //RS
+		digitalWrite(4,LOW); //RW
+		digitalWrite(5,LOW); //enable
+		digitalWrite(6,LOW); //d0 - d4
+		digitalWrite(7,LOW);
+		digitalWrite(8,LOW);
+		digitalWrite(9,LOW);
+		
+		digitalWrite(A4,LOW); //i2c
+		digitalWrite(A5,LOW);
+*/
 	  Serial.println("ui Power Down");
 	 
-      noDisplay(); //turn on LCD
+    //  noDisplay(); //clear LCD
     }
 }
 
