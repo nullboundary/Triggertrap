@@ -32,6 +32,7 @@
 #include <WProgram.h>
 #include <Wire.h>
 
+//#define SERIAL_DEBUG  //do you want status messages printed to serial? 
 
 
 extern "C" void bttnPressISR(void) __attribute__ ((signal)); 
@@ -56,13 +57,13 @@ private:
 
   int readActiveAddress();	
 	
-  int _changePin;
-  int _interruptVal;
+  byte _changePin;
+  byte _interruptVal;
   volatile boolean keyHit;
   static AtTouch* pAtTouch; //ptr to AtTouch class for the ISR
-  int activeKey_; //the current key num pressed
- volatile boolean holdDown_; //is the button held down, or just pressed
- volatile unsigned long startTime; //the press and hold startTime
+  byte activeKey_; //the current key num pressed
+  volatile boolean holdDown_; //is the button held down, or just pressed
+  volatile unsigned long startTime; //the press and hold startTime
 
 
 };

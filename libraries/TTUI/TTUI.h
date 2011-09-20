@@ -32,8 +32,6 @@
 #define TTUI_H
 
 #include <LiquidCrystal.h>
-//#include "globals.h"
-#include <EEPROM.h>
 #include <AtTouch.h>
 #include <TTSensor.h>
 #include <WProgram.h>
@@ -45,12 +43,13 @@ byte const SELECT_BTTN = 3;//select bttn address
 byte const UP_BTTN = 6; //up bttn address
 byte const DOWN_BTTN = 5;  //down bttn address
 
-const int POWER_UI = PORTB6;				// A3 = Digital out - UI power mosfet switch
-const int KEY_PAD_LEDS = PORTB7;				// D4 = Digital out - LED on keypad
-const int START_BUTTON = 2;				// D2 = Digital in - Start button 
-const int KEY_CHANGE = 3;				// D3 = Digital in - key change interrupt for touch ic
+const byte POWER_UI = PORTB6;				// A3 = Digital out - UI power mosfet switch
+const byte KEY_PAD_LEDS = PORTB7;				// D4 = Digital out - LED on keypad
+const byte START_BUTTON = 2;				// D2 = Digital in - Start button 
+const byte KEY_CHANGE = 3;				// D3 = Digital in - key change interrupt for touch ic
 
 const int LCD_CONTRAST = 45; 
+const unsigned int UI_SLEEP_MS = 30000; //time before leds and screen turn off, with no activity
 
 extern "C" void startHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
 
@@ -89,7 +88,7 @@ void update();
  * returns which trigger object has been selected by the UI (mode button)
  * 
  ***********************************************************/
-int trigger(){ return currentTrigger; }
+int trigger(){ return (int) currentTrigger; }
 
 /***********************************************************
  * 
@@ -107,18 +106,17 @@ private:
 	private: 
 		
 	  volatile boolean trapActive_;	//start button pressed
-	  int currentTrigger;   //which trigger (mode) is active
+	  byte currentTrigger;   //which trigger (mode) is active
 	  static TTUI* pTTUI; //ptr to TTUI class for the ISR
 
-	  byte modeDisplay; //the mode displayed. but not selected yet
 	  AtTouch touch;  //touch sensor library object
 	
 	  Trigger *triggers[5]; //array of trigger object pointers
 
-	  long 	previousMillis_UIPower; //time counter for powering down the leds and screen
-	  long 	interval_UIPower; //time before leds and screen turn off, with no activity
+	  unsigned long 	previousMillis_UIPower; //time counter for powering down the leds and screen
+	  
 	  boolean state_UIPower;	//UI power on, or off flag
-	  volatile unsigned long prevIntTime;  //testing... debounce
+	  volatile unsigned long prevIntTime;  //debounce
  
 /***********************************************************
  * 

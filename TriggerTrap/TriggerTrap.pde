@@ -29,7 +29,6 @@
 
 #include <LiquidCrystal.h>
 #include <Wire.h>
-#include <EEPROM.h>
 #include <AtTouch.h>
 #include <Sleep.h>
 #include "globals.h"  //where all the pin name defines and variables are declared
@@ -146,7 +145,7 @@ void timeLapseTrigger()
   {
     
     Serial.print(timeLapse.shotCount());
-    Serial.println("/inf");
+
    
   }
   else
@@ -163,7 +162,7 @@ void soundTrigger()
 
 	if(mic.trigger() == true) //returns true if sound changes based on current mode type
 	{
-                Serial.println("CAMERA TRIGGER A");
+                Serial.println("Focus");
 	}
 
 }

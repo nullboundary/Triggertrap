@@ -60,8 +60,8 @@
     digitalWrite(START_BUTTON, HIGH);   // turn on pullup resistor for Start button
 	attachInterrupt(0,startHandler,FALLING); //trigger ISR function on start button press.
 	
-	 DDRB = _BV (PORTB7);   //pinMode(KEY_PAD_LEDS, OUTPUT);      // LED on UI
-	 DDRB = _BV (PORTB6);   //pinMode(POWER_UI,OUTPUT);
+	 DDRB |= (1<<PB7);   //pinMode(KEY_PAD_LEDS, OUTPUT);      // LED on UI
+	 DDRB |= (1<<PB6);   //pinMode(POWER_UI,OUTPUT);
 	 state_UIPower = false; 
 	 uiPowerOn(); //turn on power at startup
 
@@ -70,7 +70,6 @@
     //restoreSettings(); //restore all menu settings from eeprom
 
     previousMillis_UIPower = 0; 
-    interval_UIPower = 30000;  //30 seconds till sleep mode with no use of device
     touch.begin(KEY_CHANGE);  //init touch UI with key change interrupt
    
 	trapActive_ = false; 	
@@ -94,7 +93,7 @@
 	print("Trap0v34");
 
     #ifdef SERIAL_DEBUG
-	Serial.println("Trigger Trap 0v34");
+	Serial.println("TT 0v34");
     #endif
   }
 
@@ -166,7 +165,10 @@ void TTUI::initStart(unsigned long startTime)
 
 	if(trapActive_ == true)
 	{
-		Serial.println("trapActive");
+		#ifdef SERIAL_DEBUG
+		Serial.println("Active");
+		#endif
+		
 		triggers[currentTrigger]->start(startTime); //set start time for the active trigger 
 	//	uiPowerOff();
 		
@@ -201,11 +203,13 @@ void TTUI::initStart(unsigned long startTime)
 	//LCD
 	clear();
 	setCursor(0,0);
+	//command(0x80); 
 	print(printBuffer);
 
 	triggers[currentTrigger]->getSelectMenu(printBuffer);
 	
 	setCursor(0,1);
+	//command(0x80); 
 	print(printBuffer);
 	
 
@@ -312,14 +316,15 @@ void TTUI::uiPowerOn()
     if(state_UIPower == false)
     {
       state_UIPower = true; 	
-      unsigned long currentMillis = millis();
 
-	  Serial.println("ui Power UP");
-      previousMillis_UIPower = currentMillis;  //clock countdown start time
+	  #ifdef SERIAL_DEBUG
+	  Serial.println("UI Off");
+	  #endif
+      previousMillis_UIPower = millis();  //clock countdown start time
 
 	
-	  PORTB &= ~ _BV(PORTB6);        //digitalWrite(POWER_UI,LOW);
-      PORTB |= _BV(PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
+	  PORTB &= ~ (1<<PB6);        //digitalWrite(POWER_UI,LOW);
+      PORTB |= (1<<PB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
       //init(1, A3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0);
     
 	  //begin(8,2);	
@@ -338,8 +343,8 @@ void TTUI::uiPowerOff()
     if(state_UIPower == true)
     {
       state_UIPower = false; 	
-      PORTB |= _BV(PORTB6);	               //digitalWrite(POWER_UI,HIGH);
-      PORTB &= ~ _BV(PORTB7);              //digitalWrite(KEY_PAD_LEDS,LOW); // turn off keypad LEDs
+      PORTB |= (1<<PB6);	               //digitalWrite(POWER_UI,HIGH);
+      PORTB &= ~ (1<<PB7);              //digitalWrite(KEY_PAD_LEDS,LOW); // turn off keypad LEDs
 	 /*
 		digitalWrite(A3,LOW);
 		digitalWrite(5,LOW);
@@ -349,7 +354,9 @@ void TTUI::uiPowerOff()
 		digitalWrite(9,LOW);
 		analogWrite (10, 0);
 	*/
-	  Serial.println("ui Power Down");
+	  #ifdef SERIAL_DEBUG
+	  Serial.println("UI On");
+	  #endif
 	 
  //     noDisplay(); //turn on LCD
     }
@@ -365,9 +372,8 @@ void TTUI::uiPowerOff()
     if(state_UIPower == true)
     {
       
-      unsigned long currentMillis = millis();
 
-      if(currentMillis - previousMillis_UIPower > interval_UIPower) 
+      if(millis() - previousMillis_UIPower > UI_SLEEP_MS) 
       {
 		uiPowerOff();
       }
@@ -382,7 +388,7 @@ void TTUI::uiPowerOff()
 ***********************************************************/
   void TTUI::saveSettings()
   {
-    EEPROM.write(0,currentTrigger);
+    //EEPROM.write(0,currentTrigger);
    // EEPROM.write(1,timeLapseAdjState);
    // EEPROM.write(2,laserAdjState);
    // EEPROM.write(3,soundAdjState);
@@ -397,7 +403,7 @@ void TTUI::uiPowerOff()
 ***********************************************************/
   void TTUI::restoreSettings()
   {
-    currentTrigger = EEPROM.read(0);
+    //currentTrigger = EEPROM.read(0);
    // timeLapseAdjState = EEPROM.read(1);
    // laserAdjState = EEPROM.read(2);
   //  soundAdjState = EEPROM.read(3);

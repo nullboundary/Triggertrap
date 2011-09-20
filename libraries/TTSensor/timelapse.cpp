@@ -124,16 +124,16 @@ void TimeLapse::decSetting(char buffer[])
 		switch (select_)
 	    {
 	     case TIME_DELAY:
-	 	  decOption(TIME_DELAY, 18600); //max secs
+	 	  decOption(TIME_DELAY, 54000); //max secs
 		   formatTimeString(option(TIME_DELAY),buffer); //format and save string in buffer
 	      break;
 	    case TIME_DELTA:
-	      decOption(TIME_DELTA, 18600);
+	      decOption(TIME_DELTA, 54000);
 	 	  formatTimeString(option(TIME_DELTA),buffer);
 	      break;
 	    case TIME_NUMSHOTS:
-	      decOption(TIME_NUMSHOTS, 5000); 
-		  itoa (option(TIME_NUMSHOTS),buffer,10);
+	      decOption(TIME_NUMSHOTS, 50000); 
+		  utoa (option(TIME_NUMSHOTS),buffer,10);
 	      break;
 	    default: 
 	      break;
@@ -155,16 +155,16 @@ void TimeLapse::incSetting(char buffer[])
 		switch (select_)
 	    {
 	     case TIME_DELAY:
-	 	   incOption(TIME_DELAY, 18600); //max secs
+	 	   incOption(TIME_DELAY, 54000); //max secs
 		   formatTimeString(option(TIME_DELAY),buffer); 
 	      break;
 	    case TIME_DELTA:
-	      incOption(TIME_DELTA, 18600);
+	      incOption(TIME_DELTA, 54000);
 	 	  formatTimeString(option(TIME_DELTA),buffer);
 	      break;
 	    case TIME_NUMSHOTS:
-	      incOption(TIME_NUMSHOTS, 5000); 
-		  itoa (option(TIME_NUMSHOTS),buffer,10);
+	      incOption(TIME_NUMSHOTS, 50000); 
+		  utoa (option(TIME_NUMSHOTS),buffer,10);
 	      break;
 	    default: 
 	      break;

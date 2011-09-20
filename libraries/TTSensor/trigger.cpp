@@ -103,7 +103,7 @@ updown
  * 
  * 
  ***********************************************************/
-const int Trigger::option(int menuOption)
+const unsigned int Trigger::option(int menuOption)
 {
 	return optionValues[menuOption];
 }
@@ -115,7 +115,7 @@ const int Trigger::option(int menuOption)
  * 
  * 
  ***********************************************************/
-void Trigger::setOption(int menuOption,int value)
+void Trigger::setOption(int menuOption,unsigned int value)
 {
 	optionValues[menuOption] = value;
 }
@@ -127,11 +127,12 @@ void Trigger::setOption(int menuOption,int value)
  * 
  * 
  ***********************************************************/
-void Trigger::incOption(int menuOption, int maxValue)
+void Trigger::incOption(int menuOption, unsigned int maxValue)
 {
-	int mOpt = optionValues[menuOption];
+	unsigned int mOpt = optionValues[menuOption];
 	mOpt++;
 	if(mOpt > maxValue) { mOpt = 0; } //limits
+
 	optionValues[menuOption] = mOpt;
 }
 
@@ -142,11 +143,12 @@ void Trigger::incOption(int menuOption, int maxValue)
  * 
  * 
  ***********************************************************/
-void Trigger::decOption(int menuOption, int maxValue)
+void Trigger::decOption(int menuOption, unsigned int maxValue)
 {
-	int mOpt = optionValues[menuOption];
+	unsigned int mOpt = optionValues[menuOption];
 	mOpt--;
-	if(mOpt < 0) { mOpt = maxValue; }  //limits
+	if(mOpt > maxValue) { mOpt = maxValue; }  //limits, unsigned so < 0 is 65535
+
 	optionValues[menuOption] = mOpt;
 }
 
@@ -196,7 +198,7 @@ void Trigger::shutter(boolean noDelay)
 				digitalWrite(CAMERA_TRIGGER_A,LOW); //trigger camera
 		
 				#ifdef SERIAL_DEBUG
-				Serial.println("CAMERA TRIGGER A");
+				Serial.println("Focus");
 				#endif
 			}
 	
@@ -207,7 +209,7 @@ void Trigger::shutter(boolean noDelay)
 			 	digitalWrite(CAMERA_TRIGGER_B,LOW);
 	
 				#ifdef SERIAL_DEBUG
-				Serial.println("CAMERA TRIGGER B");
+				Serial.println("Shutter");
 				#endif
 			}
 		}
@@ -284,21 +286,21 @@ boolean Trigger::high()
  ***********************************************************/
 boolean Trigger::change()
 {
-    int state = triggerState_; 
+    boolean state = triggerState_; 
 	int threshold = option(TRIG_THRESHOLD); //get setting option 2 threshold
 
 	sensorLevel_ = analogRead(sensorPin_) >> 2; //shift 1024 to 255
 	
 	
     //state is high, or state is low, depending on change above or below threshold
-    if(sensorLevel_ > threshold) 
+    if(sensorLevel_ > threshold)  //true above
     {
 	
-      state = 1; 
+      state = true; 
     }
-    else if(sensorLevel_ <= threshold) 
+    else if(sensorLevel_ <= threshold) //false below
     {
-      state = 0; 
+      state = false; 
     }
 
     //trigger either on or off, not measuring soundValue
@@ -332,7 +334,7 @@ void Trigger::decSetting(char buffer[])
 		  getSettingMenu(buffer); 
 	      break;
 	    case TRIG_DELAY:
-	      decOption(TRIG_DELAY, 18600);
+	      decOption(TRIG_DELAY, 54000);
 	      formatTimeString(option(TRIG_DELAY),buffer);
 	 	  //itoa (option(TRIG_DELAY),buffer,10);
 	      break;
@@ -364,7 +366,7 @@ void Trigger::incSetting(char buffer[])
 		  getSettingMenu(buffer); 
 	      break;
 	    case TRIG_DELAY:
-	      incOption(TRIG_DELAY, 18600);
+	      incOption(TRIG_DELAY, 54000);
 		  formatTimeString(option(TRIG_DELAY),buffer);
 	 	  //itoa (option(TRIG_DELAY),buffer,10);
 	      break;
@@ -385,20 +387,20 @@ void Trigger::incSetting(char buffer[])
  * 
  * 
  ***********************************************************/
-void Trigger::formatTimeString(int data, char buffer[])
+void Trigger::formatTimeString(unsigned int data, char buffer[])
 {
 	//setting the first char to 0 causes str functions to think 
 	//of the buffer as empty, like a clear buffer.
 	buffer[0] = 0;
 	char tempBuffer[5];
 	//transform delay seconds into min and add to tempbuffer
-	itoa (data/60,tempBuffer,10);
+	utoa (data/60,tempBuffer,10);
 	//add minute data to buffer
 	strcat(buffer, tempBuffer);
 	//add minute symbol to buffer
 	strcat(buffer,"\'");
 	//transform delay seconds into remainder seconds
-	itoa(data%60,tempBuffer,10);
+	utoa(data%60,tempBuffer,10);
 	//add second data to buffer
 	strcat(buffer,tempBuffer);
 	//add second symbol to buffer
@@ -407,7 +409,7 @@ void Trigger::formatTimeString(int data, char buffer[])
 		
 }
 
-void Trigger::formatThresholdString(int data, char buffer[])
+void Trigger::formatThresholdString(unsigned int data, char buffer[])
 {
 	buffer[0] = 0;
 	char tempBuffer[5];
@@ -419,7 +421,7 @@ void Trigger::formatThresholdString(int data, char buffer[])
 	
 	strcat(buffer,":");
 	
-	itoa(data,tempBuffer,10);
+	utoa(data,tempBuffer,10);
 	
 	strcat(buffer,tempBuffer);
 	
@@ -439,14 +441,13 @@ void Trigger::resetShutter()
 	//reset trigger low after small delay
   if(shutterStateA_ == true || shutterStateB_ == true)
   {
-	 unsigned long currentTime = millis();
-	 if(currentTime - shutterDelay > 10) 
+	 if(millis() - shutterDelay > 10) 
 	 {
 	    // save the last time you took a photo
-	    shutterDelay = currentTime;
+	    shutterDelay = millis();
 		
 		#ifdef SERIAL_DEBUG
-		Serial.println("clear Trigger");
+		Serial.println("clear");
 		#endif
 		
 		shutterStateA_ = false;

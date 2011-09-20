@@ -86,7 +86,7 @@ void incSelect();
  * Return the value of a menu setting for this object. Ex, timelapse delta value
  * 
  ***********************************************************/
-const int option(int menuOption);
+const unsigned int option(int menuOption);
 
 /***********************************************************
  * 
@@ -95,7 +95,7 @@ const int option(int menuOption);
  * set the value of a menu option for this object. Ex. light threshold value.
  * 
  ***********************************************************/
-void setOption(int menuOption,int value);
+void setOption(int menuOption,unsigned int value);
 
 /***********************************************************
  * 
@@ -104,7 +104,7 @@ void setOption(int menuOption,int value);
  * increment the value of a menu option for this object +1. 
  * 
  ***********************************************************/
-void incOption(int menuOption, int maxValue);
+void incOption(int menuOption, unsigned int maxValue);
 
 /***********************************************************
  * 
@@ -113,7 +113,7 @@ void incOption(int menuOption, int maxValue);
  * decrement the value of a menu option for this object -1. 
  * 
  ***********************************************************/
-void decOption(int menuOption, int maxValue);
+void decOption(int menuOption, unsigned int maxValue);
 
 /***********************************************************
  * 
@@ -202,7 +202,7 @@ virtual void decSetting(char buffer[]);
  * format seconds into minutes and seconds place in char buffer. 
  * 
  ***********************************************************/
-void formatTimeString(int data, char buffer[]);
+void formatTimeString(unsigned int data, char buffer[]);
 
 /***********************************************************
  * 
@@ -211,7 +211,7 @@ void formatTimeString(int data, char buffer[]);
  * format into current sensor level : setting level. 
  * 
  ***********************************************************/
-void formatThresholdString(int data, char buffer[]);
+void formatThresholdString(unsigned int data, char buffer[]);
 
 /***********************************************************
  * 
@@ -254,11 +254,11 @@ void setShutters(boolean cameraA, boolean cameraB) { cameraA_ = cameraA; cameraB
 
 protected: 
 	
-  int triggerState_; //On or OFF, based on above or below the threshold
-  int select_; //trigger on START,STOP or CHANGE
-  int sensorLevel_; //incoming sensor value
-  int shotCounter_; // current shot since pressing the start button
-  int sensorPin_; //the sensor pin
+  boolean triggerState_; //On or OFF, based on above or below the threshold
+  byte select_; //trigger on START,STOP or CHANGE
+  byte sensorLevel_; //incoming sensor value
+  unsigned int shotCounter_; // current shot since pressing the start button
+  byte sensorPin_; //the sensor pin
  
   boolean shutterStateA_; //status of shutter A, high or low. Goes low for small amount of time at shot
   boolean shutterStateB_; //status of shutter B, high or low. Goes low for small amount of time at shot
@@ -272,7 +272,7 @@ protected:
 
 private:
 	
-	int optionValues[10];
+  unsigned int optionValues[5];
 	
  
 

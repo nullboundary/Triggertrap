@@ -48,8 +48,8 @@ AtTouch::AtTouch()
  ***********************************************************/
 void AtTouch::begin(int interruptPin){
 
-  _changePin = interruptPin;
-  _interruptVal = interruptPin-2;  //arduino interupt values 0=pin2, 1=pin3
+  _changePin = (byte) interruptPin;
+  _interruptVal = (byte) interruptPin-2;  //arduino interupt values 0=pin2, 1=pin3
 	
   keyHit = false; 
   holdDown_ = false;
@@ -95,7 +95,7 @@ void AtTouch::update()
 
 int AtTouch::getKey()
 {
-	return activeKey_;
+	return (int) activeKey_;
 }
 
 /***********************************************************
@@ -115,7 +115,7 @@ int AtTouch::readActiveKey()
   {
    keyValue++; //increment keyValue to find bit place
   }
- 	activeKey_ = keyValue; //save the keyValue for later
+ 	activeKey_ = (byte) keyValue; //save the keyValue for later
 	if(keyValue == 9) { holdDown_ = false; } //9 is key up, so stop press and hold timer
 
   return keyValue;
@@ -159,7 +159,9 @@ int AtTouch::readActiveAddress(){
       
       if(bttnNum == 0)
       {
-        Serial.println("button read error");
+	    #ifdef SERIAL_DEBUG
+        Serial.println("read error");
+		#endif
       }  
       return bttnNum;
     }
@@ -174,8 +176,7 @@ boolean AtTouch::hold()
 {
   if(holdDown_ == true)
   {
- 	  unsigned long currentTime = millis();
-	  unsigned long elapsedTime = currentTime - startTime;
+	  unsigned long elapsedTime = millis() - startTime;
 
 	  if (elapsedTime >= 1100) //interval time as passed
 	  {
