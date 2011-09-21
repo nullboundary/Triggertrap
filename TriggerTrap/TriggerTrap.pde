@@ -27,7 +27,7 @@
 
 #define SERIAL_DEBUG
 
-#include <LiquidCrystal.h>
+#include <LiquidCrystalFast.h>
 #include <Wire.h>
 #include <AtTouch.h>
 #include <Sleep.h>
@@ -48,6 +48,7 @@ Sleep sleep;
 Laser laser;
 Light light;
 Sound mic; 
+Aux aux;
 TimeLapse timeLapse;
 
 
@@ -66,7 +67,7 @@ void setup() {
 //  pinMode(CAMERA_TRIGGER_B, OUTPUT);     // Camera Trigger B
 //  digitalWrite(CAMERA_TRIGGER_A,HIGH);
   
-  tui.setup(laser,mic,light,timeLapse); //setup touch input buttons, and lcd menus
+  tui.setup(laser,mic,light,timeLapse,aux); //setup touch input buttons, and lcd menus
   
   interrupts();
 
@@ -101,7 +102,8 @@ void loop() {
     break;
 
   case SOUND_MODE:
-    //soundTrigger();
+      soundTrigger();
+      
     break;
   case LIGHT_MODE:
     lightTrigger();
@@ -117,13 +119,6 @@ void loop() {
   }
 
 
-  //digitalWrite(10, HIGH);   // set the LED on
-
-
-  // delay(1);              // wait for a second
-  //digitalWrite(10, LOW);    // set the LED off
-  //noTone(10);
-  //delay(1000);              // wait for a second
 }
 
 
@@ -131,7 +126,7 @@ void loop() {
 void laserTrigger()
 {
 	int currentMode = laser.select();
-	
+	laser.setShutters(false,true); //no focus, only shutter
 	laser.trigger();
 	
 	
@@ -159,7 +154,7 @@ void timeLapseTrigger()
 
 void soundTrigger()
 {
-
+        mic.setShutters(true,false); //no focus, only shutter
 	if(mic.trigger() == true) //returns true if sound changes based on current mode type
 	{
                 Serial.println("Focus");
@@ -171,7 +166,7 @@ void lightTrigger()
 {
         //Serial.println(light.lightLevel());   
        // light.setThreshold(800);
-  
+        light.setShutters(true,false); //no focus, only shutter
 	if(light.trigger() == true) //returns true if sound changes based on current mode type
 	{
 

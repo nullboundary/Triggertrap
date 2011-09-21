@@ -34,7 +34,7 @@
   TTUI* TTUI::pTTUI = 0; 
 
   //call the parent class constructor as well
-  TTUI::TTUI():LiquidCrystal(A3,4,5, 6, 7, 8, 9) 
+  TTUI::TTUI():LiquidCrystalFast(A3,4,5, 6, 7, 8, 9) 
   {
 	
 	pTTUI = this;	//the ptr points to this object
@@ -46,13 +46,14 @@
    * begin
    * 
    ***********************************************************/
-  void TTUI::setup(Trigger& laser, Trigger& sound, Trigger& light,Trigger& timeLapse )
+  void TTUI::setup(Trigger& laser, Trigger& sound, Trigger& light,Trigger& timeLapse, Trigger& aux)
   {
 
 	triggers[0] = &laser;
 	triggers[1] = &sound;
 	triggers[2] = &light;
 	triggers[3] = &timeLapse;
+	triggers[4] = &aux;
 
 			
 
@@ -108,49 +109,90 @@ void TTUI::update()
 	boolean keyDown = false;
 	int hitKeyVal;
   
+	if(trapActive_ == false) //waiting for UI input
+	{
 
-   if(touch.hold() == true) //press and hold
-  {
-	keyDown = true; 
-	hitKeyVal = touch.getKey();
-  }
+  	 	if(touch.hold() == true) //press and hold
+		  {
+			keyDown = true; 
+			hitKeyVal = touch.getKey();
+		  }
 
   
 
-   if(touch.hit() == true) //just press
-	{ 
-   	 keyDown = true;
-	 hitKeyVal = touch.readActiveKey(); //read which key was hit
-	} 
+		   if(touch.hit() == true) //just press
+			{ 
+		   	 keyDown = true;
+			 hitKeyVal = touch.readActiveKey(); //read which key was hit
+			} 
 	
 
-	//call a specific function based on which key is pressed
-    if(keyDown == true)
-   {
-	  previousMillis_UIPower = millis(); //time key was active
-	  keyDown = false;
-      switch (hitKeyVal)
-      {		
-      	  case MODE_BTTN:
-	        bttnMode();
-	        break;
-	      case SELECT_BTTN:
-	        bttnSelect();		
-	        break;
-	      case DOWN_BTTN:
-	        bttnDown(); 
-	        break;
-	      case UP_BTTN:
-	        bttnUp();
-	        break;
-	      default: //no default option, just here for compiler
-	        break;
-      }
+			//call a specific function based on which key is pressed
+		    if(keyDown == true)
+		   {
+			  previousMillis_UIPower = millis(); //time key was active
+			  keyDown = false;
+		      switch (hitKeyVal)
+		      {		
+		      	  case MODE_BTTN:
+			        bttnMode();
+			        break;
+			      case SELECT_BTTN:
+			        bttnSelect();		
+			        break;
+			      case DOWN_BTTN:
+			        bttnDown(); 
+			        break;
+			      case UP_BTTN:
+			        bttnUp();
+			        break;
+			      default: //no default option, just here for compiler
+			        break;
+		      }
 
-    }
+		    }
+		
+		 //uiPowerTimeOut(); //if there has been no activity turn off led power
+		
+	}
+	else if(trapActive_ == true) //start button was pressed, active
+	{
+		updateActive();
+	}
 
-    //uiPowerTimeOut(); //if there has been no activity turn off led power
+   
 
+}
+
+/***********************************************************
+* 
+* updateActive
+* 
+***********************************************************/
+void TTUI::updateActive()
+{
+		if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB connected
+		{
+			//only update LCD every 300ms
+			int now = millis()/100; //100 ms 
+			int elapsed = now - activeRefreshTime;
+			
+			if(elapsed > 3)  //300ms
+			{
+				activeRefreshTime = now;
+				char printBuffer[9];
+				triggers[currentTrigger]->getModeMenu(printBuffer);
+				
+				clear();
+				setCursor(0,0);
+				print(printBuffer);
+			
+				triggers[currentTrigger]->getActiveMessage(printBuffer);
+				setCursor(0,1);
+				print(printBuffer);
+			}	
+		}
+	
 }
 
 /***********************************************************
@@ -169,13 +211,14 @@ void TTUI::initStart(unsigned long startTime)
 		Serial.println("Active");
 		#endif
 		
+		activeRefreshTime = startTime/100; //100ms
 		triggers[currentTrigger]->start(startTime); //set start time for the active trigger 
-	//	uiPowerOff();
+		//uiPowerOff();
 		
 	}
 	else if(trapActive_ == false) 
 	{
-	//	uiPowerOn();
+		//uiPowerOn();
 	}
 	
 
@@ -191,8 +234,8 @@ void TTUI::initStart(unsigned long startTime)
   {
     
     currentTrigger+=1; //mode button has been pressed, advance the mode option to next
-	currentTrigger = currentTrigger % 4;//TODO assign length based on number of objects triggers.length();
-	char printBuffer[10];
+	currentTrigger = currentTrigger % 5;//TODO assign length based on number of objects triggers.length();
+	char printBuffer[9];
 
 	triggers[currentTrigger]->getModeMenu(printBuffer);
 
@@ -203,13 +246,12 @@ void TTUI::initStart(unsigned long startTime)
 	//LCD
 	clear();
 	setCursor(0,0);
-	//command(0x80); 
 	print(printBuffer);
+
 
 	triggers[currentTrigger]->getSelectMenu(printBuffer);
 	
 	setCursor(0,1);
-	//command(0x80); 
 	print(printBuffer);
 	
 
@@ -222,7 +264,7 @@ void TTUI::initStart(unsigned long startTime)
 ***********************************************************/
   void TTUI::bttnSelect()
   {
-	char printBuffer[10];
+	char printBuffer[9];
 
 	triggers[currentTrigger]->incSelect(); //set sensor to next select mode
 	triggers[currentTrigger]->getSelectMenu(printBuffer); //load printBuffer with string to print
@@ -251,7 +293,7 @@ void TTUI::initStart(unsigned long startTime)
 void TTUI::bttnUp()
 {
 
-	char printBuffer[10];
+	char printBuffer[9];
 
 	//set the value title in line 1
 	triggers[currentTrigger]->getSelectMenu(printBuffer); //load printBuffer with string to print
@@ -279,7 +321,7 @@ void TTUI::bttnUp()
 ***********************************************************/
 void TTUI::bttnDown()
 {
-	char printBuffer[10];
+	char printBuffer[9];
 
 	//set the value title in line 1
 	triggers[currentTrigger]->getSelectMenu(printBuffer); //load printBuffer with string to print
@@ -313,23 +355,33 @@ void TTUI::bttnDown()
 ***********************************************************/
 void TTUI::uiPowerOn()
 {
-    if(state_UIPower == false)
+    if(state_UIPower == false) //if ui power off
     {
-      state_UIPower = true; 	
+     	 state_UIPower = true; 	
+		
+		  PORTB &= ~ (1<<PB6);        //digitalWrite(POWER_UI,LOW);
+	      //PORTB |= (1<<PB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
+		  touch.begin(KEY_CHANGE); 		//re init touch keys
+	      previousMillis_UIPower = millis();  //clock countdown start time
 
-	  #ifdef SERIAL_DEBUG
-	  Serial.println("UI Off");
-	  #endif
-      previousMillis_UIPower = millis();  //clock countdown start time
-
-	
-	  PORTB &= ~ (1<<PB6);        //digitalWrite(POWER_UI,LOW);
-      PORTB |= (1<<PB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
-      //init(1, A3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0);
+		  if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB connected
+		  {
+				 #ifdef SERIAL_DEBUG
+				  Serial.println("USB");
+				  #endif
+		  }
+		  else //battery power
+		  {
+	  
+      		//init(1, A3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0);
     
-	  //begin(8,2);	
-      //analogWrite (10, LCD_CONTRAST);
-  //    display(); //turn on LCD
+		  	//begin(8,2);	
+	      	//analogWrite (10, LCD_CONTRAST);
+	  		//    display(); //turn on LCD
+		   }
+		  #ifdef SERIAL_DEBUG
+		  Serial.println("UI On");
+		  #endif
     }
 }
 
@@ -340,25 +392,40 @@ void TTUI::uiPowerOn()
 ***********************************************************/
 void TTUI::uiPowerOff()
 {
-    if(state_UIPower == true)
-    {
-      state_UIPower = false; 	
-      PORTB |= (1<<PB6);	               //digitalWrite(POWER_UI,HIGH);
-      PORTB &= ~ (1<<PB7);              //digitalWrite(KEY_PAD_LEDS,LOW); // turn off keypad LEDs
-	 /*
-		digitalWrite(A3,LOW);
-		digitalWrite(5,LOW);
-		digitalWrite(6,LOW);
-		digitalWrite(7,LOW);
-		digitalWrite(8,LOW);
-		digitalWrite(9,LOW);
-		analogWrite (10, 0);
-	*/
+
+    if(state_UIPower == true) //power currently on
+    {	
+      state_UIPower = false; 
+      PORTB |= (1<<PB6);	               //digitalWrite(POWER_UI,HIGH); //turn off keypad
+	  detachInterrupt(1);	//disable the touch key interrupt
+
+		if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB connected
+		{
+			clear();
+			print("active");
+		}
+		else //battery power
+		{
+			PORTB &= ~ (1<<PB7);              //digitalWrite(KEY_PAD_LEDS,LOW); // turn off keypad LEDs
+		
+			 /* LCD SHUTDOWN
+				digitalWrite(A3,LOW);
+				digitalWrite(5,LOW);
+				digitalWrite(6,LOW);
+				digitalWrite(7,LOW);
+				digitalWrite(8,LOW);
+				digitalWrite(9,LOW);
+				analogWrite (10, 0);
+			*/
+		
+		    //     noDisplay(); //turn off LCD	
+		}
+	
 	  #ifdef SERIAL_DEBUG
-	  Serial.println("UI On");
+	  Serial.println("UI Off");
 	  #endif
 	 
- //     noDisplay(); //turn on LCD
+
     }
 }
 
@@ -417,6 +484,17 @@ void TTUI::uiPowerOff()
    // if(auxAdjState == 255){ auxAdjState = 0; }
 
   }
+
+void TTUI::printCmp(char newBuffer[], char oldBuffer[],int line)
+{
+	if( strcmp(newBuffer,oldBuffer) != 0)
+	{
+		print("        ");
+		setCursor(0,line);
+		print(newBuffer);
+	}
+	
+}
 
 /***********************************************************
 * 	   

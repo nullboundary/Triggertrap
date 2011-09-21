@@ -125,5 +125,21 @@ void Sound::getModeMenu(char buffer[])
 	 strcpy_P(buffer, soundMenu); 
 }
 
+/***********************************************************
+ * 
+ * getActiveMessage
+ *
+ * get the current sensors LCD message to print during trap Active mode.
+ * 
+ ***********************************************************/
+void Sound::getActiveMessage(char buffer[])
+{
+	buffer[0] = 0;
+	
+	itoa (sensorLevel(),buffer,10);
+	
+	
+}
+
 
 

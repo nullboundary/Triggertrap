@@ -45,7 +45,7 @@ const int TRIG_THRESHOLD = 2;	 //Select menu option 2.
 const int CAMERA_TRIGGER_A = 12;		// D12 = Digital out - Camera Trigger A
 const int CAMERA_TRIGGER_B = 13;		// D13 = Digital out - Camera Trigger B
 
-#define SERIAL_DEBUG //remove if you don't want serial statements
+//#define SERIAL_DEBUG //remove if you don't want serial statements
 
 class Trigger {
 
@@ -239,6 +239,16 @@ virtual void getSelectMenu(char buffer[]);
  * 
  ***********************************************************/
 virtual void getSettingMenu(char buffer[]);
+
+/***********************************************************
+ * 
+ * getActiveMessage
+ *
+ * get the current sensors LCD message to print during trap Active mode.
+ * 
+ ***********************************************************/
+virtual void getActiveMessage(char buffer[]);
+
 
 virtual void start(unsigned long startTime);
 

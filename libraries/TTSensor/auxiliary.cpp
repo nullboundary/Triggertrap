@@ -127,3 +127,19 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
 	 strcpy_P(buffer, auxMenu); 
 
   }
+
+/***********************************************************
+ * 
+ * getActiveMessage
+ *
+ * get the current sensors LCD message to print during trap Active mode.
+ * 
+ ***********************************************************/
+void Aux::getActiveMessage(char buffer[])
+{
+	buffer[0] = 0;
+	
+	itoa (sensorLevel(),buffer,10);
+	
+	
+}

@@ -99,13 +99,7 @@ int TimeLapse::countDown()
 	int elapsedTime = currentTime - startBttnTime/1000;
 	int remainTime = option(TIME_DELTA) - elapsedTime;
 	
-	/*
-	Serial.print("option: ");
-	Serial.println(option(TIME_DELTA));
-	
-	Serial.print("elapsedTime: ");
-	Serial.println(elapsedTime);
-	*/
+
 	return remainTime;
 
 }
@@ -197,4 +191,20 @@ void TimeLapse::getSelectMenu(char buffer[])
 {
 	 //reads the timeSelectMenu options from flash memory
 	 strcpy_P(buffer, (const prog_char *)pgm_read_word(&(timeSelectMenu[select_])));
+}
+
+/***********************************************************
+ * 
+ * getActiveMessage
+ *
+ * get the current sensors LCD message to print during trap Active mode.
+ * 
+ ***********************************************************/
+void TimeLapse::getActiveMessage(char buffer[])
+{
+	buffer[0] = 0;
+	
+	itoa (countDown(),buffer,10);
+	
+	
 }

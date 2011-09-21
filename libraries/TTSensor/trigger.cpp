@@ -32,6 +32,8 @@
 
 #include "trigger.h"
 
+//default active status message
+const prog_char activeMessage[] PROGMEM= {"Armed"};
 
  //Option Menu default
  const prog_char trigType[] PROGMEM="type";
@@ -190,9 +192,12 @@ void Trigger::shutter(boolean noDelay)
 		{
 			shotCounter_++; 
 			shutterReady = false; 
+			
+		
 	
 			if(cameraA_ == true) //use cameraA?
 			{
+				PORTB |= (1<<PB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
 				shutterDelay = millis();
 				shutterStateA_ = true;
 				digitalWrite(CAMERA_TRIGGER_A,LOW); //trigger camera
@@ -204,6 +209,7 @@ void Trigger::shutter(boolean noDelay)
 	
 			if(cameraB_ == true) //or use CameraB?
 			{
+				PORTB |= (1<<PB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
 				shutterDelay = millis(); 
 				shutterStateB_ == true;
 			 	digitalWrite(CAMERA_TRIGGER_B,LOW);
@@ -450,6 +456,8 @@ void Trigger::resetShutter()
 		Serial.println("clear");
 		#endif
 		
+		
+		PORTB &= ~ (1<<PB7);        //digitalWrite(KEY_PAD_LEDS,LOW); //turn off led
 		shutterStateA_ = false;
 		digitalWrite(CAMERA_TRIGGER_A,HIGH);
 		shutterStateB_ = false; 
@@ -493,6 +501,11 @@ void Trigger::resetShutter()
   {
 		//	strcpy_P(buffer, (char*)pgm_read_word(&(menu))); 
   }
+
+  void Trigger::getActiveMessage(char buffer[])
+{
+	strcpy_P(buffer,activeMessage); //default active message
+}
 
 /***********************************************************
  * 

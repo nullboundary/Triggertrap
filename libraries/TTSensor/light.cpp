@@ -46,9 +46,6 @@ int const LIGHT_CHANGE_MODE = 2;
 	setOption(TRIG_TYPE,0);
 	setOption(1,0);
 	setOption(2,0);
- //   threshold_ = 0;
-//	delay_ = 0;
-//	type_ = 0;
 	select_ = 0; 
     sensorPin_ = AMBIENT_LIGHT_SENSOR;
 
@@ -126,3 +123,19 @@ int const LIGHT_CHANGE_MODE = 2;
 	 strcpy_P(buffer, lightMenu); 
 
   }
+
+/***********************************************************
+ * 
+ * getActiveMessage
+ *
+ * get the current sensors LCD message to print during trap Active mode.
+ * 
+ ***********************************************************/
+void Light::getActiveMessage(char buffer[])
+{
+	buffer[0] = 0;
+	
+	itoa (sensorLevel(),buffer,10);
+	
+	
+}

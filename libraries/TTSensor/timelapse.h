@@ -95,6 +95,8 @@ public:
  * 
  ***********************************************************/
 	void getSelectMenu(char buffer[]);
+	
+	void getActiveMessage(char buffer[]);
 
 private:
 

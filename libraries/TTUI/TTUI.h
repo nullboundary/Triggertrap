@@ -31,7 +31,7 @@
 #ifndef TTTUI_H
 #define TTUI_H
 
-#include <LiquidCrystal.h>
+#include <LiquidCrystalFast.h>
 #include <AtTouch.h>
 #include <TTSensor.h>
 #include <WProgram.h>
@@ -48,12 +48,12 @@ const byte KEY_PAD_LEDS = PORTB7;				// D4 = Digital out - LED on keypad
 const byte START_BUTTON = 2;				// D2 = Digital in - Start button 
 const byte KEY_CHANGE = 3;				// D3 = Digital in - key change interrupt for touch ic
 
-const int LCD_CONTRAST = 45; 
+const int LCD_CONTRAST = 60; 
 const unsigned int UI_SLEEP_MS = 30000; //time before leds and screen turn off, with no activity
 
 extern "C" void startHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
 
-class TTUI: public LiquidCrystal {
+class TTUI: public LiquidCrystalFast {
 
 
 public:
@@ -70,7 +70,7 @@ friend void startHandler(void); //make the ISR routine a friend of this class
  * pass every Trigger object to the UI
  * 
  ***********************************************************/
-void setup(Trigger& laser, Trigger& sound, Trigger& light, Trigger& timeLapse );
+void setup(Trigger& laser, Trigger& sound, Trigger& light, Trigger& timeLapse, Trigger& aux );
 
 /***********************************************************
  * 
@@ -80,6 +80,15 @@ void setup(Trigger& laser, Trigger& sound, Trigger& light, Trigger& timeLapse );
  * 
  ***********************************************************/
 void update();
+
+/***********************************************************
+ * 
+ * updateActive
+ *
+ * handles update when the trap is active
+ * 
+ ***********************************************************/
+void updateActive();
 
 /***********************************************************
  * 
@@ -112,7 +121,11 @@ private:
 	  AtTouch touch;  //touch sensor library object
 	
 	  Trigger *triggers[5]; //array of trigger object pointers
+	
+	  //char lcdBufferLine1[9];
+	  //char lcdBufferLine2[9];
 
+	  int activeRefreshTime;
 	  unsigned long 	previousMillis_UIPower; //time counter for powering down the leds and screen
 	  
 	  boolean state_UIPower;	//UI power on, or off flag
@@ -199,7 +212,7 @@ private:
  ***********************************************************/
 	void restoreSettings();
 	
-	
+void printCmp(char newBuffer[], char oldBuffer[],int line);
 	/***********************************************************
 	 * 
 	 * initStart

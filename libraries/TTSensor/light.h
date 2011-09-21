@@ -63,6 +63,8 @@ public:
 
 
 	void getModeMenu(char buffer[]);
+	
+	void getActiveMessage(char buffer[]);
 
 private:
 
