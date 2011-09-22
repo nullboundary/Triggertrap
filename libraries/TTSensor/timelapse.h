@@ -67,7 +67,7 @@ public:
  *  increment the value of the selected option setting
  * 
  ***********************************************************/
-	void incSetting(char buffer[]);
+	void incSetting(char buffer[],int inc);
 
 /***********************************************************
  * 
@@ -76,7 +76,7 @@ public:
  *  decrement the value of the selected option setting
  * 
  ***********************************************************/
-	void decSetting(char buffer[]);
+	void decSetting(char buffer[],int dec);
 	
 /***********************************************************
  * 

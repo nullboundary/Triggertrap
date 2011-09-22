@@ -31,8 +31,8 @@
 #include "sound.h"
 
 const int SOUND_IN = A7;
-int const SOUND_START_MODE = 0;
-int const SOUND_STOP_MODE = 1;
+int const SOUND_RISE_MODE = 0;
+int const SOUND_FALL_MODE = 1;
 int const SOUND_CHANGE_MODE = 2;
 
 //Menu Sensor Strings
@@ -42,11 +42,12 @@ int const SOUND_CHANGE_MODE = 2;
 
   Sound::Sound() 
   {
-    triggerState_ = 0; //off
+    triggerState_ = false; //off
  //   threshold_ = 0;
 	setOption(TRIG_TYPE,0);
 	setOption(1,0);
 	setOption(2,0);
+	
 //	type_ = 0;
 //	delay_ = 0;
 	select_ = 0; 
@@ -68,13 +69,13 @@ int const SOUND_CHANGE_MODE = 2;
 
     switch (option(TRIG_TYPE))
     {
-    case SOUND_START_MODE:
+    case SOUND_RISE_MODE:
 
-      soundStatus = high();
+      soundStatus = rise();
       break;
-    case SOUND_STOP_MODE:
+    case SOUND_FALL_MODE:
 
-      soundStatus = low();
+      soundStatus = fall();
       break;
     case SOUND_CHANGE_MODE:
 

@@ -73,7 +73,7 @@ public:
 
 //	void getSelectMenu(char buffer[]);
 
-//	void getSettingMenu(char buffer[]);
+	void getSettingMenu(char buffer[]);
 
 private:
 	

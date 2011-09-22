@@ -107,14 +107,16 @@ void TTUI::update()
 {
 	
 	boolean keyDown = false;
-	int hitKeyVal;
+	boolean hold = false; 
+	int hitKeyVal = 0;
   
 	if(trapActive_ == false) //waiting for UI input
 	{
 
   	 	if(touch.hold() == true) //press and hold
 		  {
-			keyDown = true; 
+			keyDown = true;
+			hold = true;  
 			hitKeyVal = touch.getKey();
 		  }
 
@@ -141,10 +143,10 @@ void TTUI::update()
 			        bttnSelect();		
 			        break;
 			      case DOWN_BTTN:
-			        bttnDown(); 
+			        bttnDown(hold); 
 			        break;
 			      case UP_BTTN:
-			        bttnUp();
+			        bttnUp(hold);
 			        break;
 			      default: //no default option, just here for compiler
 			        break;
@@ -218,7 +220,22 @@ void TTUI::initStart(unsigned long startTime)
 	}
 	else if(trapActive_ == false) 
 	{
+		char printBuffer[9];
+		
 		//uiPowerOn();
+		//restore screen to so current select menu and value, better to show mode+select?
+		//set the value title in line 1
+		triggers[currentTrigger]->getSelectMenu(printBuffer); //load printBuffer with string to print
+		clear();
+		setCursor(0,0);
+		print(printBuffer);
+
+
+		triggers[currentTrigger]->incSetting(printBuffer,0); //increment the current selected value, pass char buffer
+
+		//set the value in line 2	
+		setCursor(0,1);
+		print(printBuffer);
 	}
 	
 
@@ -290,10 +307,18 @@ void TTUI::initStart(unsigned long startTime)
 * bttnUp
 * 
 ***********************************************************/
-void TTUI::bttnUp()
+void TTUI::bttnUp(boolean hold)
 {
 
 	char printBuffer[9];
+	int incVal = 1; 
+	
+	if(hold == true)
+	{
+		//speed up increment if held down for a long time
+		unsigned long holdTime = millis() - touch.getStartTime();
+		if(holdTime > 10000) { incVal = 5; } //increase after 10sec
+	}	
 
 	//set the value title in line 1
 	triggers[currentTrigger]->getSelectMenu(printBuffer); //load printBuffer with string to print
@@ -301,8 +326,8 @@ void TTUI::bttnUp()
 	setCursor(0,0);
 	print(printBuffer);
 
-
-	triggers[currentTrigger]->incSetting(printBuffer); //increment the current selected value, pass char buffer
+	
+	triggers[currentTrigger]->incSetting(printBuffer,incVal); //increment the current selected value, pass char buffer
 
 	//set the value in line 2	
 	setCursor(0,1);
@@ -319,9 +344,17 @@ void TTUI::bttnUp()
 * bttnUp
 * 
 ***********************************************************/
-void TTUI::bttnDown()
+void TTUI::bttnDown(boolean hold)
 {
 	char printBuffer[9];
+	int decVal = 1; 
+	
+	if(hold == true)
+	{
+		//speed up increment if held down for a long time
+		unsigned long holdTime = millis() - touch.getStartTime();
+		if(holdTime > 10000) { decVal = 5; } //increase after 10sec
+	}
 
 	//set the value title in line 1
 	triggers[currentTrigger]->getSelectMenu(printBuffer); //load printBuffer with string to print
@@ -331,7 +364,7 @@ void TTUI::bttnDown()
 
 
 	
-	triggers[currentTrigger]->decSetting(printBuffer); //increment the current selected value, pass char buffer
+	triggers[currentTrigger]->decSetting(printBuffer,decVal); //increment the current selected value, pass char buffer
 
 	//set the value in line 2	
 	setCursor(0,1);
@@ -506,12 +539,12 @@ void startHandler(void)
 	  //maybe most of this stuff should happen in loop? (speed ok..but maybe better outside?)
 	  unsigned long currentTime = millis();
 	  // debounce that button! 
-	  if (currentTime - TTUI::pTTUI->prevIntTime > 200)
+	  if (currentTime - TTUI::pTTUI->prevIntTime > 130) //debounce 130ms
 	  {
 	    //TTUI::pTTUI->trapActive_ = 	!TTUI::pTTUI->trapActive_;
-		TTUI::pTTUI->initStart(millis());
+		TTUI::pTTUI->initStart(currentTime);
 	  }
-	  TTUI::pTTUI->prevIntTime = currentTime;
+	    TTUI::pTTUI->prevIntTime = currentTime;
 	
 	
 	

@@ -104,7 +104,7 @@ void setOption(int menuOption,unsigned int value);
  * increment the value of a menu option for this object +1. 
  * 
  ***********************************************************/
-void incOption(int menuOption, unsigned int maxValue);
+void incOption(int menuOption, unsigned int maxValue,int inc=1);
 
 /***********************************************************
  * 
@@ -113,7 +113,7 @@ void incOption(int menuOption, unsigned int maxValue);
  * decrement the value of a menu option for this object -1. 
  * 
  ***********************************************************/
-void decOption(int menuOption, unsigned int maxValue);
+void decOption(int menuOption, unsigned int maxValue,int dec=1);
 
 /***********************************************************
  * 
@@ -159,7 +159,7 @@ void shutter(boolean noDelay=false);
  * if trigger just went high, trigger the camera. (return true)
  * 
  ***********************************************************/
-virtual boolean high();
+virtual boolean rise();
 /***********************************************************
  * 
  * low
@@ -167,7 +167,7 @@ virtual boolean high();
  * if trigger just went low, trigger the camera. (return true)
  * 
  ***********************************************************/
-virtual boolean low();
+virtual boolean fall();
 /***********************************************************
  * 
  * change
@@ -184,7 +184,7 @@ virtual boolean change();
  * go to the next Select menu string, pass in a char array for printing
  * 
  ***********************************************************/
-virtual void incSetting(char buffer[]);
+virtual void incSetting(char buffer[], int inc=1);
 
 /***********************************************************
  * 
@@ -193,7 +193,7 @@ virtual void incSetting(char buffer[]);
  * go to the previous Select menu string, pass in a char array for printing
  * 
  ***********************************************************/
-virtual void decSetting(char buffer[]);
+virtual void decSetting(char buffer[], int dec=1);
 
 /***********************************************************
  * 
@@ -276,6 +276,7 @@ protected:
   boolean cameraB_; //camera B on
   boolean shutterReady; //trigger is ready, take a picture
 
+
   unsigned long shutterDelay; //keep track of the time the shutter has been low
   unsigned long delayCount; //when trigger is ready, start counting, till delay time is up
   unsigned long startBttnTime; //the time when the start button is pressed. 
@@ -283,6 +284,7 @@ protected:
 private:
 	
   unsigned int optionValues[5];
+ 
 	
  
 

@@ -36,7 +36,7 @@
 #include <TTSensor.h>
 #include <WProgram.h>
 
-#define SERIAL_DEBUG  //do you want status messages printed to serial? 
+//#define SERIAL_DEBUG  //do you want status messages printed to serial? 
 
 byte const MODE_BTTN = 2; //mode bttn address
 byte const SELECT_BTTN = 3;//select bttn address
@@ -156,7 +156,7 @@ private:
  * increments the selected option value
  * 
  ***********************************************************/
-	void bttnUp();
+	void bttnUp(boolean hold);
 
 /***********************************************************
  * 
@@ -165,7 +165,7 @@ private:
  * decrements the selected option value
  * 
  ***********************************************************/
-	void bttnDown();
+	void bttnDown(boolean hold);
 
 /***********************************************************
  * 

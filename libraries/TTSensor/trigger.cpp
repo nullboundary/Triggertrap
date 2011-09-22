@@ -49,15 +49,14 @@ trigThreshold,
 
 
  //Value setting titles for values that are not just numbers (ex. type option)
- const prog_char onMake[] PROGMEM="On Make";
- const prog_char onBreak[] PROGMEM="On Break";	
+ const prog_char onRise[] PROGMEM="On Rise";
+ const prog_char onFall[] PROGMEM="On Fall";	
  const prog_char onChange[] PROGMEM="On Chnge";
- const prog_char updown[] PROGMEM="^v";	
+
 
  const prog_char * settingMenu[] PROGMEM  = 	   // select menu options
 {   
-onMake,onBreak,onChange,
-updown
+onRise,onFall,onChange
 };
 
 
@@ -129,10 +128,10 @@ void Trigger::setOption(int menuOption,unsigned int value)
  * 
  * 
  ***********************************************************/
-void Trigger::incOption(int menuOption, unsigned int maxValue)
+void Trigger::incOption(int menuOption, unsigned int maxValue, int inc)
 {
 	unsigned int mOpt = optionValues[menuOption];
-	mOpt++;
+	mOpt=mOpt+inc;
 	if(mOpt > maxValue) { mOpt = 0; } //limits
 
 	optionValues[menuOption] = mOpt;
@@ -145,10 +144,10 @@ void Trigger::incOption(int menuOption, unsigned int maxValue)
  * 
  * 
  ***********************************************************/
-void Trigger::decOption(int menuOption, unsigned int maxValue)
+void Trigger::decOption(int menuOption, unsigned int maxValue, int dec)
 {
 	unsigned int mOpt = optionValues[menuOption];
-	mOpt--;
+	mOpt=mOpt-dec;
 	if(mOpt > maxValue) { mOpt = maxValue; }  //limits, unsigned so < 0 is 65535
 
 	optionValues[menuOption] = mOpt;
@@ -225,12 +224,12 @@ void Trigger::shutter(boolean noDelay)
 
 /***********************************************************
  * 
- * high
+ * rise
  *
  * if trigger just went high, trigger the camera. (return true)
  * 
  ***********************************************************/
-boolean Trigger::high()
+boolean Trigger::rise()
 {
     boolean changed = change();
 
@@ -255,12 +254,12 @@ boolean Trigger::high()
 
 /***********************************************************
  * 
- * low
+ * fall
  *
  * if sensor just went low, trigger the camera. (return true)
  * 
  ***********************************************************/
-   boolean Trigger::low()
+   boolean Trigger::fall()
   {
     boolean changed = change();
 
@@ -301,12 +300,12 @@ boolean Trigger::change()
     //state is high, or state is low, depending on change above or below threshold
     if(sensorLevel_ > threshold)  //true above
     {
-	
-      state = true; 
+	      	state = true; 
+		  
     }
     else if(sensorLevel_ <= threshold) //false below
     {
-      state = false; 
+	      	state = false; 
     }
 
     //trigger either on or off, not measuring soundValue
@@ -329,23 +328,23 @@ boolean Trigger::change()
  * 
  * 
  ***********************************************************/
-void Trigger::decSetting(char buffer[])
+void Trigger::decSetting(char buffer[], int dec)
 {
 
 	
 		switch (select_)
 	    {
 	     case TRIG_TYPE:
-	 	  decOption(TRIG_TYPE, 2);
+	 	  decOption(TRIG_TYPE, 2,dec);
 		  getSettingMenu(buffer); 
 	      break;
 	    case TRIG_DELAY:
-	      decOption(TRIG_DELAY, 54000);
+	      decOption(TRIG_DELAY, 54000,dec);
 	      formatTimeString(option(TRIG_DELAY),buffer);
 	 	  //itoa (option(TRIG_DELAY),buffer,10);
 	      break;
 	    case TRIG_THRESHOLD:
-	      decOption(TRIG_THRESHOLD, 255); 
+	      decOption(TRIG_THRESHOLD, 255,dec); 
 		  formatThresholdString(option(TRIG_THRESHOLD),buffer);
 	      break;
 	    default: 
@@ -361,23 +360,23 @@ void Trigger::decSetting(char buffer[])
  * 
  * 
  ***********************************************************/
-void Trigger::incSetting(char buffer[])
+void Trigger::incSetting(char buffer[], int inc)
 {
 	
 	
 		switch (select_)
 	    {
 	     case TRIG_TYPE:
-	 	  incOption(TRIG_TYPE, 2);
+	 	  incOption(TRIG_TYPE, 2,inc);
 		  getSettingMenu(buffer); 
 	      break;
 	    case TRIG_DELAY:
-	      incOption(TRIG_DELAY, 54000);
+	      incOption(TRIG_DELAY, 54000,inc);
 		  formatTimeString(option(TRIG_DELAY),buffer);
 	 	  //itoa (option(TRIG_DELAY),buffer,10);
 	      break;
 	    case TRIG_THRESHOLD:
-	      incOption(TRIG_THRESHOLD, 255); 
+	      incOption(TRIG_THRESHOLD, 255,inc); 
 		  formatThresholdString(option(TRIG_THRESHOLD),buffer);
 	      break;
 	    default: 

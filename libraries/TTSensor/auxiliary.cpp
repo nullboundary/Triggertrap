@@ -31,8 +31,8 @@
 #include "auxiliary.h"
 
 const int AUX = A2;  //Aux Pin
-int const AUX_START_MODE = 0;
-int const AUX_STOP_MODE = 1;
+int const AUX_RISE_MODE = 0;
+int const AUX_FALL_MODE = 1;
 int const AUX_CHANGE_MODE = 2;
 
 //Mode Menu Listing
@@ -46,7 +46,7 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
 
   Aux::Aux() 
   {
-    triggerState_ = 0; //off
+    triggerState_ = false; //off
 	setOption(TRIG_TYPE,0);
 	setOption(1,0);
 	setOption(2,0);
@@ -73,13 +73,13 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
 
     switch (option(TRIG_TYPE))
     {
-    case AUX_START_MODE:
+    case AUX_RISE_MODE:
 
-      auxStatus = high();
+      auxStatus = rise();
       break;
-    case AUX_STOP_MODE:
+    case AUX_FALL_MODE:
 
-      auxStatus = low();
+      auxStatus = fall();
       break;
     case AUX_CHANGE_MODE:
 

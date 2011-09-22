@@ -54,6 +54,8 @@ void AtTouch::begin(int interruptPin){
   keyHit = false; 
   holdDown_ = false;
   startTime = 0;
+  holdRefreshInterval = 1; //1 for 100ms 1000ms/100 = 10 so 100ms/100 = 1
+	
 
   Wire.begin(); 
 
@@ -80,6 +82,16 @@ boolean AtTouch::hit()
   
   return keyHit;
 }  
+
+unsigned long AtTouch::getStartTime()
+{
+	return startTime;	
+}
+
+void AtTouch::setRefreshSpeed(int intervalMilSec)
+{
+	holdRefreshInterval = intervalMilSec/100;
+}
 
 void AtTouch::update()
 {
@@ -178,17 +190,29 @@ boolean AtTouch::hold()
   {
 	  unsigned long elapsedTime = millis() - startTime;
 
-	  if (elapsedTime >= 1100) //interval time as passed
+	  if (elapsedTime >= 1100) //hold interval time has passed
 	  {
 		
-		return true; 
+		unsigned int holdRefreshTime = millis()/100 - updateTime;
+		
+		if(holdRefreshTime >= holdRefreshInterval) //restrict update 100ms refresh
+		{
+			updateTime = millis()/100; //divide by 100, lose some precision, 100ms minimum
+			return true;
+		}
+		else //don't update too fast
+		{
+			return false; 
+		}
+		
+		 
 	  }
-	  else
+	  else //haven't held down long enough
 	  {
 		return false;
 	  }
    }
-   else
+   else //not holding down at all
    {
 	    return false; 
    }	

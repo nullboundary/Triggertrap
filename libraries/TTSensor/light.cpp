@@ -31,8 +31,8 @@
 #include "light.h"
 
 const int AMBIENT_LIGHT_SENSOR = A0;
-int const LIGHT_START_MODE = 0;
-int const LIGHT_STOP_MODE = 1;
+int const LIGHT_RISE_MODE = 0;
+int const LIGHT_FALL_MODE = 1;
 int const LIGHT_CHANGE_MODE = 2;
 
 //Menu Sensor Strings
@@ -42,7 +42,7 @@ int const LIGHT_CHANGE_MODE = 2;
 
   Light::Light() 
   {
-    triggerState_ = 0; //off
+    triggerState_ = false; //off
 	setOption(TRIG_TYPE,0);
 	setOption(1,0);
 	setOption(2,0);
@@ -63,18 +63,18 @@ int const LIGHT_CHANGE_MODE = 2;
   {
     boolean lightStatus = false;
 
-	resetShutter(); //10 millisec delay, between high and low
+	shutter(); 
 	
 
     switch (option(TRIG_TYPE))
     {
-    case LIGHT_START_MODE:
+    case LIGHT_RISE_MODE:
 
-      lightStatus = high();
+      lightStatus = rise();
       break;
-    case LIGHT_STOP_MODE:
+    case LIGHT_FALL_MODE:
 
-      lightStatus = low();
+      lightStatus = fall();
       break;
     case LIGHT_CHANGE_MODE:
 

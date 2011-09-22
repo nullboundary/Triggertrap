@@ -49,6 +49,8 @@ public:
   int readActiveKey(); 
   
   boolean hit();
+  void setRefreshSpeed(int intervalMilSec);
+  unsigned long getStartTime();
   int getKey();
   void update();
   boolean hold();
@@ -64,7 +66,8 @@ private:
   byte activeKey_; //the current key num pressed
   volatile boolean holdDown_; //is the button held down, or just pressed
   volatile unsigned long startTime; //the press and hold startTime
-
+  unsigned int updateTime; //for setting the pace of hold updates
+  unsigned int holdRefreshInterval; 
 
 };
 

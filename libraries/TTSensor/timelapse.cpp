@@ -29,7 +29,7 @@ const int TIME_NUMSHOTS = 2;
  ***********************************************************/
 TimeLapse::TimeLapse(){
 	
-	    triggerState_ = 0; //off
+	    triggerState_ = false; //off
 
 		setOption(TIME_DELTA,0);    //set time delta to 0
 		setOption(TIME_DELAY,0);    //set time delay to 0
@@ -111,22 +111,22 @@ int TimeLapse::countDown()
  *  
  * 
  ***********************************************************/
-void TimeLapse::decSetting(char buffer[])
+void TimeLapse::decSetting(char buffer[],int dec)
 {
 
 	
 		switch (select_)
 	    {
 	     case TIME_DELAY:
-	 	  decOption(TIME_DELAY, 54000); //max secs
+	 	  decOption(TIME_DELAY, 54000,dec); //max secs
 		   formatTimeString(option(TIME_DELAY),buffer); //format and save string in buffer
 	      break;
 	    case TIME_DELTA:
-	      decOption(TIME_DELTA, 54000);
+	      decOption(TIME_DELTA, 54000,dec);
 	 	  formatTimeString(option(TIME_DELTA),buffer);
 	      break;
 	    case TIME_NUMSHOTS:
-	      decOption(TIME_NUMSHOTS, 50000); 
+	      decOption(TIME_NUMSHOTS, 50000,dec); 
 		  utoa (option(TIME_NUMSHOTS),buffer,10);
 	      break;
 	    default: 
@@ -142,22 +142,22 @@ void TimeLapse::decSetting(char buffer[])
  * 
  * 
  ***********************************************************/
-void TimeLapse::incSetting(char buffer[])
+void TimeLapse::incSetting(char buffer[],int inc)
 {
 	
 	
 		switch (select_)
 	    {
 	     case TIME_DELAY:
-	 	   incOption(TIME_DELAY, 54000); //max secs
+	 	   incOption(TIME_DELAY, 54000,inc); //max secs
 		   formatTimeString(option(TIME_DELAY),buffer); 
 	      break;
 	    case TIME_DELTA:
-	      incOption(TIME_DELTA, 54000);
+	      incOption(TIME_DELTA, 54000,inc);
 	 	  formatTimeString(option(TIME_DELTA),buffer);
 	      break;
 	    case TIME_NUMSHOTS:
-	      incOption(TIME_NUMSHOTS, 50000); 
+	      incOption(TIME_NUMSHOTS, 50000,inc); 
 		  utoa (option(TIME_NUMSHOTS),buffer,10);
 	      break;
 	    default: 

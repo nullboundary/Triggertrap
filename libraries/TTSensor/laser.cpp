@@ -40,6 +40,16 @@ int const CHANGE_LASER_MODE = 2;
    //Mode Menu Listing
    const prog_char laserMenu[] PROGMEM= {"Laser"};
 
+ const prog_char onMake[] PROGMEM="On Make";
+ const prog_char onBreak[] PROGMEM="On Break";	
+ const prog_char onChange[] PROGMEM="On Chnge";
+
+
+ const prog_char * laserSettingMenu[] PROGMEM  = 	   // select menu options
+{   
+onMake,onBreak,onChange
+};
+
   Laser::Laser() 
   {
     triggerState_ = 0; //off
@@ -70,11 +80,11 @@ int const CHANGE_LASER_MODE = 2;
     {
     case MAKE_LASER_MODE:
 
-      laserStatus = high();
+      laserStatus = rise();
       break;
     case BREAK_LASER_MODE:
 
-      laserStatus = low();
+      laserStatus = fall();
       break;
     case CHANGE_LASER_MODE:
 
@@ -125,6 +135,11 @@ void Laser::getModeMenu(char buffer[])
 {
 	 strcpy_P(buffer, laserMenu); 
 	
+}
+
+void Laser::getSettingMenu(char buffer[])
+{
+	strcpy_P(buffer, (const prog_char *)pgm_read_word(&(laserSettingMenu[option(TRIG_TYPE)]))); 
 }
 
 /***********************************************************
