@@ -49,44 +49,38 @@
   void TTUI::setup(Trigger& laser, Trigger& sound, Trigger& light,Trigger& timeLapse, Trigger& aux)
   {
 
+	//set triggers into array
 	triggers[0] = &laser;
 	triggers[1] = &sound;
 	triggers[2] = &light;
 	triggers[3] = &timeLapse;
 	triggers[4] = &aux;
+	
+	trapActive_ = false; 	
+	currentTrigger = 0;
 
-			
-
+	//configure start button
 	pinMode(START_BUTTON, INPUT);       // Start Button
     digitalWrite(START_BUTTON, HIGH);   // turn on pullup resistor for Start button
 	attachInterrupt(0,startHandler,FALLING); //trigger ISR function on start button press.
 	
+	//set UI Power
 	 DDRB |= (1<<PB7);   //pinMode(KEY_PAD_LEDS, OUTPUT);      // LED on UI
 	 DDRB |= (1<<PB6);   //pinMode(POWER_UI,OUTPUT);
 	 state_UIPower = false; 
 	 uiPowerOn(); //turn on power at startup
-
+	 previousMillis_UIPower = 0; 
+     touch.begin(KEY_CHANGE);  //init touch UI with key change interrupt
 	 
 
     //restoreSettings(); //restore all menu settings from eeprom
 
-    previousMillis_UIPower = 0; 
-    touch.begin(KEY_CHANGE);  //init touch UI with key change interrupt
-   
-	trapActive_ = false; 	
-	currentTrigger = 0;
-
 	//LCD Stuff
 	TCCR1B = TCCR1B & 0b11111000 | 0x01; //-- sets the pwm base
-	// initialize the library with the numbers of the interface pins
-//	pinMode (4, OUTPUT); // RW Pin 
-//	digitalWrite (4, LOW); // ouput low - slow mode - write delay
 	pinMode (10, OUTPUT); // lcd contrast output 
 	analogWrite (10, LCD_CONTRAST); // ouput low pwm - negative voltage...
 
 	//this class inherits from LCD, so call lcd functions as part of this class
-	// set up the LCD's number of columns and rows:
-	
     begin(8, 2);
   	// Print a message to the LCD.
   	print("Trigger");
@@ -114,45 +108,43 @@ void TTUI::update()
 	{
 
   	 	if(touch.hold() == true) //press and hold
-		  {
+		{
 			keyDown = true;
 			hold = true;  
 			hitKeyVal = touch.getKey();
-		  }
+		}
 
-  
-
-		   if(touch.hit() == true) //just press
-			{ 
-		   	 keyDown = true;
-			 hitKeyVal = touch.readActiveKey(); //read which key was hit
-			} 
+		if(touch.hit() == true) //just press
+		{ 
+	   	 	keyDown = true;
+		 	hitKeyVal = touch.readActiveKey(); //read which key was hit
+		} 
 	
 
-			//call a specific function based on which key is pressed
-		    if(keyDown == true)
-		   {
-			  previousMillis_UIPower = millis(); //time key was active
-			  keyDown = false;
-		      switch (hitKeyVal)
-		      {		
-		      	  case MODE_BTTN:
-			        bttnMode();
-			        break;
-			      case SELECT_BTTN:
-			        bttnSelect();		
-			        break;
-			      case DOWN_BTTN:
-			        bttnDown(hold); 
-			        break;
-			      case UP_BTTN:
-			        bttnUp(hold);
-			        break;
-			      default: //no default option, just here for compiler
-			        break;
-		      }
+		//call a specific function based on which key is pressed
+	    if(keyDown == true)
+	    {
+		  previousMillis_UIPower = millis(); //time key was active
+		  keyDown = false;
+	      switch (hitKeyVal)
+	      {		
+	      	  case MODE_BTTN:
+		        bttnMode();
+		        break;
+		      case SELECT_BTTN:
+		        bttnSelect();		
+		        break;
+		      case DOWN_BTTN:
+		        bttnDown(hold); 
+		        break;
+		      case UP_BTTN:
+		        bttnUp(hold);
+		        break;
+		      default: //no default option, just here for compiler
+		        break;
+	      }
 
-		    }
+	    }
 		
 		 //uiPowerTimeOut(); //if there has been no activity turn off led power
 		
@@ -182,13 +174,12 @@ void TTUI::updateActive()
 			if(elapsed > 3)  //300ms
 			{
 				activeRefreshTime = now;
-				char printBuffer[9];
-				triggers[currentTrigger]->getModeMenu(printBuffer);
 				
 				clear();
-				setCursor(0,0);
-				print(printBuffer);
+				
+				printMode(0);
 			
+				char printBuffer[9];
 				triggers[currentTrigger]->getActiveMessage(printBuffer);
 				setCursor(0,1);
 				print(printBuffer);
@@ -220,22 +211,14 @@ void TTUI::initStart(unsigned long startTime)
 	}
 	else if(trapActive_ == false) 
 	{
-		char printBuffer[9];
-		
+	
 		//uiPowerOn();
 		//restore screen to so current select menu and value, better to show mode+select?
 		//set the value title in line 1
-		triggers[currentTrigger]->getSelectMenu(printBuffer); //load printBuffer with string to print
 		clear();
-		setCursor(0,0);
-		print(printBuffer);
+		printSelect(0);
+		printInc(1,0); //inc 0 so just display
 
-
-		triggers[currentTrigger]->incSetting(printBuffer,0); //increment the current selected value, pass char buffer
-
-		//set the value in line 2	
-		setCursor(0,1);
-		print(printBuffer);
 	}
 	
 
@@ -252,25 +235,10 @@ void TTUI::initStart(unsigned long startTime)
     
     currentTrigger+=1; //mode button has been pressed, advance the mode option to next
 	currentTrigger = currentTrigger % 5;//TODO assign length based on number of objects triggers.length();
-	char printBuffer[9];
-
-	triggers[currentTrigger]->getModeMenu(printBuffer);
-
-	#ifdef SERIAL_DEBUG
-	Serial.println(printBuffer);
-	#endif
 	
-	//LCD
 	clear();
-	setCursor(0,0);
-	print(printBuffer);
-
-
-	triggers[currentTrigger]->getSelectMenu(printBuffer);
-	
-	setCursor(0,1);
-	print(printBuffer);
-	
+	printMode(0);
+	printSelect(1);
 
   }
 
@@ -284,22 +252,11 @@ void TTUI::initStart(unsigned long startTime)
 	char printBuffer[9];
 
 	triggers[currentTrigger]->incSelect(); //set sensor to next select mode
-	triggers[currentTrigger]->getSelectMenu(printBuffer); //load printBuffer with string to print
 	
-	#ifdef SERIAL_DEBUG
-	Serial.println(printBuffer);
-	#endif
-	
-	//LCD
 	clear();
-	setCursor(0,1);
-	print(printBuffer);
-
-	triggers[currentTrigger]->getModeMenu(printBuffer);
+	printMode(0);
+	printSelect(1);
 	
-	setCursor(0,0);
-	print(printBuffer);
-
   }
 
 /***********************************************************
@@ -309,33 +266,19 @@ void TTUI::initStart(unsigned long startTime)
 ***********************************************************/
 void TTUI::bttnUp(boolean hold)
 {
-
-	char printBuffer[9];
 	int incVal = 1; 
 	
 	if(hold == true)
 	{
 		//speed up increment if held down for a long time
 		unsigned long holdTime = millis() - touch.getStartTime();
-		if(holdTime > 10000) { incVal = 5; } //increase after 10sec
+		if(holdTime > 5000) { incVal = 5; } //increase after 5sec
+		if(holdTime > 15000) { incVal = 10; } //increase after 15sec
 	}	
 
-	//set the value title in line 1
-	triggers[currentTrigger]->getSelectMenu(printBuffer); //load printBuffer with string to print
 	clear();
-	setCursor(0,0);
-	print(printBuffer);
-
-	
-	triggers[currentTrigger]->incSetting(printBuffer,incVal); //increment the current selected value, pass char buffer
-
-	//set the value in line 2	
-	setCursor(0,1);
-	print(printBuffer);
-
-	#ifdef SERIAL_DEBUG
-	Serial.println(printBuffer);
-	#endif
+	printSelect(0);
+	printInc(1,incVal);
 	
 }
    
@@ -346,7 +289,6 @@ void TTUI::bttnUp(boolean hold)
 ***********************************************************/
 void TTUI::bttnDown(boolean hold)
 {
-	char printBuffer[9];
 	int decVal = 1; 
 	
 	if(hold == true)
@@ -356,29 +298,9 @@ void TTUI::bttnDown(boolean hold)
 		if(holdTime > 10000) { decVal = 5; } //increase after 10sec
 	}
 
-	//set the value title in line 1
-	triggers[currentTrigger]->getSelectMenu(printBuffer); //load printBuffer with string to print
 	clear();
-	setCursor(0,0);
-	print(printBuffer);
-
-
-	
-	triggers[currentTrigger]->decSetting(printBuffer,decVal); //increment the current selected value, pass char buffer
-
-	//set the value in line 2	
-	setCursor(0,1);
-	print(printBuffer);
-
-	#ifdef SERIAL_DEBUG
-	Serial.println(printBuffer);
-	#endif
-	
-	
-
-	
-
-
+	printSelect(0);
+	printDec(1,decVal);
 }
 
 /***********************************************************
@@ -527,6 +449,57 @@ void TTUI::printCmp(char newBuffer[], char oldBuffer[],int line)
 		print(newBuffer);
 	}
 	
+}
+
+void TTUI::printMode(int row)
+{
+	char printBuffer[9];
+	triggers[currentTrigger]->getModeMenu(printBuffer); //load printBuffer with string to print
+	setCursor(0,row);
+	print(printBuffer);
+	
+	#ifdef SERIAL_DEBUG
+	Serial.println(printBuffer);
+	#endif
+}
+
+void TTUI::printSelect(int row)
+{
+		char printBuffer[9];
+		triggers[currentTrigger]->getSelectMenu(printBuffer); //load printBuffer with string to print
+		setCursor(0,row);
+		print(printBuffer);
+		
+		#ifdef SERIAL_DEBUG
+		Serial.println(printBuffer);
+		#endif
+}
+
+void TTUI::printInc(int row,int incVal)
+{
+	char printBuffer[9];
+	triggers[currentTrigger]->incSetting(printBuffer,incVal); //increment the current selected value, pass char buffer
+	//set the value in line 2	
+	setCursor(0,row);
+	print(printBuffer);
+	
+	#ifdef SERIAL_DEBUG
+	Serial.println(printBuffer);
+	#endif
+}
+
+
+void TTUI::printDec(int row,int decVal)
+{
+	char printBuffer[9];
+	triggers[currentTrigger]->decSetting(printBuffer,decVal); //increment the current selected value, pass char buffer
+	//set the value in line 2	
+	setCursor(0,row);
+	print(printBuffer);
+	
+	#ifdef SERIAL_DEBUG
+	Serial.println(printBuffer);
+	#endif
 }
 
 /***********************************************************

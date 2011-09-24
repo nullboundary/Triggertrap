@@ -38,17 +38,17 @@
 
 //#define SERIAL_DEBUG  //do you want status messages printed to serial? 
 
-byte const MODE_BTTN = 2; //mode bttn address
-byte const SELECT_BTTN = 3;//select bttn address
-byte const UP_BTTN = 6; //up bttn address
-byte const DOWN_BTTN = 5;  //down bttn address
+const byte MODE_BTTN = 2; //mode bttn address
+const byte SELECT_BTTN = 3;//select bttn address
+const byte UP_BTTN = 6; //up bttn address
+const byte DOWN_BTTN = 5;  //down bttn address
 
 const byte POWER_UI = PORTB6;				// A3 = Digital out - UI power mosfet switch
 const byte KEY_PAD_LEDS = PORTB7;				// D4 = Digital out - LED on keypad
 const byte START_BUTTON = 2;				// D2 = Digital in - Start button 
 const byte KEY_CHANGE = 3;				// D3 = Digital in - key change interrupt for touch ic
 
-const int LCD_CONTRAST = 60; 
+const byte LCD_CONTRAST = 60; 
 const unsigned int UI_SLEEP_MS = 30000; //time before leds and screen turn off, with no activity
 
 extern "C" void startHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
@@ -83,15 +83,6 @@ void update();
 
 /***********************************************************
  * 
- * updateActive
- *
- * handles update when the trap is active
- * 
- ***********************************************************/
-void updateActive();
-
-/***********************************************************
- * 
  * trigger
  *
  * returns which trigger object has been selected by the UI (mode button)
@@ -108,12 +99,26 @@ int trigger(){ return (int) currentTrigger; }
  ***********************************************************/
 boolean trapActive() { return trapActive_; }
 
-
+/***********************************************************
+ * 
+ * uiPowerOn
+ *
+ * Turn on power to the keys and the LCD screen
+ * 
+ ***********************************************************/	
+	void uiPowerOn();
+	
+/***********************************************************
+ * 
+ * uiPowerOff
+ *
+ * Turn off power to the keys and the LCD screen
+ * 
+ ***********************************************************/	
+	void uiPowerOff();
 
 private:
 	
-	private: 
-		
 	  volatile boolean trapActive_;	//start button pressed
 	  byte currentTrigger;   //which trigger (mode) is active
 	  static TTUI* pTTUI; //ptr to TTUI class for the ISR
@@ -122,15 +127,21 @@ private:
 	
 	  Trigger *triggers[5]; //array of trigger object pointers
 	
-	  //char lcdBufferLine1[9];
-	  //char lcdBufferLine2[9];
-
 	  int activeRefreshTime;
 	  unsigned long 	previousMillis_UIPower; //time counter for powering down the leds and screen
 	  
 	  boolean state_UIPower;	//UI power on, or off flag
 	  volatile unsigned long prevIntTime;  //debounce
  
+/***********************************************************
+ * 
+ * updateActive
+ *
+ * handles update when the trap is active
+ * 
+ ***********************************************************/
+void updateActive();
+
 /***********************************************************
  * 
  * bttnMode
@@ -166,24 +177,6 @@ private:
  * 
  ***********************************************************/
 	void bttnDown(boolean hold);
-
-/***********************************************************
- * 
- * uiPowerOn
- *
- * Turn on power to the keys and the LCD screen
- * 
- ***********************************************************/	
-	void uiPowerOn();
-	
-/***********************************************************
- * 
- * uiPowerOff
- *
- * Turn off power to the keys and the LCD screen
- * 
- ***********************************************************/	
-	void uiPowerOff();	
  
 /***********************************************************
  * 
@@ -213,13 +206,50 @@ private:
 	void restoreSettings();
 	
 void printCmp(char newBuffer[], char oldBuffer[],int line);
-	/***********************************************************
-	 * 
-	 * initStart
-	 *
-	 * This is called by the start button ISR. 
-	 * 
-	 ***********************************************************/
+
+/***********************************************************
+ * 
+ * printMode
+ *
+ * print Mode Menu Setting to LCD Display
+ * 
+ ***********************************************************/
+void printMode(int row);
+
+/***********************************************************
+ * 
+ * printSelect
+ *
+ * print Option Menu Setting to LCD Display
+ * 
+ ***********************************************************/
+void printSelect(int row);
+
+/***********************************************************
+ * 
+ * printInc
+ *
+ * print Inc Menu Setting to LCD Display
+ * 
+ ***********************************************************/
+void printInc(int row, int incVal);
+
+/***********************************************************
+ * 
+ * printDec
+ *
+ * print Dec Menu Setting to LCD Display
+ * 
+ ***********************************************************/
+void printDec(int row, int decVal);
+
+/***********************************************************
+ * 
+ * initStart
+ *
+ * This is called by the start button ISR. 
+ * 
+ ***********************************************************/
 	void initStart(unsigned long startTime);
 
 

@@ -46,7 +46,7 @@ AtTouch::AtTouch()
  * begin
  * 
  ***********************************************************/
-void AtTouch::begin(int interruptPin){
+void AtTouch::begin(int interruptPin,boolean disableAutoCal){
 
   _changePin = (byte) interruptPin;
   _interruptVal = (byte) interruptPin-2;  //arduino interupt values 0=pin2, 1=pin3
@@ -67,6 +67,11 @@ void AtTouch::begin(int interruptPin){
   delay(100); // wait for device to restart
   Wire.begin(); // re-open the i2c after device has restarted
 
+  if(disableAutoCal == true)
+  {
+  	Wire.send(0x37); //set to register 0x37, disable hold down auto calibration
+  	Wire.send(0);
+  }
   pinMode(_changePin, INPUT);
   attachInterrupt(_interruptVal,bttnPressISR,FALLING);  //setup the key change interrupt, call bttnpress on interrupt
 
@@ -83,16 +88,31 @@ boolean AtTouch::hit()
   return keyHit;
 }  
 
+/***********************************************************
+ * 
+ * getStartTime
+ * 
+ ***********************************************************/
 unsigned long AtTouch::getStartTime()
 {
 	return startTime;	
 }
 
+/***********************************************************
+ * 
+ * setRefreshSpeed
+ * 
+ ***********************************************************/
 void AtTouch::setRefreshSpeed(int intervalMilSec)
 {
 	holdRefreshInterval = intervalMilSec/100;
 }
 
+/***********************************************************
+ * 
+ * update
+ * 
+ ***********************************************************/
 void AtTouch::update()
 {
 	if (keyHit == true)
@@ -102,9 +122,11 @@ void AtTouch::update()
 	}
 	
 }
-
-
-
+/***********************************************************
+ * 
+ * getKey
+ * 
+ ***********************************************************/
 int AtTouch::getKey()
 {
 	return (int) activeKey_;
@@ -184,6 +206,11 @@ int AtTouch::readActiveAddress(){
 
 }
 
+/***********************************************************
+ * 
+ * hold
+ * 
+ ***********************************************************/
 boolean AtTouch::hold()
 {
   if(holdDown_ == true)

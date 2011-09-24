@@ -125,7 +125,7 @@ void loop() {
 
 void laserTrigger()
 {
-	int currentMode = laser.select();
+
 	laser.setShutters(false,true); //no focus, only shutter
 	laser.trigger();
 	

@@ -1,7 +1,7 @@
 /************************************************************************************
  * 	
  * 	Name    : AtTouch                         
- * 	Author  : Noah Shibley, NoMi Design  nomidesign.net                        
+ * 	Author  : Noah Shibley, Michael Grant NoMi Design  nomidesign.net                        
  * 	Date    : July 18th 2011                                    
  * 	Version : 0.1                                              
  * 	Notes   : Arduino Library for use with the AT42QT1070 Q-touch chip via i2c                       
@@ -45,14 +45,76 @@ public:
  
   AtTouch();
   
-  void begin(int interruptPin);
+/***********************************************************
+ * 
+ * begin
+ *
+ * init the AtTouch class
+ *   
+ ***********************************************************/
+  void begin(int interruptPin,boolean disableAutoCal=true);
+
+/***********************************************************
+ * 
+ * readActiveKey
+ *
+ * request the touch chip the value of the active key
+ *   
+ ***********************************************************/
   int readActiveKey(); 
   
+/***********************************************************
+ * 
+ * hit
+ *
+ * return whether hit is true or false
+ *   
+ ***********************************************************/
   boolean hit();
+
+/***********************************************************
+ * 
+ * setRefreshSpeed
+ *
+ * during press and hold, restrict how often per sec hold returns true
+ *   
+ ***********************************************************/
   void setRefreshSpeed(int intervalMilSec);
+
+/***********************************************************
+ * 
+ * getStartTime
+ *
+ * get the time that the key was pressed
+ *   
+ ***********************************************************/
   unsigned long getStartTime();
+
+/***********************************************************
+ * 
+ * getKey
+ *
+ * get the key number that was pressed
+ *   
+ ***********************************************************/
   int getKey();
+
+/***********************************************************
+ * 
+ * update
+ *
+ * read the key value that was pressed
+ *   
+ ***********************************************************/
   void update();
+
+/***********************************************************
+ * 
+ * hold
+ *
+ * return the hold status. 
+ *   
+ ***********************************************************/
   boolean hold();
 
 private:

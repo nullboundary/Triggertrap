@@ -51,6 +51,170 @@ class Trigger {
 
 public:
 
+/***********************************************************
+ * 
+ * shotCount
+ *
+ * returns how many shots where taken since the start button was activated. 
+ * 
+ ***********************************************************/
+const int shotCount(){ return shotCounter_; }
+
+
+/***********************************************************
+ * 
+ * sensorLevel
+ *
+ * returns the analog level of the sensor being used, this is virtual 
+ * 
+ ***********************************************************/
+virtual int sensorLevel() { return 0; }
+
+/***********************************************************
+ * 
+ * trigger
+ *
+ * if returns true, camera ready to trigger, this is virtual, override in sub class. 
+ * 
+ ***********************************************************/
+virtual boolean trigger() = 0;
+
+/***********************************************************
+ * 
+ * shutter
+ *
+ *  Take the picture, bring shutterA and/or B low
+ * 
+ ***********************************************************/
+void shutter(boolean noDelay=false);
+
+/***********************************************************
+ * 
+ * incSelect
+ *
+ * increment the select option that is active 
+ *   
+ ***********************************************************/
+void incSelect();
+
+/***********************************************************
+ * 
+ * incSetting
+ *
+ * go to the next Select menu string, pass in a char array for printing
+ * 
+ ***********************************************************/
+virtual void incSetting(char buffer[], int inc=1);
+
+/***********************************************************
+ * 
+ * decSetting
+ *
+ * go to the previous Select menu string, pass in a char array for printing
+ * 
+ ***********************************************************/
+virtual void decSetting(char buffer[], int dec=1);
+
+
+/***********************************************************
+ * 
+ * getModeMenu
+ *
+ * get the current Mode menu string and place it in the char buffer for LCD or serial
+ * 
+ ***********************************************************/
+virtual	void getModeMenu(char buffer[]);
+
+/***********************************************************
+ * 
+ * getSelectMenu
+ *
+ * get the current select menu string and place it in the char buffer for LCD or serial
+ * 
+ ***********************************************************/
+virtual void getSelectMenu(char buffer[]);
+
+/***********************************************************
+ * 
+ * getActiveMessage
+ *
+ * get the current sensors LCD message to print during trap Active mode.
+ * 
+ ***********************************************************/
+virtual void getActiveMessage(char buffer[]);
+
+/***********************************************************
+ * 
+ * start
+ *
+ * set values that are called when start button is pressed 
+ * 
+ ***********************************************************/
+virtual void start(unsigned long startTime);
+
+/***********************************************************
+ * 
+ * resetShutter
+ *
+ * this resets the shutter HIGH after being LOW for 10 ms. 
+ * 
+ ***********************************************************/
+void resetShutter();
+
+/***********************************************************
+ * 
+ * setShutters
+ *
+ * set which line will be used, Focus or Shutter 
+ * 
+ ***********************************************************/
+void setShutters(boolean cameraA, boolean cameraB) { cameraA_ = cameraA; cameraB_ = cameraB; }
+
+protected: 
+	
+  	
+  unsigned int optionValues[5];	
+  boolean triggerState_; //On or OFF, based on above or below the threshold
+  byte select_; //trigger on START,STOP or CHANGE
+  byte sensorLevel_; //incoming sensor value
+  unsigned int shotCounter_; // current shot since pressing the start button
+  byte sensorPin_; //the sensor pin
+ 
+  boolean shutterStateA_; //status of shutter A, high or low. Goes low for small amount of time at shot
+  boolean shutterStateB_; //status of shutter B, high or low. Goes low for small amount of time at shot
+  boolean cameraA_;  //camera A on
+  boolean cameraB_; //camera B on
+  boolean shutterReady; //trigger is ready, take a picture
+
+
+  unsigned long shutterDelay; //keep track of the time the shutter has been low
+  unsigned long delayCount; //when trigger is ready, start counting, till delay time is up
+  unsigned long startBttnTime; //the time when the start button is pressed. 
+
+/***********************************************************
+ * 
+ * high
+ *
+ * if trigger just went high, trigger the camera. (return true)
+ * 
+ ***********************************************************/
+virtual boolean rise();
+/***********************************************************
+ * 
+ * low
+ *
+ * if trigger just went low, trigger the camera. (return true)
+ * 
+ ***********************************************************/
+virtual boolean fall();
+/***********************************************************
+ * 
+ * change
+ *
+ * if trigger changed state (high/low), trigger the camera. (return true)
+ * 
+ ***********************************************************/
+virtual boolean change();
 
 /***********************************************************
  * 
@@ -68,16 +232,7 @@ void setSelect(int select);
  * return which select option is active. 
  *   
  ***********************************************************/
-int select();
-
-/***********************************************************
- * 
- * incSelect
- *
- * increment the select option that is active 
- *   
- ***********************************************************/
-void incSelect();
+const int select();
 
 /***********************************************************
  * 
@@ -115,87 +270,7 @@ void incOption(int menuOption, unsigned int maxValue,int inc=1);
  ***********************************************************/
 void decOption(int menuOption, unsigned int maxValue,int dec=1);
 
-/***********************************************************
- * 
- * shotCount
- *
- * returns how many shots where taken since the start button was activated. 
- * 
- ***********************************************************/
-int shotCount(){ return shotCounter_; }
-
-
-/***********************************************************
- * 
- * sensorLevel
- *
- * returns the analog level of the sensor being used, this is virtual 
- * 
- ***********************************************************/
-virtual int sensorLevel() { return 0; }
-
-/***********************************************************
- * 
- * trigger
- *
- * if returns true, camera ready to trigger, this is virtual, override in sub class. 
- * 
- ***********************************************************/
-virtual boolean trigger() = 0;
-
-/***********************************************************
- * 
- * shutter
- *
- *  Take the picture, bring shutterA and B low
- * 
- ***********************************************************/
-void shutter(boolean noDelay=false);
-
-/***********************************************************
- * 
- * high
- *
- * if trigger just went high, trigger the camera. (return true)
- * 
- ***********************************************************/
-virtual boolean rise();
-/***********************************************************
- * 
- * low
- *
- * if trigger just went low, trigger the camera. (return true)
- * 
- ***********************************************************/
-virtual boolean fall();
-/***********************************************************
- * 
- * change
- *
- * if trigger changed state (high/low), trigger the camera. (return true)
- * 
- ***********************************************************/
-virtual boolean change();
-
-/***********************************************************
- * 
- * incSetting
- *
- * go to the next Select menu string, pass in a char array for printing
- * 
- ***********************************************************/
-virtual void incSetting(char buffer[], int inc=1);
-
-/***********************************************************
- * 
- * decSetting
- *
- * go to the previous Select menu string, pass in a char array for printing
- * 
- ***********************************************************/
-virtual void decSetting(char buffer[], int dec=1);
-
-/***********************************************************
+  /***********************************************************
  * 
  * formatTimeString
  *
@@ -215,78 +290,15 @@ void formatThresholdString(unsigned int data, char buffer[]);
 
 /***********************************************************
  * 
- * getModeMenu
+ * getSettingMenu
  *
- * get the current Mode menu string and place it in the char buffer for LCD or serial
- * 
- ***********************************************************/
-virtual	void getModeMenu(char buffer[]);
-
-/***********************************************************
- * 
- * getSelectMenu
- *
- * get the current select menu string and place it in the char buffer for LCD or serial
- * 
- ***********************************************************/
-virtual void getSelectMenu(char buffer[]);
-
-/***********************************************************
- * 
- * getModeMenu
- *
- * get the current Mode menu string and place it in the char buffer for LCD or serial
+ * get the current Setting menu string and place it in the char buffer for LCD or serial
  * 
  ***********************************************************/
 virtual void getSettingMenu(char buffer[]);
 
-/***********************************************************
- * 
- * getActiveMessage
- *
- * get the current sensors LCD message to print during trap Active mode.
- * 
- ***********************************************************/
-virtual void getActiveMessage(char buffer[]);
-
-
-virtual void start(unsigned long startTime);
-
-/***********************************************************
- * 
- * resetShutter
- *
- * this resets the shutter HIGH after being LOW for 10 ms. 
- * 
- ***********************************************************/
-void resetShutter();
-void setShutters(boolean cameraA, boolean cameraB) { cameraA_ = cameraA; cameraB_ = cameraB; }
-
-protected: 
-	
-  boolean triggerState_; //On or OFF, based on above or below the threshold
-  byte select_; //trigger on START,STOP or CHANGE
-  byte sensorLevel_; //incoming sensor value
-  unsigned int shotCounter_; // current shot since pressing the start button
-  byte sensorPin_; //the sensor pin
- 
-  boolean shutterStateA_; //status of shutter A, high or low. Goes low for small amount of time at shot
-  boolean shutterStateB_; //status of shutter B, high or low. Goes low for small amount of time at shot
-  boolean cameraA_;  //camera A on
-  boolean cameraB_; //camera B on
-  boolean shutterReady; //trigger is ready, take a picture
-
-
-  unsigned long shutterDelay; //keep track of the time the shutter has been low
-  unsigned long delayCount; //when trigger is ready, start counting, till delay time is up
-  unsigned long startBttnTime; //the time when the start button is pressed. 
-
 private:
 	
-  unsigned int optionValues[5];
- 
-	
- 
 
 };
 
