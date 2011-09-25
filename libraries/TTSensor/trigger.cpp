@@ -79,7 +79,7 @@ onRise,onFall,onChange
  * 
  *   
  ***********************************************************/
-  int Trigger::select()
+  const int Trigger::select()
   {
     return select_;
   }
