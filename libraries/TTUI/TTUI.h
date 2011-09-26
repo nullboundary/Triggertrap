@@ -48,7 +48,6 @@ const byte KEY_PAD_LEDS = PORTB7;				// D4 = Digital out - LED on keypad
 const byte START_BUTTON = 2;				// D2 = Digital in - Start button 
 const byte KEY_CHANGE = 3;				// D3 = Digital in - key change interrupt for touch ic
 
-const byte LCD_CONTRAST = 60; 
 const unsigned int UI_SLEEP_MS = 30000; //time before leds and screen turn off, with no activity
 
 extern "C" void startHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
@@ -116,6 +115,9 @@ boolean trapActive() { return trapActive_; }
  * 
  ***********************************************************/	
 	void uiPowerOff();
+	
+boolean batteryPower();
+		
 
 private:
 	

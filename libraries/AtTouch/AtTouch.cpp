@@ -69,8 +69,10 @@ void AtTouch::begin(int interruptPin,boolean disableAutoCal){
 
   if(disableAutoCal == true)
   {
+	Wire.beginTransmission(0x1B);   // 
   	Wire.send(0x37); //set to register 0x37, disable hold down auto calibration
   	Wire.send(0);
+	Wire.endTransmission();
   }
   pinMode(_changePin, INPUT);
   attachInterrupt(_interruptVal,bttnPressISR,FALLING);  //setup the key change interrupt, call bttnpress on interrupt

@@ -77,8 +77,23 @@
 
 	//LCD Stuff
 	TCCR1B = TCCR1B & 0b11111000 | 0x01; //-- sets the pwm base
+	
 	pinMode (10, OUTPUT); // lcd contrast output 
-	analogWrite (10, LCD_CONTRAST); // ouput low pwm - negative voltage...
+	
+	if(batteryPower() == true)
+	{
+		long lcdContrast = analogRead(A1);
+		lcdContrast = 175 - ((lcdContrast * 5)  / 32);
+		analogWrite (10, lcdContrast);
+		
+	}
+	else
+	{
+		byte lcdContrast = 60; 
+		analogWrite (10, lcdContrast);
+		
+	}
+	
 
 	//this class inherits from LCD, so call lcd functions as part of this class
     begin(8, 2);
@@ -165,7 +180,7 @@ void TTUI::update()
 ***********************************************************/
 void TTUI::updateActive()
 {
-		if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB connected
+		if(batteryPower() == false) //USB connected
 		{
 			//only update LCD every 300ms
 			int now = millis()/100; //100 ms 
@@ -319,7 +334,7 @@ void TTUI::uiPowerOn()
 		  touch.begin(KEY_CHANGE); 		//re init touch keys
 	      previousMillis_UIPower = millis();  //clock countdown start time
 
-		  if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB connected
+		  if(batteryPower() == false) //USB connected
 		  {
 				 #ifdef SERIAL_DEBUG
 				  Serial.println("USB");
@@ -402,6 +417,19 @@ void TTUI::uiPowerOff()
     }
   }
 
+boolean TTUI::batteryPower()  
+{
+		
+	  if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB connected
+	  {
+		return false;
+	  }
+	  else
+	  {
+		return true;
+	  }
+		
+}
 
 /***********************************************************
 * 	   

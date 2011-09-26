@@ -210,7 +210,7 @@ void Trigger::shutter(boolean noDelay)
 			{
 				PORTB |= (1<<PB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
 				shutterDelay = millis(); 
-				shutterStateB_ == true;
+				shutterStateB_ = true;
 			 	digitalWrite(CAMERA_TRIGGER_B,LOW);
 	
 				#ifdef SERIAL_DEBUG

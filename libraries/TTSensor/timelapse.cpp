@@ -49,6 +49,8 @@ TimeLapse::TimeLapse(){
  ***********************************************************/
 boolean TimeLapse::trigger()
 {
+	//don't allow zero time delta. Will crash the device
+	if(option(TIME_DELTA) == 0) { incOption(TIME_DELTA,1); }
    
 	boolean initDelayActive = true;
 	int currentTime = millis()/1000;
