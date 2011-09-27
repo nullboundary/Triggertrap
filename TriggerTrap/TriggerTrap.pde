@@ -28,7 +28,7 @@
 #define SERIAL_DEBUG
 
 #include <LiquidCrystalFast.h>
-#include <Wire.h>
+#include <I2C.h>
 #include <AtTouch.h>
 #include <Sleep.h>
 #include "globals.h"  //where all the pin name defines and variables are declared

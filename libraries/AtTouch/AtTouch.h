@@ -30,7 +30,7 @@
 #define AtTouch_H
 
 #include <WProgram.h>
-#include <Wire.h>
+#include <I2C.h>
 
 //#define SERIAL_DEBUG  //do you want status messages printed to serial? 
 

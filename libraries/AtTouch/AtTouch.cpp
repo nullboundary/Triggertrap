@@ -57,23 +57,23 @@ void AtTouch::begin(int interruptPin,boolean disableAutoCal){
   holdRefreshInterval = 1; //1 for 100ms 1000ms/100 = 10 so 100ms/100 = 1
 	
 
-  Wire.begin(); 
+  I2c.begin(); 
 
   // reset device by writing non-zero value to register 0x39  
-  Wire.beginTransmission(0x1B); // transmit to device 
-  Wire.send(0x39);             // sets register pointer to the reset register (0x39)  
-  Wire.send(0xFF);             // send non-zero value to initiate a reset
-  Wire.endTransmission();      // stop transmitting 
+  I2c.beginTransmission(0x1B); // transmit to device 
+  I2c.send(0x39);             // sets register pointer to the reset register (0x39)  
+  I2c.send(0xFF);             // send non-zero value to initiate a reset
+  I2c.endTransmission();      // stop transmitting 
   delay(100); // wait for device to restart
-  Wire.begin(); // re-open the i2c after device has restarted
+  I2c.begin(); // re-open the i2c after device has restarted
 
   if(disableAutoCal == true)
   {
 	delay(100);  
-	Wire.beginTransmission(0x1B);   // 
-  	Wire.send(0x37); //set to register 0x37, disable hold down auto calibration
-  	Wire.send(0);
-	Wire.endTransmission();
+	I2c.beginTransmission(0x1B);   // 
+  	I2c.send(0x37); //set to register 0x37, disable hold down auto calibration
+  	I2c.send(0);
+	I2c.endTransmission();
   }
   pinMode(_changePin, INPUT);
   attachInterrupt(_interruptVal,bttnPressISR,FALLING);  //setup the key change interrupt, call bttnpress on interrupt
@@ -178,17 +178,17 @@ int AtTouch::readActiveAddress(){
     int bttnNum = 0;
 
     // to clear change int we must read both status bytes 02 and 03
-    Wire.beginTransmission(0x1B); // transmit to device 
-    Wire.send(0x02); // want to read detection status // set pointer
-    Wire.endTransmission();      // stop transmitting
-    Wire.requestFrom(0x1B, 1);    // request 1 byte from slave device
-    readstatus = Wire.receive();
+    I2c.beginTransmission(0x1B); // transmit to device 
+    I2c.send(0x02); // want to read detection status // set pointer
+    I2c.endTransmission();      // stop transmitting
+    I2c.requestFrom(0x1B, 1);    // request 1 byte from slave device
+    readstatus = I2c.receive();
 
-    Wire.beginTransmission(0x1B); // transmit to device 
-    Wire.send(0x03); // want to read key status // set pointer
-    Wire.endTransmission();      // stop transmitting
-    Wire.requestFrom(0x1B, 1);    // request 1 byte from slave device
-    bttnNum = Wire.receive();
+    I2c.beginTransmission(0x1B); // transmit to device 
+    I2c.send(0x03); // want to read key status // set pointer
+    I2c.endTransmission();      // stop transmitting
+    I2c.requestFrom(0x1B, 1);    // request 1 byte from slave device
+    bttnNum = I2c.receive();
 
     keyHit = false;
     if (readstatus == 1) // seems to trigger int twice for each press... this filters the second one...
