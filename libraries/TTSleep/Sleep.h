@@ -4,8 +4,7 @@
  * 	Author  : Noah Shibley, NoMi Design                         
  * 	Date    : July 10th 2011                                    
  * 	Version : 0.1                                              
- * 	Notes   : Watch Dog timer sleep, resets the device each time. Make sure to save variables 
- *			  to eeprom if needed. 
+ * 	Notes   : 
  * 
  * 	 Copyright (c) 2011 NoMi Design All right reserved.
  * 
@@ -32,6 +31,8 @@
 #ifndef SLEEP_H
 #define SLEEP_H
 
+
+#include <avr/interrupt.h>
 #include <avr/sleep.h>
 #include <avr/wdt.h>
 #include <avr/power.h>

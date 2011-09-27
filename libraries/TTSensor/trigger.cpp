@@ -506,6 +506,23 @@ void Trigger::resetShutter()
 	strcpy_P(buffer,activeMessage); //default active message
 }
 
+void Trigger::saveState()
+{
+/*	
+  unsigned int optionValues[3];	
+  byte select_; //trigger on START,STOP or CHANGE
+  unsigned int shotCounter_; // current shot since pressing the start button
+  boolean cameraA_;  //camera A on
+  boolean cameraB_; //camera B on
+  unsigned long startBttnTime; //the time when the start button is pressed. 
+ */
+}
+
+void Trigger::restoreState()
+{
+	
+}
+
 /***********************************************************
  * 
  * start

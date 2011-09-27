@@ -170,10 +170,14 @@ void resetShutter();
  ***********************************************************/
 void setShutters(boolean cameraA, boolean cameraB) { cameraA_ = cameraA; cameraB_ = cameraB; }
 
+void saveState();
+
+void restoreState();
+
 protected: 
 	
   	
-  unsigned int optionValues[5];	
+  unsigned int optionValues[3];	
   boolean triggerState_; //On or OFF, based on above or below the threshold
   byte select_; //trigger on START,STOP or CHANGE
   byte sensorLevel_; //incoming sensor value
@@ -296,6 +300,7 @@ void formatThresholdString(unsigned int data, char buffer[]);
  * 
  ***********************************************************/
 virtual void getSettingMenu(char buffer[]);
+
 
 private:
 	

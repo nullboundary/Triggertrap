@@ -48,9 +48,6 @@ void Sleep::addWakeEvent(int interrupt,int interval)
  ***********************************************************/
 void Sleep::setWakeInterval(int interval) {
 
-//wdt_enable(WDTO_8S);
-
-
   byte bb;
   int ww;
   if (interval > 9 ) interval=9;
@@ -63,11 +60,12 @@ void Sleep::setWakeInterval(int interval) {
 
   MCUSR &= ~(1<<WDRF);
   // start timed sequence
-  WDTCSR |= (1<<WDCE) | (1<<WDE);
+  WDTCSR |= (1<<WDCE) | (1<<WDE); //enable change 
   // set new watchdog timeout value
   WDTCSR = bb;
-  WDTCSR |= _BV(WDIE);
+  WDTCSR |= (1<<WDIE);
 
+  sei();
 
 }	
 
@@ -106,7 +104,8 @@ void Sleep::sleepNow()
   
   if(wakeCheck == true)
   {
-	wakeCheck = false; 
+		wakeCheck = false; 
+		sei(); //make sure interrupts are on!
   		sleep_mode();  //sleep now
   }
   else  //ERROR
@@ -137,5 +136,10 @@ void sleepHandler(void)
 {
 	
 	
+}
+
+ISR(WDT_vect) 
+{ 
+ 	wdt_disable();
 }
 
