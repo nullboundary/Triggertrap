@@ -69,6 +69,7 @@ void AtTouch::begin(int interruptPin,boolean disableAutoCal){
 
   if(disableAutoCal == true)
   {
+	delay(100);  
 	Wire.beginTransmission(0x1B);   // 
   	Wire.send(0x37); //set to register 0x37, disable hold down auto calibration
   	Wire.send(0);
