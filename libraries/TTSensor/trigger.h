@@ -36,6 +36,12 @@
 //#include "globals.h"
 #include <WProgram.h>
 #include <avr/pgmspace.h>
+#include <avr/eeprom.h>
+#define eeprom_read_to(dst_p, eeprom_field, dst_size) eeprom_read_block(dst_p, (void *)offsetof(__eeprom_data, eeprom_field), MIN(dst_size, sizeof((__eeprom_data*)0)->eeprom_field))
+#define eeprom_read(dst, eeprom_field) eeprom_read_to(&dst, eeprom_field, sizeof(dst))
+#define eeprom_write_from(src_p, eeprom_field, src_size) eeprom_write_block(src_p, (void *)offsetof(__eeprom_data, eeprom_field), MIN(src_size, sizeof((__eeprom_data*)0)->eeprom_field))
+#define eeprom_write(src, eeprom_field) { typeof(src) x = src; eeprom_write_from(&x, eeprom_field, sizeof(x)); }
+#define MIN(x,y) ( x > y ? y : x )
 
 //most triggers use these menu options. 
 const int TRIG_TYPE = 0; //Select menu option 0. 
@@ -44,6 +50,12 @@ const int TRIG_THRESHOLD = 2;	 //Select menu option 2.
 
 const int CAMERA_TRIGGER_A = 12;		// D12 = Digital out - Camera Trigger A
 const int CAMERA_TRIGGER_B = 13;		// D13 = Digital out - Camera Trigger B
+
+//values to save into eeprom
+struct __eeprom_data {
+  byte optionSelect;
+  unsigned int optionVal[3];
+};
 
 //#define SERIAL_DEBUG //remove if you don't want serial statements
 
@@ -173,6 +185,8 @@ void setShutters(boolean cameraA, boolean cameraB) { cameraA_ = cameraA; cameraB
 void saveState();
 
 void restoreState();
+
+void initState();
 
 protected: 
 	

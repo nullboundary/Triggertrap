@@ -508,17 +508,29 @@ void Trigger::resetShutter()
 
 void Trigger::saveState()
 {
+	  
+	   eeprom_write(select_, optionSelect);
+	   eeprom_write(optionValues[0], optionVal[0]);
+	   eeprom_write(optionValues[1], optionVal[1]);
+	   eeprom_write(optionValues[2], optionVal[2]);;
+	
+	
 /*	
   unsigned int optionValues[3];	
   byte select_; //trigger on START,STOP or CHANGE
-  unsigned int shotCounter_; // current shot since pressing the start button
+  
   boolean cameraA_;  //camera A on
   boolean cameraB_; //camera B on
-  unsigned long startBttnTime; //the time when the start button is pressed. 
+  
  */
 }
 
 void Trigger::restoreState()
+{
+	
+}
+
+void Trigger::initState()
 {
 	
 }

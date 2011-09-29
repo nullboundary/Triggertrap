@@ -50,7 +50,8 @@ const byte KEY_CHANGE = 3;				// D3 = Digital in - key change interrupt for touc
 
 const unsigned int UI_SLEEP_MS = 30000; //time before leds and screen turn off, with no activity
 
-extern "C" void startHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
+extern "C" void startDownHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
+extern "C" void startUpHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
 
 class TTUI: public LiquidCrystalFast {
 
@@ -60,7 +61,8 @@ public:
 
 	TTUI();
 
-friend void startHandler(void); //make the ISR routine a friend of this class
+friend void startDownHandler(void); //make the ISR routine a friend of this class
+friend void startUpHandler(void); //make the ISR routine a friend of this class
 
 /***********************************************************
  * 
@@ -121,7 +123,7 @@ boolean batteryPower();
 
 private:
 	
-	  volatile boolean trapActive_;	//start button pressed
+	  volatile boolean trapActive_;	//trigger was activated on start button press
 	  byte currentTrigger;   //which trigger (mode) is active
 	  static TTUI* pTTUI; //ptr to TTUI class for the ISR
 
@@ -132,7 +134,10 @@ private:
 	  int activeRefreshTime;
 	  unsigned long 	previousMillis_UIPower; //time counter for powering down the leds and screen
 	  
+	  volatile boolean startBttnHold; //is the button held down or not? 
+	  volatile unsigned int holdBttnStart; //time in sec the bttn was first held down.
 	  boolean state_UIPower;	//UI power on, or off flag
+
 	  volatile unsigned long prevIntTime;  //debounce
  
 /***********************************************************
@@ -254,6 +259,7 @@ void printDec(int row, int decVal);
  ***********************************************************/
 	void initStart(unsigned long startTime);
 
+void resetCheck();
 
 };
 
