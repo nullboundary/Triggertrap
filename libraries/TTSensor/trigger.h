@@ -51,11 +51,6 @@ const int TRIG_THRESHOLD = 2;	 //Select menu option 2.
 const int CAMERA_TRIGGER_A = 12;		// D12 = Digital out - Camera Trigger A
 const int CAMERA_TRIGGER_B = 13;		// D13 = Digital out - Camera Trigger B
 
-//values to save into eeprom
-struct __eeprom_data {
-  byte optionSelect;
-  unsigned int optionVal[3];
-};
 
 //#define SERIAL_DEBUG //remove if you don't want serial statements
 
@@ -208,6 +203,12 @@ protected:
   unsigned long shutterDelay; //keep track of the time the shutter has been low
   unsigned long delayCount; //when trigger is ready, start counting, till delay time is up
   unsigned long startBttnTime; //the time when the start button is pressed. 
+
+//values to save into eeprom
+struct __eeprom_data {
+  byte optionSelect;
+  unsigned int optionVal[3];
+};
 
 /***********************************************************
  * 

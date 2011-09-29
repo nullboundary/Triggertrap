@@ -56,6 +56,11 @@
 	triggers[3] = &timeLapse;
 	triggers[4] = &aux;
 	
+	for(int i=0;i<NUM_OF_SENSORS;++i)
+	{
+		triggers[i]->restoreState();
+	}
+	
 	trapActive_ = false;
 	startBttnHold = false; 	
 	currentTrigger = 0;
@@ -189,7 +194,19 @@ void TTUI::resetCheck()
 				{
 					startBttnHold = false; //even if its still held we only want to reset once, not many times
 					//clear eeprom
-					Serial.println("reset");
+					//reset all sensor states to 0
+					clear();
+					setCursor(0,0);
+					print("reset");
+					setCursor(0,1);
+					print("device");
+					
+					for(int i=0;i<NUM_OF_SENSORS;++i)
+					{
+						triggers[i]->initState();
+					}
+					
+					
 				}
 			
 		}
@@ -242,6 +259,7 @@ void TTUI::initStart(unsigned long startTime)
 		#endif
 		
 		activeRefreshTime = startTime/100; //100ms
+		triggers[currentTrigger]->saveState(); //save the values of active trigger to eeprom
 		triggers[currentTrigger]->start(startTime); //set start time for the active trigger 
 		//uiPowerOff();
 		
@@ -271,7 +289,7 @@ void TTUI::initStart(unsigned long startTime)
   {
     
     currentTrigger+=1; //mode button has been pressed, advance the mode option to next
-	currentTrigger = currentTrigger % 5;//TODO assign length based on number of objects triggers.length();
+	currentTrigger = currentTrigger % NUM_OF_SENSORS;
 	
 	clear();
 	printMode(0);
@@ -453,54 +471,6 @@ boolean TTUI::batteryPower()
 		
 }
 
-/***********************************************************
-* 	   
-* saveSettings
-*  
-***********************************************************/
-  void TTUI::saveSettings()
-  {
-    //EEPROM.write(0,currentTrigger);
-   // EEPROM.write(1,timeLapseAdjState);
-   // EEPROM.write(2,laserAdjState);
-   // EEPROM.write(3,soundAdjState);
-   // EEPROM.write(4,auxAdjState); 
-
-  }
-
-/***********************************************************
-* 	   
-* restoreSettings
-*  
-***********************************************************/
-  void TTUI::restoreSettings()
-  {
-    //currentTrigger = EEPROM.read(0);
-   // timeLapseAdjState = EEPROM.read(1);
-   // laserAdjState = EEPROM.read(2);
-  //  soundAdjState = EEPROM.read(3);
-  //  auxAdjState = EEPROM.read(4);
-
-    //if the device is run the first time ever, all values will be 255, so set them to 0 (option1)
-    if(currentTrigger == 255){ currentTrigger = 0; }
-   // if(timeLapseAdjState == 255){  timeLapseAdjState = 0; }
-   // if(laserAdjState == 255){ laserAdjState = 0; }
-   // if(soundAdjState == 255){ soundAdjState = 0; }
-   // if(auxAdjState == 255){ auxAdjState = 0; }
-
-  }
-
-void TTUI::printCmp(char newBuffer[], char oldBuffer[],int line)
-{
-	if( strcmp(newBuffer,oldBuffer) != 0)
-	{
-		print("        ");
-		setCursor(0,line);
-		print(newBuffer);
-	}
-	
-}
-
 void TTUI::printMode(int row)
 {
 	char printBuffer[9];
@@ -586,7 +556,11 @@ void startUpHandler(void)
 	  {
 		detachInterrupt(0);
 		attachInterrupt(0,startDownHandler,FALLING); //trigger ISR function on start button press.
-		TTUI::pTTUI->initStart(currentTime);
+		
+		if(TTUI::pTTUI->startBttnHold == true) //press&hold reset wasn't done, so count it as a normal press
+		{
+			TTUI::pTTUI->initStart(currentTime);
+		}
 		TTUI::pTTUI->startBttnHold = false;
 		
 	  }

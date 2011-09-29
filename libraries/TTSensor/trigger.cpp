@@ -508,11 +508,14 @@ void Trigger::resetShutter()
 
 void Trigger::saveState()
 {
-	  
+	#ifdef SERIAL_DEBUG
+	Serial.println("saveState");
+	#endif
+	
 	   eeprom_write(select_, optionSelect);
 	   eeprom_write(optionValues[0], optionVal[0]);
 	   eeprom_write(optionValues[1], optionVal[1]);
-	   eeprom_write(optionValues[2], optionVal[2]);;
+	   eeprom_write(optionValues[2], optionVal[2]);
 	
 	
 /*	
@@ -527,12 +530,27 @@ void Trigger::saveState()
 
 void Trigger::restoreState()
 {
+	#ifdef SERIAL_DEBUG
+	Serial.println("restoreState");
+	#endif
 	
+	eeprom_read(select_, optionSelect);
+	if(select_ > 3 || select_ < 0) select_ = 0;
+	eeprom_read(optionValues[0], optionVal[0]);
+	eeprom_read(optionValues[1], optionVal[1]);
+	eeprom_read(optionValues[2], optionVal[2]);;
 }
 
 void Trigger::initState()
 {
+	#ifdef SERIAL_DEBUG
+	Serial.println("initState");
+	#endif
 	
+	   eeprom_write(0, optionSelect);
+	   eeprom_write(0, optionVal[0]);
+	   eeprom_write(0, optionVal[1]);
+	   eeprom_write(0, optionVal[2]);
 }
 
 /***********************************************************

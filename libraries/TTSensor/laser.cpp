@@ -53,14 +53,12 @@ onMake,onBreak,onChange
   Laser::Laser() 
   {
     triggerState_ = 0; //off
-//    threshold_ = 0; 
-//	delay_ = 0;
-//	type_ = 0;
 	setOption(TRIG_TYPE,0);
 	setOption(1,0);
 	setOption(2,0);
 	select_ = 0; 
     sensorPin_ = LASER_SENSOR;
+	
   }
 
   int Laser::sensorLevel()

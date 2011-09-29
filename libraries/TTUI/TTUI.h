@@ -49,6 +49,7 @@ const byte START_BUTTON = 2;				// D2 = Digital in - Start button
 const byte KEY_CHANGE = 3;				// D3 = Digital in - key change interrupt for touch ic
 
 const unsigned int UI_SLEEP_MS = 30000; //time before leds and screen turn off, with no activity
+const byte NUM_OF_SENSORS = 5; //the number of sensor triggers
 
 extern "C" void startDownHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
 extern "C" void startUpHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
@@ -192,28 +193,8 @@ void updateActive();
  * Turn off power to the keys and the LCD screen, after a certain time
  * 
  ***********************************************************/
-	void uiPowerTimeOut();
-
-/***********************************************************
- * 
- * saveSettings
- *
- * Save current menu setting to Eeprom 
- * 
- ***********************************************************/
-	void saveSettings();
-
-/***********************************************************
- * 
- * restoreSetting
- *
- * load current settings from Eeprom
- * 
- ***********************************************************/
-	void restoreSettings();
-	
-void printCmp(char newBuffer[], char oldBuffer[],int line);
-
+void uiPowerTimeOut();
+                      
 /***********************************************************
  * 
  * printMode
@@ -257,7 +238,7 @@ void printDec(int row, int decVal);
  * This is called by the start button ISR. 
  * 
  ***********************************************************/
-	void initStart(unsigned long startTime);
+void initStart(unsigned long startTime);
 
 void resetCheck();
 

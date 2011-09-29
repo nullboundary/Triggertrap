@@ -34,6 +34,7 @@
 //#include "globals.h"
 #include "trigger.h"
 #include <WProgram.h>
+#include <Sleep.h>
 
 class TimeLapse : public Trigger{
 
@@ -108,7 +109,11 @@ private:
  * 
  ***********************************************************/
 	void startTimer();
+	
+void sleepNow(int elapsedTime);
 
+	  Sleep *sleep;
+	
 
 
 };

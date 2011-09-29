@@ -48,7 +48,7 @@ int const LIGHT_CHANGE_MODE = 2;
 	setOption(2,0);
 	select_ = 0; 
     sensorPin_ = AMBIENT_LIGHT_SENSOR;
-
+	
 };
  
   

@@ -36,7 +36,9 @@ TimeLapse::TimeLapse(){
 		setOption(TIME_NUMSHOTS,0); //set #shots to 0
 		delayCount = 0; 
 		select_ = 0;  //set 
-	
+		Sleep sl;
+		sleep = &sl;
+	  	
 	
 }
 
@@ -61,13 +63,14 @@ boolean TimeLapse::trigger()
 			if(delayCount == 0) { delayCount = millis(); } //set this only the first time through the loop
 			startBttnTime = millis(); //reset startBttnTime, so interval starts here
 			shutterReady = true; //if delay is up, take the first shot
-			shutter(false); //set noDelay to true, delay is only for 1st shot
+			shutter(false); 
 			return false; 
 	}
 	else //run normal after the first shot
 	{
 		  shutter(true); //set noDelay to true, delay is only for 1st shot
 			
+		  //sleepNow(elapsedTime); //sleep now if there is time left to sleep
 			
 	  	  if (elapsedTime >= option(TIME_DELTA)) 
 		  {
@@ -104,6 +107,30 @@ int TimeLapse::countDown()
 
 	return remainTime;
 
+}
+
+void TimeLapse::sleepNow(int elapsedTime)
+{
+	int remainTime = option(TIME_DELTA) - elapsedTime;
+	
+	if(remainTime > 8)
+	{
+		sleep->addWatchDog(9); //8sec
+	}
+	else if(remainTime > 4)
+	{
+		sleep->addWatchDog(8); //4sec
+	}
+	else if(remainTime > 2)
+	{
+		sleep->addWatchDog(7); //2sec
+	}
+	else if(remainTime > 1)
+	{
+		sleep->addWatchDog(6); //1sec
+	}
+	
+	   sleep->sleepNow(); //go to sleep
 }
 
 /***********************************************************

@@ -44,7 +44,6 @@
 
 
 TTUI tui;
-Sleep sleep;
 Laser laser;
 Light light;
 Sound mic; 
@@ -62,11 +61,6 @@ void setup() {
   Serial.begin(9600);  
   analogReference(INTERNAL);
 
- // pinMode(INFRARED_SENDER, OUTPUT);     // infrared sender
-//  pinMode(CAMERA_TRIGGER_A, OUTPUT);     // Camera Trigger A
-//  pinMode(CAMERA_TRIGGER_B, OUTPUT);     // Camera Trigger B
-//  digitalWrite(CAMERA_TRIGGER_A,HIGH);
-  
   tui.setup(laser,mic,light,timeLapse,aux); //setup touch input buttons, and lcd menus
   
   interrupts();
@@ -164,15 +158,14 @@ void soundTrigger()
 
 void lightTrigger()
 {
-        //Serial.println(light.lightLevel());   
-       // light.setThreshold(800);
+      
         light.setShutters(true,false); //no focus, only shutter
 	if(light.trigger() == true) //returns true if sound changes based on current mode type
 	{
 
-		//digitalWrite(CAMERA_TRIGGER_A,HIGH); //trigger camera
+
                 Serial.println(light.sensorLevel());  
-                //Serial.println("CAMERA TRIGGER A");
+
 	}
 
 }

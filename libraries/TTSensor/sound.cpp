@@ -43,15 +43,12 @@ int const SOUND_CHANGE_MODE = 2;
   Sound::Sound() 
   {
     triggerState_ = false; //off
- //   threshold_ = 0;
 	setOption(TRIG_TYPE,0);
 	setOption(1,0);
 	setOption(2,0);
-	
-//	type_ = 0;
-//	delay_ = 0;
 	select_ = 0; 
     sensorPin_ = SOUND_IN;
+	
 
  }
 

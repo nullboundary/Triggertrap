@@ -50,7 +50,6 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
 	setOption(TRIG_TYPE,0);
 	setOption(1,0);
 	setOption(2,0);
-
 	select_ = 0; 
     sensorPin_ = AUX;
 
