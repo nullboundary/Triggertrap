@@ -167,7 +167,10 @@ void TTUI::update()
 
 	    }
 		
-		 //uiPowerTimeOut(); //if there has been no activity turn off led power
+		if(batteryPower() == true)
+		{
+		 	uiPowerTimeOut(); //if there has been no activity turn off lcd power
+		}
 		
 		resetCheck();
 	
@@ -181,11 +184,16 @@ void TTUI::update()
    
 
 }
-
+/***********************************************************
+* 
+* resetCheck
+* 
+***********************************************************/
 void TTUI::resetCheck()
 {
 		if(startBttnHold == true) //user is holding down the start button for reset
 		{
+			
 				//only update LCD every 300ms
 				int now = millis()/1000; //100 ms 
 				int elapsed = now - holdBttnStart;
@@ -210,6 +218,14 @@ void TTUI::resetCheck()
 				}
 			
 		}
+		else if(startBttnHold == false && trapActive_ == true )
+		{
+			//if(batteryPower() == true && )
+						 detachInterrupt(0);
+						 attachInterrupt(0,startDownHandler,FALLING); //trigger ISR function on start button press.
+		}		
+		
+		
 }
 
 /***********************************************************
@@ -261,18 +277,18 @@ void TTUI::initStart(unsigned long startTime)
 		activeRefreshTime = startTime/100; //100ms
 		triggers[currentTrigger]->saveState(); //save the values of active trigger to eeprom
 		triggers[currentTrigger]->start(startTime); //set start time for the active trigger 
-		//uiPowerOff();
+		uiPowerOff();
 		
 	}
 	else if(trapActive_ == false) 
 	{
 	
-		//uiPowerOn();
+		uiPowerOn();
 		//restore screen to so current select menu and value, better to show mode+select?
 		//set the value title in line 1
 		clear();
 		printSelect(0);
-		printInc(1,0); //inc 0 so just display
+		printInc(1,0); //inc 0 so just display, don't actually increment
 
 	}
 	
@@ -367,31 +383,36 @@ void TTUI::uiPowerOn()
 {
     if(state_UIPower == false) //if ui power off
     {
-     	 state_UIPower = true; 	
-		
-		  PORTB &= ~ (1<<PB6);        //digitalWrite(POWER_UI,LOW);
-	      //PORTB |= (1<<PB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
-		  touch.begin(KEY_CHANGE); 		//re init touch keys
-	      previousMillis_UIPower = millis();  //clock countdown start time
+          state_UIPower = true;     
 
-		  if(batteryPower() == false) //USB connected
-		  {
-				 #ifdef SERIAL_DEBUG
-				  Serial.println("USB");
-				  #endif
-		  }
-		  else //battery power
-		  {
-	  
-      		//init(1, A3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0);
-    
-		  	//begin(8,2);	
-	      	//analogWrite (10, LCD_CONTRAST);
-	  		//    display(); //turn on LCD
-		   }
-		  #ifdef SERIAL_DEBUG
-		  Serial.println("UI On");
-		  #endif
+          PORTB &= ~ (1<<PB6);    // enable Vsw power to touch IC and LCD
+          delay (150);             // wait for power to stabilize and hw to start
+          touch.begin(KEY_CHANGE);         //re init touch keys
+
+          previousMillis_UIPower = millis();  //clock countdown start time
+
+          if(onBatteryPower == false) //USB connected
+          {
+                 #ifdef SERIAL_DEBUG
+                  Serial.println("USB");
+                  #endif
+          }
+          else //battery power
+          {
+
+              // restart the LCD     
+            LiquidCrystalFast(A3,4,5, 6, 7, 8, 9);
+            begin(8,2);    
+            display(); 
+            // test battery level and set LCD contrast PWM
+            long lcdContrast = analogRead(A1);
+            lcdContrast = 175 - ((lcdContrast * 5)  / 32);
+            analogWrite (10, lcdContrast);
+
+           }
+          #ifdef SERIAL_DEBUG
+          Serial.println("UI On");
+          #endif
     }
 }
 
@@ -404,40 +425,45 @@ void TTUI::uiPowerOff()
 {
 
     if(state_UIPower == true) //power currently on
-    {	
+    {    
       state_UIPower = false; 
-      PORTB |= (1<<PB6);	               //digitalWrite(POWER_UI,HIGH); //turn off keypad
-	  detachInterrupt(1);	//disable the touch key interrupt
+      
+      detachInterrupt(1);    // disable the touch key interrupt
+      I2c.end();              // stop i2c
 
-		if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB connected
-		{
-			clear();
-			print("active");
-		}
-		else //battery power
-		{
-			PORTB &= ~ (1<<PB7);              //digitalWrite(KEY_PAD_LEDS,LOW); // turn off keypad LEDs
-		
-			 /* LCD SHUTDOWN
-				digitalWrite(A3,LOW);
-				digitalWrite(5,LOW);
-				digitalWrite(6,LOW);
-				digitalWrite(7,LOW);
-				digitalWrite(8,LOW);
-				digitalWrite(9,LOW);
-				analogWrite (10, 0);
-			*/
-		
-		    //     noDisplay(); //turn off LCD	
-		}
-	
-	  #ifdef SERIAL_DEBUG
-	  Serial.println("UI Off");
-	  #endif
-	 
+        //if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB connected
+        if(batteryPower() == false) //USB connected
+        {
+          //do nothing
+        }
+        else //battery power
+        {
+
+            // Prevent leakage current: Bring all pins connected to devices on Vsw to ground.
+            // Shutdown LCD
+            noDisplay();                 // clear output
+            digitalWrite(A3,LOW);        // LCD RS
+            digitalWrite(4,LOW);        // LCD RW
+            digitalWrite(5,LOW);        // LCD EN
+            digitalWrite(6,LOW);        // LCD DB4
+            digitalWrite(7,LOW);        // LCD DB5
+            digitalWrite(8,LOW);        // LCD DB6
+            digitalWrite(9,LOW);        // LCD DB7
+            analogWrite (10, 0);        // LCD Contrast PWM
+            // Shutdown main power to LCD and Touch IC
+            PORTB |= (1<<PB6);            // turn off Vsw_SW
+            // i2c pins SDA and SCL are already input with internal pullups disabled
+            // KEY_CHG interrupt is already input without pullup
+        }
+    
+      #ifdef SERIAL_DEBUG
+      Serial.println("UI Off");
+      #endif
+     
 
     }
 }
+
 
 /***********************************************************
 * 	   
@@ -457,20 +483,32 @@ void TTUI::uiPowerOff()
     }
   }
 
+/***********************************************************
+* 
+* batteryPower
+* 
+***********************************************************/
 boolean TTUI::batteryPower()  
 {
 		
 	  if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB connected
 	  {
+		onBatteryPower = false; 
 		return false;
 	  }
 	  else
 	  {
+		onBatteryPower = true; 
 		return true;
 	  }
 		
 }
 
+/***********************************************************
+* 
+* printMode
+* 
+***********************************************************/
 void TTUI::printMode(int row)
 {
 	char printBuffer[9];
@@ -483,6 +521,11 @@ void TTUI::printMode(int row)
 	#endif
 }
 
+/***********************************************************
+* 
+* printSelect
+* 
+***********************************************************/
 void TTUI::printSelect(int row)
 {
 		char printBuffer[9];
@@ -495,6 +538,11 @@ void TTUI::printSelect(int row)
 		#endif
 }
 
+/***********************************************************
+* 
+* printInc
+* 
+***********************************************************/
 void TTUI::printInc(int row,int incVal)
 {
 	char printBuffer[9];
@@ -508,7 +556,11 @@ void TTUI::printInc(int row,int incVal)
 	#endif
 }
 
-
+/***********************************************************
+* 
+* printDec
+* 
+***********************************************************/
 void TTUI::printDec(int row,int decVal)
 {
 	char printBuffer[9];
@@ -524,7 +576,7 @@ void TTUI::printDec(int row,int decVal)
 
 /***********************************************************
 * 	   
-* startHandler ISR
+* startDownHandler ISR
 *  
 ***********************************************************/
 void startDownHandler(void)
@@ -547,6 +599,11 @@ void startDownHandler(void)
 	
 }
 
+/***********************************************************
+* 
+* startUpHandler ISR
+* 
+***********************************************************/
 void startUpHandler(void)
 {
 

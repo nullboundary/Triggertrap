@@ -25,13 +25,10 @@
  * 
  ***********************************************************************************/
 
-#define SERIAL_DEBUG
-
 #include <LiquidCrystalFast.h>
 #include <I2C.h>
 #include <AtTouch.h>
 #include <Sleep.h>
-#include "globals.h"  //where all the pin name defines and variables are declared
 //#include <TTSensor.h>
 #include <TTUI.h>
 #include <laser.h>
@@ -41,6 +38,14 @@
 #include <timeLapse.h>
 #include <auxiliary.h>
 
+//#define SERIAL_DEBUG
+
+const int NUM_MODES = 5; //number of trigger modes
+const int TIMELAPSE_MODE = 3; 
+const int LASER_MODE = 0;
+const int SOUND_MODE = 1;
+const int LIGHT_MODE = 2;
+const int AUX_MODE = 4;
 
 
 TTUI tui;
@@ -51,6 +56,7 @@ Aux aux;
 TimeLapse timeLapse;
 
 
+
 /***********************************************************
  * 
  * Setup
@@ -58,7 +64,10 @@ TimeLapse timeLapse;
  ***********************************************************/
 void setup() {   
 
+  #ifdef SERIAL_DEBUG
   Serial.begin(9600);  
+  #endif
+  
   analogReference(INTERNAL);
 
   tui.setup(laser,mic,light,timeLapse,aux); //setup touch input buttons, and lcd menus
@@ -132,15 +141,17 @@ void timeLapseTrigger()
   timeLapse.setShutters(false,true);
   if(timeLapse.trigger() == true)
   {
-    
+    #ifdef SERIAL_DEBUG
     Serial.print(timeLapse.shotCount());
-
+    #endif
    
   }
   else
   {
+     #ifdef SERIAL_DEBUG
      //print remaining seconds, count down to shutter 
      Serial.println(timeLapse.countDown());
+     #endif
   }
 
 
@@ -151,7 +162,9 @@ void soundTrigger()
         mic.setShutters(true,false); //no focus, only shutter
 	if(mic.trigger() == true) //returns true if sound changes based on current mode type
 	{
+                #ifdef SERIAL_DEBUG
                 Serial.println("Focus");
+                #endif
 	}
 
 }
@@ -163,8 +176,9 @@ void lightTrigger()
 	if(light.trigger() == true) //returns true if sound changes based on current mode type
 	{
 
-
+                #ifdef SERIAL_DEBUG
                 Serial.println(light.sensorLevel());  
+                #endif
 
 	}
 

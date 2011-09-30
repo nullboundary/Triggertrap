@@ -17,21 +17,23 @@ void Sleep::setSleepMode(int mode)
 
 // EXT_INT_0 = 0, EXT_INT_1 = 1, WATCHDOG_TIMER = 2
 
-void Sleep::addWakeEvent(int interrupt,int interval)
+void Sleep::addWakeEvent(int interrupt,int intervalORMode)
 {
 
-	if(interrupt == EXT_INT_0)
+	if(interrupt == 0)
 	{
 		extInt0_ = true;
+		interruptMode_ = intervalORMode;
 	}
-	else if(interrupt == EXT_INT_1)
+	else if(interrupt == 1)
 	{
 		extInt1_ = true;
+		interruptMode_ = intervalORMode;
 	}
 	else if(interrupt == WATCH_DOG_TIMER)
 	{
 		watchDogTimeOut_ = true;
-		setWakeInterval(interval); 
+		setWakeInterval(intervalORMode); 
 	}
 
   	
@@ -88,15 +90,17 @@ void Sleep::sleepNow()
   //attach interrupts if desired, if no interrupts then reset with watchdog
   if(extInt0_ == true)
   {
-  	attachInterrupt(extInt0_,sleepHandler, LOW);
+	detachInterrupt(0);
+  	attachInterrupt(0,sleepHandler, interruptMode_);
 	wakeCheck = true;
   }
   else if(extInt1_ == true)
   {
-	attachInterrupt(extInt1_,sleepHandler, LOW);
+	detachInterrupt(1);
+	attachInterrupt(1,sleepHandler, interruptMode_);
 	wakeCheck = true;
   }
-  else if(watchDogTimeOut_)
+  else if(watchDogTimeOut_ == true)
   {
 	wakeCheck = true; 
   }	
@@ -118,12 +122,12 @@ void Sleep::sleepNow()
   
   if(extInt0_ == true)
   {
-  	detachInterrupt(extInt0_);
+  	detachInterrupt(0);
 	extInt0_ = false; 
   }
   else if(extInt1_ == true)
   {
-	detachInterrupt(extInt1_);
+	detachInterrupt(1);
 	extInt1_ = false; 
   }
 

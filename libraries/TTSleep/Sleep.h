@@ -86,6 +86,7 @@ private:
   boolean extInt0_;
   boolean extInt1_;
   boolean watchDogTimeOut_;
+  int interruptMode_; //Rising,Falling,LOW, HIGH
 
   void sleep_watchDog();
 

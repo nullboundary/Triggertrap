@@ -58,7 +58,7 @@ void AtTouch::begin(int interruptPin,boolean disableAutoCal){
 	
 
   I2c.begin(); 
-
+  I2c.pullup(0);	
   // reset device by writing non-zero value to register 0x39  
   I2c.beginTransmission(0x1B); // transmit to device 
   I2c.send(0x39);             // sets register pointer to the reset register (0x39)  
@@ -66,7 +66,7 @@ void AtTouch::begin(int interruptPin,boolean disableAutoCal){
   I2c.endTransmission();      // stop transmitting 
   delay(100); // wait for device to restart
   I2c.begin(); // re-open the i2c after device has restarted
-
+  I2c.pullup(0);
   if(disableAutoCal == true)
   {
 	delay(100);  

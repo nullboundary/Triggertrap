@@ -177,16 +177,37 @@ void resetShutter();
  ***********************************************************/
 void setShutters(boolean cameraA, boolean cameraB) { cameraA_ = cameraA; cameraB_ = cameraB; }
 
+/***********************************************************
+ * 
+ * saveState
+ *
+ * save all settings values to eeprom
+ * 
+ ***********************************************************/
 void saveState();
 
+/***********************************************************
+ * 
+ * restoreState
+ *
+ * restore all trigger settings from eeprom
+ * 
+ ***********************************************************/
 void restoreState();
 
+/***********************************************************
+ * 
+ * initState
+ *
+ * reset eeprom to default values for all trigger settings 
+ * 
+ ***********************************************************/
 void initState();
 
 protected: 
 	
   	
-  unsigned int optionValues[3];	
+  unsigned int optionValues[3];	//option menu settings values
   boolean triggerState_; //On or OFF, based on above or below the threshold
   byte select_; //trigger on START,STOP or CHANGE
   byte sensorLevel_; //incoming sensor value
@@ -204,11 +225,11 @@ protected:
   unsigned long delayCount; //when trigger is ready, start counting, till delay time is up
   unsigned long startBttnTime; //the time when the start button is pressed. 
 
-//values to save into eeprom
-struct __eeprom_data {
-  byte optionSelect;
-  unsigned int optionVal[3];
-};
+	//values to save into eeprom
+	struct __eeprom_data {
+	  byte optionSelect; //select_
+	  unsigned int optionVal[3]; //optionValues array
+	};
 
 /***********************************************************
  * 

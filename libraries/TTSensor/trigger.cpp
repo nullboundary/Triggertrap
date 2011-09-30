@@ -36,8 +36,8 @@
 const prog_char activeMessage[] PROGMEM= {"Armed"};
 
  //Option Menu default
- const prog_char trigType[] PROGMEM="type";
- const prog_char trigDelay[] PROGMEM="delay";
+const prog_char trigType[] PROGMEM="type";
+const prog_char trigDelay[] PROGMEM="delay";
 const prog_char trigThreshold[] PROGMEM = "threshld";
 
 const prog_char * selectMenu[] PROGMEM  = 	   //options menu
@@ -49,12 +49,12 @@ trigThreshold,
 
 
  //Value setting titles for values that are not just numbers (ex. type option)
- const prog_char onRise[] PROGMEM="On Rise";
- const prog_char onFall[] PROGMEM="On Fall";	
- const prog_char onChange[] PROGMEM="On Chnge";
+const prog_char onRise[] PROGMEM="On Rise";
+const prog_char onFall[] PROGMEM="On Fall";	
+const prog_char onChange[] PROGMEM="On Chnge";
 
 
- const prog_char * settingMenu[] PROGMEM  = 	   // select menu options
+const prog_char * settingMenu[] PROGMEM  = 	   // select menu options
 {   
 onRise,onFall,onChange
 };

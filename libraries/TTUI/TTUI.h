@@ -119,6 +119,13 @@ boolean trapActive() { return trapActive_; }
  ***********************************************************/	
 	void uiPowerOff();
 	
+/***********************************************************
+ * 
+ * batteryPower
+ *
+ * returns true if the device is running on battery power
+ * 
+ ***********************************************************/	
 boolean batteryPower();
 		
 
@@ -132,13 +139,13 @@ private:
 	
 	  Trigger *triggers[5]; //array of trigger object pointers
 	
-	  int activeRefreshTime;
+	  int activeRefreshTime; //time counter for refresh of LCD, during trigger active
 	  unsigned long 	previousMillis_UIPower; //time counter for powering down the leds and screen
 	  
 	  volatile boolean startBttnHold; //is the button held down or not? 
 	  volatile unsigned int holdBttnStart; //time in sec the bttn was first held down.
 	  boolean state_UIPower;	//UI power on, or off flag
-
+	  boolean onBatteryPower; //using battery power or usb?
 	  volatile unsigned long prevIntTime;  //debounce
  
 /***********************************************************
@@ -240,6 +247,13 @@ void printDec(int row, int decVal);
  ***********************************************************/
 void initStart(unsigned long startTime);
 
+/***********************************************************
+ * 
+ * resetCheck
+ *
+ * check to see if the start button is being held down, for eeprom reset 
+ * 
+ ***********************************************************/
 void resetCheck();
 
 };

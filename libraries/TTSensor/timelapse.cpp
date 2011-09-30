@@ -70,7 +70,10 @@ boolean TimeLapse::trigger()
 	{
 		  shutter(true); //set noDelay to true, delay is only for 1st shot
 			
-		  //sleepNow(elapsedTime); //sleep now if there is time left to sleep
+		  if(digitalRead(0) == LOW || digitalRead(1) == LOW) //Running on Battery Power
+	  	  {	
+		  	sleepNow(elapsedTime); //sleep now if there is time left to sleep
+		  }	
 			
 	  	  if (elapsedTime >= option(TIME_DELTA)) 
 		  {
@@ -109,28 +112,49 @@ int TimeLapse::countDown()
 
 }
 
+/***********************************************************
+ * 
+ * SleepNow
+ *
+ *  
+ * 
+ ***********************************************************/
 void TimeLapse::sleepNow(int elapsedTime)
 {
 	int remainTime = option(TIME_DELTA) - elapsedTime;
 	
+	sleep->pwrSaveMode();
+	sleep->addInterrupt0(FALLING); //startButton press down to cancel sleep
+	
 	if(remainTime > 8)
 	{
+		
 		sleep->addWatchDog(9); //8sec
+		 sleep->sleepNow(); //go to sleep
+		return;
 	}
 	else if(remainTime > 4)
 	{
 		sleep->addWatchDog(8); //4sec
+		 sleep->sleepNow(); //go to sleep
+		 return;
 	}
 	else if(remainTime > 2)
 	{
 		sleep->addWatchDog(7); //2sec
+		 sleep->sleepNow(); //go to sleep
+		return;
 	}
 	else if(remainTime > 1)
 	{
 		sleep->addWatchDog(6); //1sec
+		 sleep->sleepNow(); //go to sleep
+		return;
 	}
 	
-	   sleep->sleepNow(); //go to sleep
+	//less then 1sec, don't sleep
+	
+	  
 }
 
 /***********************************************************
