@@ -71,8 +71,8 @@
 	attachInterrupt(0,startDownHandler,FALLING); //trigger ISR function on start button press.
 	
 	//set UI Power
-	 DDRB |= (1<<PB7);   //pinMode(KEY_PAD_LEDS, OUTPUT);      // LED on UI
-	 DDRB |= (1<<PB6);   //pinMode(POWER_UI,OUTPUT);
+	 DDRB |= (1<<PORTB7);   //pinMode(KEY_PAD_LEDS, OUTPUT);      // LED on UI
+	 DDRB |= (1<<PORTB6);   //pinMode(POWER_UI,OUTPUT);
 	 state_UIPower = false; 
 	 uiPowerOn(); //turn on power at startup
 	 previousMillis_UIPower = 0; 
@@ -95,7 +95,7 @@
 	}
 	else
 	{
-		byte lcdContrast = 60; 
+		byte lcdContrast = 25; 
 		analogWrite (10, lcdContrast);
 		
 	}
@@ -106,10 +106,10 @@
   	// Print a message to the LCD.
   	print("Trigger");
 	setCursor(0,1);
-	print("Trap0v34");
+	print("Trap0v39");
 
     #ifdef SERIAL_DEBUG
-	Serial.println("TT 0v34");
+	Serial.println("TT 0v39");
     #endif
   }
 
@@ -385,7 +385,7 @@ void TTUI::uiPowerOn()
     {
           state_UIPower = true;     
 
-          PORTB &= ~ (1<<PB6);    // enable Vsw power to touch IC and LCD
+          PORTB &= ~ (1<<PORTB6);    // enable Vsw power to touch IC and LCD
           delay (150);             // wait for power to stabilize and hw to start
           touch.begin(KEY_CHANGE);         //re init touch keys
 
@@ -451,7 +451,7 @@ void TTUI::uiPowerOff()
             digitalWrite(9,LOW);        // LCD DB7
             analogWrite (10, 0);        // LCD Contrast PWM
             // Shutdown main power to LCD and Touch IC
-            PORTB |= (1<<PB6);            // turn off Vsw_SW
+            PORTB |= (1<<PORTB6);            // turn off Vsw_SW
             // i2c pins SDA and SCL are already input with internal pullups disabled
             // KEY_CHG interrupt is already input without pullup
         }

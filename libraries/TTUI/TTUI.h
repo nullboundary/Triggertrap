@@ -36,7 +36,7 @@
 #include <TTSensor.h>
 #include <WProgram.h>
 
-//#define SERIAL_DEBUG  //do you want status messages printed to serial? 
+#define SERIAL_DEBUG  //do you want status messages printed to serial? 
 
 const byte MODE_BTTN = 2; //mode bttn address
 const byte SELECT_BTTN = 3;//select bttn address

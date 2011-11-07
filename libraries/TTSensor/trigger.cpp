@@ -196,7 +196,7 @@ void Trigger::shutter(boolean noDelay)
 	
 			if(cameraA_ == true) //use cameraA?
 			{
-				PORTB |= (1<<PB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
+				PORTB |= (1<<PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
 				shutterDelay = millis();
 				shutterStateA_ = true;
 				digitalWrite(CAMERA_TRIGGER_A,LOW); //trigger camera
@@ -208,10 +208,13 @@ void Trigger::shutter(boolean noDelay)
 	
 			if(cameraB_ == true) //or use CameraB?
 			{
-				PORTB |= (1<<PB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
+				
+				PORTB |= (1<<PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
 				shutterDelay = millis(); 
 				shutterStateB_ = true;
 			 	digitalWrite(CAMERA_TRIGGER_B,LOW);
+	
+				IRShutter();
 	
 				#ifdef SERIAL_DEBUG
 				Serial.println("Shutter");
@@ -456,13 +459,21 @@ void Trigger::resetShutter()
 		#endif
 		
 		
-		PORTB &= ~ (1<<PB7);        //digitalWrite(KEY_PAD_LEDS,LOW); //turn off led
+		PORTB &= ~ (1<<PORTB7);        //digitalWrite(KEY_PAD_LEDS,LOW); //turn off led
 		shutterStateA_ = false;
 		digitalWrite(CAMERA_TRIGGER_A,HIGH);
 		shutterStateB_ = false; 
 		digitalWrite(CAMERA_TRIGGER_B,HIGH);
 	 }	
   }
+}
+
+void Trigger::IRShutter()
+{
+	for (int i = 0; i < 3; i++) {
+      irsend.sendSony(0xa90, 12); // Sony TV power code
+      delay(40);
+    }
 }
 
 /***********************************************************

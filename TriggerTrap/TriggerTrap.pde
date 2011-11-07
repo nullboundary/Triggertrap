@@ -29,6 +29,7 @@
 #include <I2C.h>
 #include <AtTouch.h>
 #include <Sleep.h>
+#include <IRremote.h>
 //#include <TTSensor.h>
 #include <TTUI.h>
 #include <laser.h>
@@ -38,7 +39,7 @@
 #include <timeLapse.h>
 #include <auxiliary.h>
 
-//#define SERIAL_DEBUG
+#define SERIAL_DEBUG
 
 const int NUM_MODES = 5; //number of trigger modes
 const int TIMELAPSE_MODE = 3; 
@@ -159,7 +160,7 @@ void timeLapseTrigger()
 
 void soundTrigger()
 {
-        mic.setShutters(true,false); //no focus, only shutter
+        mic.setShutters(true,true); //no focus, only shutter
 	if(mic.trigger() == true) //returns true if sound changes based on current mode type
 	{
                 #ifdef SERIAL_DEBUG
