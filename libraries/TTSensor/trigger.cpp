@@ -470,8 +470,20 @@ void Trigger::resetShutter()
 
 void Trigger::IRShutter()
 {
+	irsend.sendNEC(0x61DC807F,32); //RM-2 (olympus) is probably NEC protocol
+	
+	unsigned int MLL3Buffer[] = {2000,27830,390,1580,410,3580,400}; //shutter
+	for (int i = 0; i < 2; i++) {
+		irsend.sendRaw(MLL3Buffer,7,38); //ML-L3 (Nikon), Note no freq given, LLIRC default is 38
+		delay(63);
+	}
+	
+	unsigned int PentaxBuffer[] = {13000,3000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000}; //shutter
+		irsend.sendRaw(PentaxBuffer,16,38); //found here, not sure which pentax http://www.picbasic.co.uk/forum/showthread.php?t=14182
+	}
+	
 	for (int i = 0; i < 3; i++) {
-      irsend.sendSony(0xa90, 12); // Sony TV power code
+      irsend.sendRC6(0xa90, 12); // Sony TV power code
       delay(40);
     }
 }
