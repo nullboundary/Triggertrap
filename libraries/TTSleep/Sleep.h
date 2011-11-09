@@ -43,6 +43,8 @@ const int EXT_INT_1 = 1;
 const int WATCH_DOG_TIMER = 2;
 
 extern "C" void sleepHandler(void) __attribute__ ((signal)); 
+//extern "C" void WDT_vect(void) __attribute__ ((signal));
+
 
 class Sleep {
 

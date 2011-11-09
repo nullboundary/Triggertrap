@@ -52,6 +52,8 @@ public:
  ***********************************************************/
 	boolean trigger();
 	
+boolean delayFirstShot();
+	
 /***********************************************************
  * 
  * countDown
@@ -112,8 +114,11 @@ private:
 	
 void sleepNow(int elapsedTime);
 
-	  Sleep *sleep;
-	
+	//  Sleep *sleep;
+
+   
+ 
+	 int currentTime; //used to calculate the time from the watchdog + millis
 
 
 };

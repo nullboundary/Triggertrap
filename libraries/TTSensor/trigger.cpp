@@ -175,7 +175,7 @@ void Trigger::decOption(int menuOption, unsigned int maxValue, int dec)
  * 
  * 
  ***********************************************************/
-void Trigger::shutter(boolean noDelay)
+void Trigger::shutter(boolean delay)
 {
 	resetShutter(); //make the shutter close after 10ms delay
 	
@@ -186,8 +186,8 @@ void Trigger::shutter(boolean noDelay)
 		int delaySec = delayCount/1000;
 		int elapsed = currentTime - delaySec;
 
-	    //ready, but need to wait for delay timer, unless noDelay is true, then skip the delay
-		if(elapsed > option(TRIG_DELAY) || noDelay == true) 
+	    //ready, but need to wait for delay timer, unless delay is false, then skip the delay
+		if(elapsed > option(TRIG_DELAY) || delay == false) 
 		{
 			shotCounter_++; 
 			shutterReady = false; 
@@ -480,11 +480,13 @@ void Trigger::IRShutter()
 	
 	unsigned int PentaxBuffer[] = {13000,3000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000}; //shutter
 		irsend.sendRaw(PentaxBuffer,16,38); //found here, not sure which pentax, all? http://sourceforge.net/project/showfiles.php?group_id=131383
-	}
+	
 	
     irsend.sendRC6(0x0, 14); // Cannon RC-5 code for shutter, MAY work for RC-6
     
-	irsend.sendSony(0xB4B8F,20); // or maybe 0x7478F both found here: http://sebastian.setz.name/arduino/my-libraries/multi-camera-ir-control#comment-110
+	for (int i = 0; i < 3; i++) {
+		irsend.sendSony(0xB4B8F,20); // or maybe 0x7478F both found here: http://sebastian.setz.name/arduino/my-libraries/multi-camera-ir-control#comment-110
+	}
 }
 
 /***********************************************************

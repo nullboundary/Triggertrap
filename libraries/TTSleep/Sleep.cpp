@@ -49,6 +49,8 @@ void Sleep::addWakeEvent(int interrupt,int intervalORMode)
  *  6=1 sec,7=2 sec, 8=4 sec, 9= 8sec
  ***********************************************************/
 void Sleep::setWakeInterval(int interval) {
+  
+  cli();
 
   byte bb;
   int ww;
@@ -58,7 +60,6 @@ void Sleep::setWakeInterval(int interval) {
   bb|= (1<<WDCE);
   ww=bb;
   //Serial.println(ww);
-
 
   MCUSR &= ~(1<<WDRF);
   // start timed sequence
@@ -144,6 +145,6 @@ void sleepHandler(void)
 
 ISR(WDT_vect) 
 { 
- 	wdt_disable();
+ 	wdt_reset();
 }
 

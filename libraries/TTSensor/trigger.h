@@ -38,6 +38,8 @@
 #include <avr/pgmspace.h>
 #include <avr/eeprom.h>
 #include <IRremote.h>
+
+//Eeprom read/write Macros
 #define eeprom_read_to(dst_p, eeprom_field, dst_size) eeprom_read_block(dst_p, (void *)offsetof(__eeprom_data, eeprom_field), MIN(dst_size, sizeof((__eeprom_data*)0)->eeprom_field))
 #define eeprom_read(dst, eeprom_field) eeprom_read_to(&dst, eeprom_field, sizeof(dst))
 #define eeprom_write_from(src_p, eeprom_field, src_size) eeprom_write_block(src_p, (void *)offsetof(__eeprom_data, eeprom_field), MIN(src_size, sizeof((__eeprom_data*)0)->eeprom_field))
@@ -94,7 +96,7 @@ virtual boolean trigger() = 0;
  *  Take the picture, bring shutterA and/or B low
  * 
  ***********************************************************/
-void shutter(boolean noDelay=false);
+void shutter(boolean delay=true);
 
 /***********************************************************
  * 

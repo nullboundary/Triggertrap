@@ -36,10 +36,25 @@ TimeLapse::TimeLapse(){
 		setOption(TIME_NUMSHOTS,0); //set #shots to 0
 		delayCount = 0; 
 		select_ = 0;  //set 
-		Sleep sl;
-		sleep = &sl;
+//		Sleep sl;
+//		sleep = &sl;
 	  	
 	
+}
+
+boolean TimeLapse::delayFirstShot()
+{	
+	if(shotCounter_ < 1) //first shot happens RIGHT away on start button press, unless delayed
+	{
+			if(delayCount == 0) { delayCount = millis(); } //set this only the first time through the loop
+			shutterReady = true; //if delay is up, take the first shot, 
+			shutter(true); //set delay to true, we want delay
+			return true; 
+	}
+	else
+	{
+			return false; 
+	}
 }
 
 /***********************************************************
@@ -51,44 +66,49 @@ TimeLapse::TimeLapse(){
  ***********************************************************/
 boolean TimeLapse::trigger()
 {
+	//delay first shot
+	//take new shot at each interval
+	//sleep if in battery mode
+	//stop if past shotcount
+	int remainTime;
 	//don't allow zero time delta. Will crash the device
 	if(option(TIME_DELTA) == 0) { incOption(TIME_DELTA,1); }
    
-	boolean initDelayActive = true;
-	int currentTime = millis()/1000;
-	int elapsedTime = currentTime - startBttnTime/1000;
 
-	if(shotCounter_ < 1)
+	if(delayFirstShot() == true)
 	{
-			if(delayCount == 0) { delayCount = millis(); } //set this only the first time through the loop
-			startBttnTime = millis(); //reset startBttnTime, so interval starts here
-			shutterReady = true; //if delay is up, take the first shot
-			shutter(false); 
-			return false; 
+		return true;
 	}
-	else //run normal after the first shot
-	{
-		  shutter(true); //set noDelay to true, delay is only for 1st shot
+
+	remainTime = countDown(); //get the remaining time to next shot
+
+	shutter(false); //delay to false, delay is only for 1st shot
 			
-		  if(digitalRead(0) == LOW || digitalRead(1) == LOW) //Running on Battery Power
-	  	  {	
-		  	sleepNow(elapsedTime); //sleep now if there is time left to sleep
-		  }	
+	 if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB
+	 {
+	
+	 }
+	 else
+	  {
+			sleepNow(remainTime); //sleep now if there is time left to sleep
+	  }
 			
-	  	  if (elapsedTime >= option(TIME_DELTA)) 
-		  {
+			
+	  if (remainTime < 1) 
+	  {
 			//times up,take a shot
 			delayCount = millis(); //start counting till delay is up
 
-			startBttnTime = delayCount; //don't call millis twice, just use delayCount, same value.
+			startBttnTime = delayCount; //don't call millis twice, just use delayCount, reset startButtnTime
+			currentTime = startBttnTime/1000;
 			shutterReady = true;
 			return shutterReady;
-		  }
-		  else
-		  {
-			return false; 
-		  }
-	}
+	  }
+	  else
+	  {
+		return false; 
+	  }
+
 
 
 	
@@ -103,9 +123,31 @@ boolean TimeLapse::trigger()
  ***********************************************************/
 int TimeLapse::countDown()
 {
-	int currentTime = millis()/1000;
-	int elapsedTime = currentTime - startBttnTime/1000;
-	int remainTime = option(TIME_DELTA) - elapsedTime;
+	
+	 if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB connected
+	 {
+		if(shotCounter_ < 1)
+		{
+			startBttnTime = millis(); //reset startBttnTime, so interval starts here
+		}
+		currentTime = millis()/1000;
+	 }	
+	 else
+	 {
+	 
+		if(shotCounter_ < 1)
+		{
+			startBttnTime = millis(); //reset startBttnTime, so interval starts here
+			currentTime = startBttnTime/1000; //set it the same, for use with sleep watchdog, reset if not using sleep
+		}
+	}	
+	
+
+	
+      int elapsedTime = currentTime - startBttnTime/1000;
+	Serial.print("elapsed:");
+	Serial.println(elapsedTime);
+	  int remainTime = option(TIME_DELTA) - elapsedTime;
 	
 
 	return remainTime;
@@ -119,36 +161,53 @@ int TimeLapse::countDown()
  *  
  * 
  ***********************************************************/
-void TimeLapse::sleepNow(int elapsedTime)
+void TimeLapse::sleepNow(int remainTime)
 {
-	int remainTime = option(TIME_DELTA) - elapsedTime;
+//	int remainTime = option(TIME_DELTA) - elapsedTime;
 	
-	sleep->pwrSaveMode();
-	sleep->addInterrupt0(FALLING); //startButton press down to cancel sleep
+	Sleep sleep;
+	
+	sleep.pwrSaveMode();
+	//sleep.addInterrupt0(FALLING); //startButton press down to cancel sleep
 	
 	if(remainTime > 8)
 	{
+		Serial.println("sleeping for: 8 sec");   
+		delay(100);
+		currentTime = currentTime + 8;
 		
-		sleep->addWatchDog(9); //8sec
-		 sleep->sleepNow(); //go to sleep
+		 
+			
+		sleep.addWatchDog(9); //8sec
+		sleep.sleepNow(); //go to sleep
 		return;
 	}
 	else if(remainTime > 4)
 	{
-		sleep->addWatchDog(8); //4sec
-		 sleep->sleepNow(); //go to sleep
+		Serial.println("sleeping for: 4 sec");
+	                 delay(100);
+	//	currentTime = currentTime + millis()/1000; 
+	    currentTime = currentTime + 4;
+		sleep.addWatchDog(8); //4sec
+		 sleep.sleepNow(); //go to sleep
 		 return;
 	}
 	else if(remainTime > 2)
 	{
-		sleep->addWatchDog(7); //2sec
-		 sleep->sleepNow(); //go to sleep
+//	   currentTime = currentTime + millis()/1000; 
+	   currentTime = currentTime + 2;
+		sleep.addWatchDog(7); //2sec
+		 sleep.sleepNow(); //go to sleep
 		return;
 	}
 	else if(remainTime > 1)
 	{
-		sleep->addWatchDog(6); //1sec
-		 sleep->sleepNow(); //go to sleep
+		Serial.println("sleeping for: 1 sec");
+		                 delay(100);
+//		currentTime = currentTime + millis()/1000; 
+		currentTime = currentTime + 1;
+		sleep.addWatchDog(6); //1sec
+		 sleep.sleepNow(); //go to sleep
 		return;
 	}
 	
