@@ -39,7 +39,8 @@
 #include <timeLapse.h>
 #include <auxiliary.h>
 
-#define SERIAL_DEBUG
+//#define SERIAL_DEBUG
+
 
 const int NUM_MODES = 5; //number of trigger modes
 const int TIMELAPSE_MODE = 3; 
@@ -67,6 +68,14 @@ void setup() {
 
   #ifdef SERIAL_DEBUG
   Serial.begin(9600);  
+  #endif
+  
+  #ifndef SERIAL_DEBUG
+      // USB Serial port configure as input, disable pullup
+      pinMode (0, INPUT);
+      pinMode (1, INPUT);
+      digitalWrite(0, LOW);
+      digitalWrite(1, LOW);
   #endif
   
   analogReference(INTERNAL);

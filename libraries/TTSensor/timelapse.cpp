@@ -89,8 +89,11 @@ boolean TimeLapse::trigger()
 	
 	 }
 	 else
-	  {
+  	 {
+		if(shutterStateA_ == false && shutterStateB_ == false) //don't sleep if shutter is triggered
+		{
 			sleepNow(remainTime); //sleep now if there is time left to sleep
+		}	
 	  }
 			
 			
@@ -100,7 +103,7 @@ boolean TimeLapse::trigger()
 			delayCount = millis(); //start counting till delay is up
 
 			startBttnTime = delayCount; //don't call millis twice, just use delayCount, reset startButtnTime
-			currentTime = startBttnTime/1000;
+			timelapseCountDown = startBttnTime/1000;
 			shutterReady = true;
 			return shutterReady;
 	  }
@@ -130,7 +133,7 @@ int TimeLapse::countDown()
 		{
 			startBttnTime = millis(); //reset startBttnTime, so interval starts here
 		}
-		currentTime = millis()/1000;
+		timelapseCountDown = millis()/1000;
 	 }	
 	 else
 	 {
@@ -138,15 +141,14 @@ int TimeLapse::countDown()
 		if(shotCounter_ < 1)
 		{
 			startBttnTime = millis(); //reset startBttnTime, so interval starts here
-			currentTime = startBttnTime/1000; //set it the same, for use with sleep watchdog, reset if not using sleep
+			timelapseCountDown = startBttnTime/1000; //set it the same, for use with sleep watchdog, reset if not using sleep
 		}
 	}	
 	
 
 	
-      int elapsedTime = currentTime - startBttnTime/1000;
-	Serial.print("elapsed:");
-	Serial.println(elapsedTime);
+      int elapsedTime = timelapseCountDown - startBttnTime/1000;
+
 	  int remainTime = option(TIME_DELTA) - elapsedTime;
 	
 
@@ -172,43 +174,54 @@ void TimeLapse::sleepNow(int remainTime)
 	
 	if(remainTime > 8)
 	{
+		#ifdef SERIAL_DEBUG
 		Serial.println("sleeping for: 8 sec");   
 		delay(100);
-		currentTime = currentTime + 8;
-		
-		 
-			
+		#endif
+		timelapseCountDown = timelapseCountDown + 8;	
 		sleep.addWatchDog(9); //8sec
 		sleep.sleepNow(); //go to sleep
 		return;
 	}
 	else if(remainTime > 4)
 	{
+		#ifdef SERIAL_DEBUG
 		Serial.println("sleeping for: 4 sec");
-	                 delay(100);
-	//	currentTime = currentTime + millis()/1000; 
-	    currentTime = currentTime + 4;
+		delay(100);
+		#endif
+	//	timelapseCountDown = timelapseCountDown + millis()/1000; 
+	    timelapseCountDown = timelapseCountDown + 4;
 		sleep.addWatchDog(8); //4sec
 		 sleep.sleepNow(); //go to sleep
 		 return;
 	}
 	else if(remainTime > 2)
 	{
-//	   currentTime = currentTime + millis()/1000; 
-	   currentTime = currentTime + 2;
+	   	#ifdef SERIAL_DEBUG
+		Serial.println("sleeping for: 2 sec");
+		delay(100);
+		#endif	
+	   timelapseCountDown = timelapseCountDown + 2;
 		sleep.addWatchDog(7); //2sec
 		 sleep.sleepNow(); //go to sleep
 		return;
 	}
 	else if(remainTime > 1)
 	{
+		#ifdef SERIAL_DEBUG
 		Serial.println("sleeping for: 1 sec");
-		                 delay(100);
-//		currentTime = currentTime + millis()/1000; 
-		currentTime = currentTime + 1;
+		delay(100);
+		#endif
+//		timelapseCountDown = timelapseCountDown + millis()/1000; 
+		timelapseCountDown = timelapseCountDown + 1;
 		sleep.addWatchDog(6); //1sec
 		 sleep.sleepNow(); //go to sleep
 		return;
+	}
+	else //if 1 sec left
+	{
+		timelapseCountDown = timelapseCountDown + 1; 
+		
 	}
 	
 	//less then 1sec, don't sleep

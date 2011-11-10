@@ -118,7 +118,6 @@ void sleepNow(int elapsedTime);
 
    
  
-	 int currentTime; //used to calculate the time from the watchdog + millis
 
 
 };

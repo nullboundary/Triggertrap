@@ -236,6 +236,8 @@ protected:
   unsigned long shutterDelay; //keep track of the time the shutter has been low
   unsigned long delayCount; //when trigger is ready, start counting, till delay time is up
   unsigned long startBttnTime; //the time when the start button is pressed. 
+  int timelapseCountDown; //used to calculate the time from the watchdog + millis
+
 
    IRsend irsend;
 	//values to save into eeprom

@@ -585,8 +585,10 @@ void Trigger::initState()
  * 
  ***********************************************************/
 void Trigger::start(unsigned long startTime)
-{
+{ 
+	Serial.println("shotCounter=0");
 	shotCounter_ = 0; //reset shot count. 
+	timelapseCountDown = 0; 
 	startBttnTime = startTime; 
 	delayCount = 0; 
 }

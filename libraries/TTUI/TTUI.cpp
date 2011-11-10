@@ -583,17 +583,12 @@ void startDownHandler(void)
 {
 	  //maybe most of this stuff should happen in loop? (speed ok..but maybe better outside?)
 	  unsigned long currentTime = millis();
-	  // debounce that button! 
-	  if (currentTime - TTUI::pTTUI->prevIntTime > 130) //debounce 130ms
-	  {
+
 	    detachInterrupt(0);
 		attachInterrupt(0,startUpHandler,RISING); //trigger ISR function on start button press.
 		TTUI::pTTUI->startBttnHold = true;
 		TTUI::pTTUI->holdBttnStart = currentTime/1000;
-	
-	  }
-	    TTUI::pTTUI->prevIntTime = currentTime;
-	
+		
 	
 	
 	
@@ -608,9 +603,7 @@ void startUpHandler(void)
 {
 
 	  unsigned long currentTime = millis();
-	  // debounce that button! 
-	  if (currentTime - TTUI::pTTUI->prevIntTime > 130) //debounce 130ms
-	  {
+
 		detachInterrupt(0);
 		attachInterrupt(0,startDownHandler,FALLING); //trigger ISR function on start button press.
 		
@@ -619,9 +612,7 @@ void startUpHandler(void)
 			TTUI::pTTUI->initStart(currentTime);
 		}
 		TTUI::pTTUI->startBttnHold = false;
-		
-	  }
-	    TTUI::pTTUI->prevIntTime = currentTime;
+	
 	
 	
 }
