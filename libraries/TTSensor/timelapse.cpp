@@ -70,41 +70,45 @@ boolean TimeLapse::trigger()
 	//take new shot at each interval
 	//sleep if in battery mode
 	//stop if past shotcount
-	int remainTime;
+	unsigned long remainTime;
 	//don't allow zero time delta. Will crash the device
 	if(option(TIME_DELTA) == 0) { incOption(TIME_DELTA,1); }
    
+    remainTime = countDown(); //get the remaining time to next shot
 
+    //-------------Delay
 	if(delayFirstShot() == true)
 	{
 		return true;
 	}
 
-	remainTime = countDown(); //get the remaining time to next shot
 
-	shutter(false); //delay to false, delay is only for 1st shot
+	shutter(false); //trigger shutter if shutterReady = true, set delay to false
 			
-	 if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB
-	 {
 	
-	 }
-	 else
-  	 {
+	//----------Sleep		
+	if(batteryPower() == true)
+	{
 		if(shutterStateA_ == false && shutterStateB_ == false) //don't sleep if shutter is triggered
 		{
+		//	Serial.println("sleepNow");
 			sleepNow(remainTime); //sleep now if there is time left to sleep
+			remainTime = 0;
+		//	Serial.print("remainT:");
+		//	Serial.println(remainTime);
 		}	
-	  }
+	}
 			
-			
-	  if (remainTime < 1) 
+		
+	 //---------- Shutter		
+	  if (remainTime <= 1) 
 	  {
 			//times up,take a shot
 			delayCount = millis(); //start counting till delay is up
 
 			startBttnTime = delayCount; //don't call millis twice, just use delayCount, reset startButtnTime
-			timelapseCountDown = startBttnTime/1000;
-			shutterReady = true;
+			timelapseCountDown = startBttnTime; 
+			shutterReady = true; //set shutter ready, will activate shutter next time through loop
 			return shutterReady;
 	  }
 	  else
@@ -124,37 +128,60 @@ boolean TimeLapse::trigger()
  *  
  * 
  ***********************************************************/
-int TimeLapse::countDown()
+unsigned long TimeLapse::countDown()
 {
 	
-	 if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB connected
+	 
+	 if(batteryPower() == true) 
 	 {
-		if(shotCounter_ < 1)
-		{
-			startBttnTime = millis(); //reset startBttnTime, so interval starts here
-		}
-		timelapseCountDown = millis()/1000;
+			if(shotCounter_ < 1)
+			{
+				startBttnTime = millis(); //reset startBttnTime, so interval starts here
+			//	timelapseCountDown = startBttnTime; //set it the same, for use with sleep watchdog, reset if not using sleep
+			}	
+			timelapseCountDown = millis();
+	
 	 }	
-	 else
+	 else //USB connected
 	 {
 	 
-		if(shotCounter_ < 1)
-		{
-			startBttnTime = millis(); //reset startBttnTime, so interval starts here
-			timelapseCountDown = startBttnTime/1000; //set it the same, for use with sleep watchdog, reset if not using sleep
-		}
-	}	
+			if(shotCounter_ < 1)
+			{
+				startBttnTime = millis(); //reset startBttnTime, so interval starts here
+				
+			}
+			timelapseCountDown = millis();
+			
+	
+	 }	
 	
 
-	
-      int elapsedTime = timelapseCountDown - startBttnTime/1000;
-
-	  int remainTime = option(TIME_DELTA) - elapsedTime;
+      unsigned long elapsedTime = timelapseCountDown - startBttnTime;
+	  unsigned long remainTime = option(TIME_DELTA)*1000 - elapsedTime;
 	
 
 	return remainTime;
 
 }
+
+int TimeLapse::countDownInt()
+{
+	int countInt = (int) countDown()/1000;
+	return countInt;
+}
+
+boolean TimeLapse::batteryPower()
+{
+	if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB connected
+	{
+		return false; //USB
+	}
+	else
+	{
+		return true; //battery
+	}
+}
+
 
 /***********************************************************
  * 
@@ -163,69 +190,76 @@ int TimeLapse::countDown()
  *  
  * 
  ***********************************************************/
-void TimeLapse::sleepNow(int remainTime)
+void TimeLapse::sleepNow(unsigned long remainTime)
 {
 //	int remainTime = option(TIME_DELTA) - elapsedTime;
 	
 	Sleep sleep;
 	
-	sleep.pwrSaveMode();
+	sleep.idleMode();
+	
+	sleep.calibrateTime();
+	sleep.sleepDelay(remainTime);
+	
+	
+/*
 	//sleep.addInterrupt0(FALLING); //startButton press down to cancel sleep
 	
-	if(remainTime > 8)
+	if(remainTime > 8000)
 	{
 		#ifdef SERIAL_DEBUG
 		Serial.println("sleeping for: 8 sec");   
 		delay(100);
 		#endif
-		timelapseCountDown = timelapseCountDown + 8;	
+		
+		timelapseCountDown = timelapseCountDown + 8400;//add 2 ds for mcu wake time	
 		sleep.addWatchDog(9); //8sec
 		sleep.sleepNow(); //go to sleep
 		return;
 	}
-	else if(remainTime > 4)
+	else if(remainTime > 4000)
 	{
 		#ifdef SERIAL_DEBUG
 		Serial.println("sleeping for: 4 sec");
 		delay(100);
 		#endif
 	//	timelapseCountDown = timelapseCountDown + millis()/1000; 
-	    timelapseCountDown = timelapseCountDown + 4;
+	    timelapseCountDown = timelapseCountDown + 4400;//decisecond
 		sleep.addWatchDog(8); //4sec
 		 sleep.sleepNow(); //go to sleep
 		 return;
 	}
-	else if(remainTime > 2)
+	else if(remainTime > 2000)
 	{
 	   	#ifdef SERIAL_DEBUG
 		Serial.println("sleeping for: 2 sec");
 		delay(100);
 		#endif	
-	   timelapseCountDown = timelapseCountDown + 2;
+	   timelapseCountDown = timelapseCountDown + 2400;//ds
 		sleep.addWatchDog(7); //2sec
 		 sleep.sleepNow(); //go to sleep
 		return;
 	}
-	else if(remainTime > 1)
+	else if(remainTime > 1000)
 	{
 		#ifdef SERIAL_DEBUG
 		Serial.println("sleeping for: 1 sec");
 		delay(100);
 		#endif
 //		timelapseCountDown = timelapseCountDown + millis()/1000; 
-		timelapseCountDown = timelapseCountDown + 1;
+		timelapseCountDown = timelapseCountDown + 1400;//ds
 		sleep.addWatchDog(6); //1sec
 		 sleep.sleepNow(); //go to sleep
 		return;
 	}
 	else //if 1 sec left
 	{
-		timelapseCountDown = timelapseCountDown + 1; 
+		timelapseCountDown = timelapseCountDown + 1000; 
 		
 	}
 	
 	//less then 1sec, don't sleep
-	
+*/	
 	  
 }
 
@@ -329,7 +363,7 @@ void TimeLapse::getActiveMessage(char buffer[])
 {
 	buffer[0] = 0;
 	
-	itoa (countDown(),buffer,10);
+	itoa (countDownInt(),buffer,10);
 	
 	
 }

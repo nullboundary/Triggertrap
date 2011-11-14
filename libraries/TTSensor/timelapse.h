@@ -34,7 +34,7 @@
 //#include "globals.h"
 #include "trigger.h"
 #include <WProgram.h>
-#include <Sleep.h>
+#include <TTSleep.h>
 
 class TimeLapse : public Trigger{
 
@@ -50,9 +50,11 @@ public:
  *  returns true or false based on whether its time to take a picture
  * 
  ***********************************************************/
-	boolean trigger();
+boolean trigger();
 	
 boolean delayFirstShot();
+
+boolean batteryPower();
 	
 /***********************************************************
  * 
@@ -61,7 +63,9 @@ boolean delayFirstShot();
  *  returns remaining time till trigger
  * 
  ***********************************************************/
-	int countDown(); 
+	unsigned long countDown(); 
+	
+	int countDownInt();
 
 /***********************************************************
  * 
@@ -111,8 +115,8 @@ private:
  * 
  ***********************************************************/
 	void startTimer();
-	
-void sleepNow(int elapsedTime);
+
+void sleepNow(unsigned long elapsedTime);
 
 	//  Sleep *sleep;
 
