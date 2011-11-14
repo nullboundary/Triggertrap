@@ -343,8 +343,17 @@ void Trigger::decSetting(char buffer[], int dec)
 	      break;
 	    case TRIG_DELAY:
 	      decOption(TRIG_DELAY, 54000,dec);
-	      formatTimeString(option(TRIG_DELAY),buffer);
-	 	  //itoa (option(TRIG_DELAY),buffer,10);
+	      if(option(TRIG_DELAY) == 0) //delay 0 is infinity 
+		  {
+				buffer[0] = 0;
+				strcat(buffer,"off");
+				strcat(buffer,"\0");
+		  }
+		  else
+		  {
+	      	formatTimeString(option(TRIG_DELAY),buffer);
+ 	  	  }
+		  //itoa (option(TRIG_DELAY),buffer,10);
 	      break;
 	    case TRIG_THRESHOLD:
 	      decOption(TRIG_THRESHOLD, 255,dec); 
@@ -375,8 +384,17 @@ void Trigger::incSetting(char buffer[], int inc)
 	      break;
 	    case TRIG_DELAY:
 	      incOption(TRIG_DELAY, 54000,inc);
-		  formatTimeString(option(TRIG_DELAY),buffer);
-	 	  //itoa (option(TRIG_DELAY),buffer,10);
+		  if(option(TRIG_DELAY) == 0) //delay 0 is infinity 
+		  {
+				buffer[0] = 0;
+				strcat(buffer,"off");
+				strcat(buffer,"\0");
+		  }
+		  else
+		  {
+		  	formatTimeString(option(TRIG_DELAY),buffer);
+	 	  }
+		  //itoa (option(TRIG_DELAY),buffer,10);
 	      break;
 	    case TRIG_THRESHOLD:
 	      incOption(TRIG_THRESHOLD, 255,inc); 
@@ -468,6 +486,13 @@ void Trigger::resetShutter()
   }
 }
 
+/***********************************************************
+ * 
+ * IRShutter
+ *
+ * 
+ * 
+ ***********************************************************/
 void Trigger::IRShutter()
 {
 	irsend.sendNEC(0x61DC807F,32); //RM-2 (olympus) is probably NEC protocol
@@ -586,9 +611,8 @@ void Trigger::initState()
  ***********************************************************/
 void Trigger::start(unsigned long startTime)
 { 
-	Serial.println("shotCounter=0");
+
 	shotCounter_ = 0; //reset shot count. 
-	timelapseCountDown = 0; 
 	startBttnTime = startTime; 
 	delayCount = 0; 
 }

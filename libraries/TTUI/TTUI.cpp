@@ -184,6 +184,38 @@ void TTUI::update()
    
 
 }
+
+/***********************************************************
+* 
+* updateActive
+* 
+***********************************************************/
+void TTUI::updateActive()
+{
+	
+		if(batteryPower() == false) //USB connected
+		{
+			//only update LCD every 200ms
+			int now = millis()/100; //100 ms 
+			int elapsed = now - activeRefreshTime;
+			
+			if(elapsed > 2)  //200ms
+			{
+				activeRefreshTime = now;
+				
+				clear();
+				
+				printMode(0);
+			
+				char printBuffer[9];
+				triggers[currentTrigger]->getActiveMessage(printBuffer);
+				setCursor(0,1);
+				print(printBuffer);
+			}	
+		}
+	
+}
+
 /***********************************************************
 * 
 * resetCheck
@@ -228,35 +260,7 @@ void TTUI::resetCheck()
 		
 }
 
-/***********************************************************
-* 
-* updateActive
-* 
-***********************************************************/
-void TTUI::updateActive()
-{
-		if(batteryPower() == false) //USB connected
-		{
-			//only update LCD every 300ms
-			int now = millis()/100; //100 ms 
-			int elapsed = now - activeRefreshTime;
-			
-			if(elapsed > 3)  //300ms
-			{
-				activeRefreshTime = now;
-				
-				clear();
-				
-				printMode(0);
-			
-				char printBuffer[9];
-				triggers[currentTrigger]->getActiveMessage(printBuffer);
-				setCursor(0,1);
-				print(printBuffer);
-			}	
-		}
-	
-}
+
 
 /***********************************************************
 * 

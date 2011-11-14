@@ -156,13 +156,7 @@ void timeLapseTrigger()
     #endif
    
   }
-  else
-  {
-     #ifdef SERIAL_DEBUG
-     //print remaining seconds, count down to shutter 
-     Serial.println(timeLapse.countDown());
-     #endif
-  }
+
 
 
 }

@@ -63,8 +63,8 @@ Sleep();
 	void standbyMode(){setSleepMode(SLEEP_MODE_STANDBY);}
 	void pwrDownMode(){setSleepMode(SLEEP_MODE_PWR_DOWN);}
 
-	void sleepDelay(unsigned long sleepTime);
-	void calibrateTime(); //calibrate the time keeping difference between WDT and Timer0
+	void sleepDelay(unsigned long sleepTime,int shotCount);
+	void calibrateTime(unsigned long sleepTime); //calibrate the time keeping difference between WDT and Timer0
 	unsigned long WDTMillis();	//estimated millis based on WDT during sleep. 
 	
    

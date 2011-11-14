@@ -6,7 +6,7 @@ Sleep::Sleep()
 {
 	pSleep = this;	//the ptr points to this object
 	timeSleep = 0;  // total time due to sleep
-	calibv = 0.93; // ratio of real clock with WDT clock
+	calibv = 1.0; // ratio of real clock with WDT clock
 	byte isrcalled = 0;  // WDT vector flag
 
 }
@@ -17,13 +17,16 @@ void Sleep::setSleepMode(int mode)
 }
 
 // Calibrate watchdog timer with millis() timer(timer0)
-void Sleep::calibrateTime() {
+void Sleep::calibrateTime(unsigned long sleepTime) {
   // timer0 continues to run in idle sleep mode
   set_sleep_mode(SLEEP_MODE_IDLE);
   long tt1=millis();
-  sleepNow(256);
+  sleepNow(sleepTime);
   long tt2=millis();
-  calibv = 256.0/(tt2-tt1);
+
+  calibv = (float) sleepTime/(tt2-tt1);
+  
+  //Serial.println(calibv);
 }
 
 // Estimated millis is real clock + calibrated sleep time
@@ -32,17 +35,24 @@ unsigned long Sleep::WDTMillis() {
 }
 
 // Delay function
-void Sleep::sleepDelay(unsigned long sleepTime) {
- // ADCSRA &= ~(1<<ADEN);  // adc off
- // PRR = 0xEF; // modules off
-
-  set_sleep_mode(sleepMode_);
-  //int trem = sleepNow(sleepTime*calibv);  //there is something wrong here, calv is subtracting too much time, off by a factor of 10?
-   int trem = sleepNow(sleepTime); 
-  timeSleep += (sleepTime-trem);
-
- // PRR = 0x00; //modules on
- // ADCSRA |= (1<<ADEN);  // adc on
+void Sleep::sleepDelay(unsigned long sleepTime,int shotCount) {
+  ADCSRA &= ~(1<<ADEN);  // adc off
+   // PRR = 0xEF; // modules off
+  
+  int modShot = shotCount % 100; //recalibrate every 100
+  if(modShot == 1)
+  {
+	calibrateTime(sleepTime);
+  }
+  else
+  {
+  	set_sleep_mode(sleepMode_);
+  	//int trem = sleepNow(sleepTime*calibv);  //there is something wrong here, calv is subtracting too much time, off by a factor of 10?
+  	int trem = sleepNow(sleepTime*calibv); 
+  	timeSleep += (sleepTime-trem);
+  }
+  // PRR = 0x00; //modules on
+ ADCSRA |= (1<<ADEN);  // adc on
 }
 
 // internal function.  
@@ -52,8 +62,6 @@ int Sleep::sleepNow(unsigned long remainTime) {
   isrcalled = 0;
   sleep_enable();
   while(remainTime > 0) {
-	Serial.println(remainTime);
-	delay(100);
     //work out next prescale unit to use
     while ((0x10<<WDTps) > remainTime && WDTps > 0) {
       WDTps--;
