@@ -192,14 +192,17 @@ void TTUI::update()
 ***********************************************************/
 void TTUI::updateActive()
 {
-	
-		if(batteryPower() == false) //USB connected
+		if(triggers[currentTrigger]->stop() == true) //stop the UI if the trigger requests a stop
 		{
-			//only update LCD every 200ms
+			initStart(millis());
+		}
+		else if(batteryPower() == false) //USB connected
+		{
+			//only update LCD every 300ms
 			int now = millis()/100; //100 ms 
 			int elapsed = now - activeRefreshTime;
 			
-			if(elapsed > 2)  //200ms
+			if(elapsed > 3)  //300ms
 			{
 				activeRefreshTime = now;
 				
@@ -213,6 +216,8 @@ void TTUI::updateActive()
 				print(printBuffer);
 			}	
 		}
+		
+	
 	
 }
 

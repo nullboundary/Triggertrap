@@ -4,7 +4,7 @@
 const prog_char timeMenu[] PROGMEM= {"TimeLaps"};
 
  //option Menu titles
-const prog_char delta[] PROGMEM="delta";
+const prog_char delta[] PROGMEM="interval";
 const prog_char startdelay[] PROGMEM="delay";
 const prog_char numShots[] PROGMEM = "#shots";
 
@@ -30,7 +30,7 @@ const int TIME_NUMSHOTS = 2;
 TimeLapse::TimeLapse(){
 	
 	    triggerState_ = false; //off
-
+		abortTrigger = false; 
 		setOption(TIME_DELTA,0);    //set time delta to 0
 		setOption(TIME_DELAY,0);    //set time delay to 0
 		setOption(TIME_NUMSHOTS,0); //set #shots to 0
@@ -41,6 +41,13 @@ TimeLapse::TimeLapse(){
 	
 }
 
+/***********************************************************
+ * 
+ * delayFirstShot
+ *
+ *  
+ * 
+ ***********************************************************/
 boolean TimeLapse::delayFirstShot()
 {	
 	if(shotCounter_ < 1) //first shot happens RIGHT away on start button press, unless delayed
@@ -69,7 +76,17 @@ boolean TimeLapse::trigger()
 	unsigned long remainTime;
 	//don't allow zero time delta. Will crash the device
 	if(option(TIME_DELTA) == 0) { incOption(TIME_DELTA,1); }
-   
+	
+	//----------------NumShot
+	//if you set a shot limit, stop take pictures when it is reached
+	if(shotCounter_ >= option(TIME_NUMSHOTS)) 
+	{
+		if(shutterStateA_ == false && shutterStateB_ == false) //don't abort if shutter is triggered
+		{
+		 	abortTrigger = true; return false;
+		 }
+   }
+
     remainTime = countDown(); //get the remaining time to next shot
 
     //-------------Delay
@@ -141,9 +158,9 @@ unsigned long TimeLapse::countDown()
 
 }
 
-int TimeLapse::countDownInt()
+unsigned int TimeLapse::countDownInt()
 {
-	int countInt = (int) countDown()/1000;
+	unsigned int countInt = (unsigned int) countDown()/1000;
 	return countInt;
 }
 
@@ -291,9 +308,10 @@ void TimeLapse::getSelectMenu(char buffer[])
  ***********************************************************/
 void TimeLapse::getActiveMessage(char buffer[])
 {
-	buffer[0] = 0;
+	//buffer[0] = 0;
 	
-	itoa (countDownInt(),buffer,10);
+	//itoa (countDownInt(),buffer,10);
+	formatTimeString(countDownInt(),buffer);
 	
 	
 }

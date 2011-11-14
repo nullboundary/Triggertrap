@@ -43,6 +43,7 @@ int const LIGHT_CHANGE_MODE = 2;
   Light::Light() 
   {
     triggerState_ = false; //off
+	abortTrigger = false; 
 	setOption(TRIG_TYPE,0);
 	setOption(1,0);
 	setOption(2,0);

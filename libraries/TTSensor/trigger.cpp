@@ -408,7 +408,7 @@ void Trigger::incSetting(char buffer[], int inc)
 
 /***********************************************************
  * 
- * formatString
+ * formatTimeString
  *
  * 
  * 
@@ -435,6 +435,13 @@ void Trigger::formatTimeString(unsigned int data, char buffer[])
 		
 }
 
+/***********************************************************
+ * 
+ * formatThresholdString
+ *
+ * 
+ * 
+ ***********************************************************/
 void Trigger::formatThresholdString(unsigned int data, char buffer[])
 {
 	buffer[0] = 0;
@@ -550,11 +557,25 @@ void Trigger::IRShutter()
 		//	strcpy_P(buffer, (char*)pgm_read_word(&(menu))); 
   }
 
-  void Trigger::getActiveMessage(char buffer[])
+/***********************************************************
+ * 
+ * getActiveMessage
+ *
+ * 
+ * 
+ ***********************************************************/
+void Trigger::getActiveMessage(char buffer[])
 {
 	strcpy_P(buffer,activeMessage); //default active message
 }
 
+/***********************************************************
+ * 
+ * saveState
+ *
+ * 
+ * 
+ ***********************************************************/
 void Trigger::saveState()
 {
 	#ifdef SERIAL_DEBUG
@@ -576,7 +597,13 @@ void Trigger::saveState()
   
  */
 }
-
+/***********************************************************
+ * 
+ * restoreState
+ *
+ * 
+ * 
+ ***********************************************************/
 void Trigger::restoreState()
 {
 	#ifdef SERIAL_DEBUG
@@ -590,6 +617,13 @@ void Trigger::restoreState()
 	eeprom_read(optionValues[2], optionVal[2]);;
 }
 
+/***********************************************************
+ * 
+ * initState
+ *
+ * 
+ * 
+ ***********************************************************/
 void Trigger::initState()
 {
 	#ifdef SERIAL_DEBUG
@@ -615,5 +649,17 @@ void Trigger::start(unsigned long startTime)
 	shotCounter_ = 0; //reset shot count. 
 	startBttnTime = startTime; 
 	delayCount = 0; 
+	abortTrigger = false; 
+}
+/***********************************************************
+ * 
+ * stop
+ *
+ * 
+ * 
+ ***********************************************************/
+boolean Trigger::stop()
+{
+	return abortTrigger;  
 }
 

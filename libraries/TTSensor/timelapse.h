@@ -65,7 +65,7 @@ boolean batteryPower();
  ***********************************************************/
 	unsigned long countDown(); 
 	
-	int countDownInt();
+	unsigned int countDownInt();
 
 /***********************************************************
  * 
@@ -116,9 +116,7 @@ private:
  ***********************************************************/
 	void startTimer();
 
-void sleepNow(unsigned long elapsedTime);
-
-	//  Sleep *sleep;
+	void sleepNow(unsigned long elapsedTime);
 
    	Sleep sleep;
  

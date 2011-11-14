@@ -164,6 +164,15 @@ virtual void start(unsigned long startTime);
 
 /***********************************************************
  * 
+ * stop
+ *
+ * return abortTrigger, tell the UI to stop the trigger action
+ * 
+ ***********************************************************/
+virtual boolean stop();
+
+/***********************************************************
+ * 
  * IRShutter
  *
  * send shutter command via IR transmitter
@@ -231,15 +240,16 @@ protected:
   boolean cameraA_;  //camera A on
   boolean cameraB_; //camera B on
   boolean shutterReady; //trigger is ready, take a picture
-
+  boolean abortTrigger;  //stop the trigger action. example, all timelapse shots finished 
   
   unsigned long shutterDelay; //keep track of the time the shutter has been low
   unsigned long delayCount; //when trigger is ready, start counting, till delay time is up
   unsigned long startBttnTime; //the time when the start button is pressed. 
- 
+  
 
 
    IRsend irsend;
+	
 	//values to save into eeprom
 	struct __eeprom_data {
 	  byte optionSelect; //select_

@@ -53,6 +53,7 @@ onMake,onBreak,onChange
   Laser::Laser() 
   {
     triggerState_ = 0; //off
+	abortTrigger = false; 
 	setOption(TRIG_TYPE,0);
 	setOption(1,0);
 	setOption(2,0);

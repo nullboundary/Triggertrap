@@ -47,6 +47,7 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
   Aux::Aux() 
   {
     triggerState_ = false; //off
+	abortTrigger = false; 
 	setOption(TRIG_TYPE,0);
 	setOption(1,0);
 	setOption(2,0);
