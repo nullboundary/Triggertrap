@@ -42,11 +42,12 @@ int const LIGHT_CHANGE_MODE = 2;
 
   Light::Light() 
   {
+	maxOptionMenu = 3;
     triggerState_ = false; //off
 	abortTrigger = false; 
 	setOption(TRIG_TYPE,0);
-	setOption(1,0);
-	setOption(2,0);
+	setOption(TRIG_THRESHOLD,0);
+	setOption(TRIG_DELAY,0);
 	select_ = 0; 
     sensorPin_ = AMBIENT_LIGHT_SENSOR;
 	
@@ -64,7 +65,7 @@ int const LIGHT_CHANGE_MODE = 2;
   {
     boolean lightStatus = false;
 
-	shutter(); 
+	shutter(true); 
 	
 
     switch (option(TRIG_TYPE))

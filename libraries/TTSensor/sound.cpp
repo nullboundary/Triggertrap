@@ -31,23 +31,31 @@
 #include "sound.h"
 
 const int SOUND_IN = A7;
-int const SOUND_RISE_MODE = 0;
-int const SOUND_FALL_MODE = 1;
-int const SOUND_CHANGE_MODE = 2;
 
 //Menu Sensor Strings
 
    //Mode Menu Listing
    const prog_char soundMenu[] PROGMEM= {"Sound"};
+   
+	 //Option Menu default
+	const prog_char soundThreshold[] PROGMEM = "threshld";
+	const prog_char soundDelay[] PROGMEM="delay";
+
+	const prog_char * soundOptionMenu[] PROGMEM  = 	   //options menu
+	{   
+	soundThreshold,	
+	soundDelay,
+	};
 
   Sound::Sound() 
   {
+	maxOptionMenu = 2;
     triggerState_ = false; //off
     abortTrigger = false; 
-	setOption(TRIG_TYPE,0);
-	setOption(1,0);
-	setOption(2,0);
-	select_ = 0; 
+	setOption(TRIG_TYPE,2);
+	setOption(TRIG_THRESHOLD,0);
+	setOption(TRIG_DELAY,0);
+	select_ = 1; 
     sensorPin_ = SOUND_IN;
 	
 
@@ -63,26 +71,10 @@ int const SOUND_CHANGE_MODE = 2;
   {
     boolean soundStatus = false;
 
-	shutter();
-
-    switch (option(TRIG_TYPE))
-    {
-    case SOUND_RISE_MODE:
-
-      soundStatus = rise();
-      break;
-    case SOUND_FALL_MODE:
-
-      soundStatus = fall();
-      break;
-    case SOUND_CHANGE_MODE:
-
-      soundStatus = change();
-      break;
-    default: //no default option
-      break;
-    }
-
+	shutter(true);
+ 
+    soundStatus = change();
+    
     if(soundStatus == true)
     {
 		delayCount = millis(); //start counting till delay is up
@@ -101,24 +93,25 @@ int const SOUND_CHANGE_MODE = 2;
   //the current functional behavior is in the base trigger class.
   //Or add a new function here, to customize mic sensor
   /*
-	boolean Sound::high()
-   	{
-   	
-   	}
-   	*/
-
-  /*
-	boolean Sound::low()
-   	{
-   	
-   	}
-   	*/
-  /*
 	boolean Sound::change()
    	{
    	
    	}
    	*/
+
+/***********************************************************
+ * 
+ * getSelectMenu
+ *
+ *  
+ * 
+ ***********************************************************/
+void Sound::getSelectMenu(char buffer[])
+{
+	 //reads the timeSelectMenu options from flash memory
+	 strcpy_P(buffer, (const prog_char *)pgm_read_word(&(soundOptionMenu[select_])));
+}
+
 void Sound::getModeMenu(char buffer[])
 {
 	 strcpy_P(buffer, soundMenu); 

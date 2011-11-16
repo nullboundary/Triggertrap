@@ -29,6 +29,7 @@ const int TIME_NUMSHOTS = 2;
  ***********************************************************/
 TimeLapse::TimeLapse(){
 	
+		maxOptionMenu = 3;
 	    triggerState_ = false; //off
 		abortTrigger = false; 
 		setOption(TIME_DELTA,0);    //set time delta to 0
@@ -79,12 +80,12 @@ boolean TimeLapse::trigger()
 	
 	//----------------NumShot
 	//if you set a shot limit, stop take pictures when it is reached
-	if(shotCounter_ >= option(TIME_NUMSHOTS)) 
+	if(shotCounter_ >= option(TIME_NUMSHOTS) && option(TIME_NUMSHOTS) != 0) 
 	{
 		if(shutterStateA_ == false && shutterStateB_ == false) //don't abort if shutter is triggered
 		{
 		 	abortTrigger = true; return false;
-		 }
+		}
    }
 
     remainTime = countDown(); //get the remaining time to next shot
@@ -112,8 +113,10 @@ boolean TimeLapse::trigger()
 	}
 			
 		
-	 //---------- Shutter		
-	  if (remainTime <= 1) 
+	 //---------- Shutter	
+	  if ((long) remainTime < 0 ) {remainTime = 0;} //check for unsigned underflow, by converting to signed	
+	  
+	  if (remainTime <= 0) 
 	  {
 			//times up,take a shot
 			delayCount = millis(); //start counting till delay is up
@@ -151,16 +154,18 @@ unsigned long TimeLapse::countDown()
 	  unsigned long currentTime = millis();
 			
       unsigned long elapsedTime = currentTime - startBttnTime;
-	  unsigned long remainTime = option(TIME_DELTA)*1000 - elapsedTime;
+	  unsigned long deltaTime =	(unsigned long) option(TIME_DELTA);
+	  deltaTime = deltaTime*1000;
+	  unsigned long remainTime = deltaTime - elapsedTime;
 	
-
 	return remainTime;
 
 }
 
 unsigned int TimeLapse::countDownInt()
-{
-	unsigned int countInt = (unsigned int) countDown()/1000;
+{   
+	unsigned long longCount = countDown()/1000;
+	unsigned int countInt = (unsigned int) longCount;
 	return countInt;
 }
 
@@ -211,7 +216,7 @@ void TimeLapse::decSetting(char buffer[],int dec)
 	      break;
 	    case TIME_DELTA:
 	      decOption(TIME_DELTA, 54000,dec);
-		  if(option(TIME_DELTA) == 0) //delay 0 is infinity 
+		  if(option(TIME_DELTA) == 0) //delay 0 is none 
 		  {
 				buffer[0] = 0;
 				strcat(buffer,"-");
@@ -223,8 +228,18 @@ void TimeLapse::decSetting(char buffer[],int dec)
       	  }
 	      break;
 	    case TIME_NUMSHOTS:
-	      decOption(TIME_NUMSHOTS, 50000,dec); 
-		  utoa (option(TIME_NUMSHOTS),buffer,10);
+	      decOption(TIME_NUMSHOTS, 50000,dec);
+	 	  if(option(TIME_NUMSHOTS) == 0) //numshots 0 is infinity 
+		  {
+				buffer[0] = 0;
+				strcat(buffer,"Inf");
+				strcat(buffer,"\0");
+		  }
+		  else
+		  {
+	 	  	utoa (option(TIME_NUMSHOTS),buffer,10);
+      	  }	
+		  
 	      break;
 	    default: 
 	      break;
@@ -251,7 +266,7 @@ void TimeLapse::incSetting(char buffer[],int inc)
 	      break;
 	    case TIME_DELTA:
 	      incOption(TIME_DELTA, 54000,inc);
-		  if(option(TIME_DELTA) == 0) //delay 0 is infinity 
+		  if(option(TIME_DELTA) == 0) //delay 0 is none
 		  {
 				buffer[0] = 0;
 				strcat(buffer,"-");
@@ -264,7 +279,16 @@ void TimeLapse::incSetting(char buffer[],int inc)
 		  break;
 	    case TIME_NUMSHOTS:
 	      incOption(TIME_NUMSHOTS, 50000,inc); 
-		  utoa (option(TIME_NUMSHOTS),buffer,10);
+		  if(option(TIME_NUMSHOTS) == 0) //numshots 0 is infinity 
+		  {
+				buffer[0] = 0;
+				strcat(buffer,"Inf");
+				strcat(buffer,"\0");
+		  }
+		  else
+		  {
+	 	  	utoa (option(TIME_NUMSHOTS),buffer,10);
+      	  }
 	      break;
 	    default: 
 	      break;

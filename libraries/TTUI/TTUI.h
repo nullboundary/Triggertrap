@@ -170,10 +170,10 @@ void updateActive();
  * 
  * bttnSelect
  *
- * increments the Select menu to the next select option
+ * increments the Option menu to the next select option
  * 
  ***********************************************************/
-	void bttnSelect();
+	void bttnOption();
 
 /***********************************************************
  * 

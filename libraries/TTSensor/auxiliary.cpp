@@ -46,11 +46,12 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
 
   Aux::Aux() 
   {
+	maxOptionMenu = 3;
     triggerState_ = false; //off
 	abortTrigger = false; 
 	setOption(TRIG_TYPE,0);
-	setOption(1,0);
-	setOption(2,0);
+	setOption(TRIG_THRESHOLD,0);
+	setOption(TRIG_DELAY,0);
 	select_ = 0; 
     sensorPin_ = AUX;
 
@@ -69,7 +70,7 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
   {
     boolean auxStatus = false;
 
-	shutter(); 
+	shutter(true); 
 
     switch (option(TRIG_TYPE))
     {

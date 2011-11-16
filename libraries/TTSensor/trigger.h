@@ -40,16 +40,16 @@
 #include <IRremote.h>
 
 //Eeprom read/write Macros
-#define eeprom_read_to(dst_p, eeprom_field, dst_size) eeprom_read_block(dst_p, (void *)offsetof(__eeprom_data, eeprom_field), MIN(dst_size, sizeof((__eeprom_data*)0)->eeprom_field))
-#define eeprom_read(dst, eeprom_field) eeprom_read_to(&dst, eeprom_field, sizeof(dst))
-#define eeprom_write_from(src_p, eeprom_field, src_size) eeprom_write_block(src_p, (void *)offsetof(__eeprom_data, eeprom_field), MIN(src_size, sizeof((__eeprom_data*)0)->eeprom_field))
-#define eeprom_write(src, eeprom_field) { typeof(src) x = src; eeprom_write_from(&x, eeprom_field, sizeof(x)); }
+#define eeprom_read_to(dst_p, eeprom_field, dst_size,blockOffset) eeprom_read_block(dst_p, (void *)(blockOffset+offsetof(__eeprom_data, eeprom_field)), MIN(dst_size, sizeof((__eeprom_data*)0)->eeprom_field))
+#define eeprom_read(dst, eeprom_field,blockOffset) eeprom_read_to(&dst, eeprom_field, sizeof(dst),blockOffset)
+#define eeprom_write_from(src_p, eeprom_field, src_size,blockOffset) eeprom_write_block(src_p, (void *)(blockOffset+offsetof(__eeprom_data, eeprom_field)), MIN(src_size, sizeof((__eeprom_data*)0)->eeprom_field))
+#define eeprom_write(src, eeprom_field,blockOffset) { typeof(src) x = src; eeprom_write_from(&x, eeprom_field, sizeof(x),blockOffset);}
 #define MIN(x,y) ( x > y ? y : x )
 
 //most triggers use these menu options. 
-const int TRIG_TYPE = 0; //Select menu option 0. 
-const int TRIG_DELAY = 1;  //Select menu option 1. 
-const int TRIG_THRESHOLD = 2;	 //Select menu option 2. 		
+const int TRIG_THRESHOLD = 0;	 //Option menu option 0.
+const int TRIG_DELAY = 1;  //Option menu option 1. 
+const int TRIG_TYPE = 2; //Option menu option 2.  		
 
 const int CAMERA_TRIGGER_A = 12;		// D12 = Digital out - Camera Trigger A
 const int CAMERA_TRIGGER_B = 13;		// D13 = Digital out - Camera Trigger B
@@ -100,12 +100,21 @@ void shutter(boolean delay=true);
 
 /***********************************************************
  * 
+ * select
+ *
+ * return which select option is active. 
+ *   
+ ***********************************************************/
+const int select();
+
+/***********************************************************
+ * 
  * incSelect
  *
  * increment the select option that is active 
  *   
  ***********************************************************/
-void incSelect();
+virtual void incSelect();
 
 /***********************************************************
  * 
@@ -225,9 +234,13 @@ void restoreState();
  ***********************************************************/
 void initState();
 
+void setIndex(int index) {triggerIndex = index;}
+
 protected: 
 	
-  	
+ 	
+  int triggerIndex; //trigger list index number. Used with eeprom memory offset values 
+  byte maxOptionMenu; //option menu highest menu number. set to 3 for 3 option bttn menus
   unsigned int optionValues[3];	//option menu settings values
   boolean triggerState_; //On or OFF, based on above or below the threshold
   byte select_; //trigger on START,STOP or CHANGE
@@ -246,7 +259,7 @@ protected:
   unsigned long delayCount; //when trigger is ready, start counting, till delay time is up
   unsigned long startBttnTime; //the time when the start button is pressed. 
   
-
+	
 
    IRsend irsend;
 	
@@ -290,14 +303,7 @@ virtual boolean change();
  ***********************************************************/
 void setSelect(int select);
 
-/***********************************************************
- * 
- * select
- *
- * return which select option is active. 
- *   
- ***********************************************************/
-const int select();
+
 
 /***********************************************************
  * 

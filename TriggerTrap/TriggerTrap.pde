@@ -147,7 +147,7 @@ void laserTrigger()
 
 void timeLapseTrigger()
 {
- 
+  
   timeLapse.setShutters(false,true);
   if(timeLapse.trigger() == true)
   {

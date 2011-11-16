@@ -47,7 +47,6 @@ void Sleep::sleepDelay(unsigned long sleepTime,int shotCount) {
   else
   {
   	set_sleep_mode(sleepMode_);
-  	//int trem = sleepNow(sleepTime*calibv);  //there is something wrong here, calv is subtracting too much time, off by a factor of 10?
   	int trem = sleepNow(sleepTime*calibv); 
   	timeSleep += (sleepTime-trem);
   }

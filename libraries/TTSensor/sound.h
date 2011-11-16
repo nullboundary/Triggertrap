@@ -49,17 +49,13 @@ public:
   //to change the behavior of the following functions for the mic, edit here. 
   //the current functional behavior is in the parent sensor class.
   //Or add a new function here, to customize mic sensor
-  /*
-	boolean start();
-   	*/
 
-  /*
-	boolean stop();
-   	*/
   /*
 	boolean change();
    	*/
 
+	void getSelectMenu(char buffer[]);
+	
 	void getModeMenu(char buffer[]);
 	
 	void getActiveMessage(char buffer[]);

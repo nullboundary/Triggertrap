@@ -36,15 +36,15 @@
 const prog_char activeMessage[] PROGMEM= {"Armed"};
 
  //Option Menu default
-const prog_char trigType[] PROGMEM="type";
-const prog_char trigDelay[] PROGMEM="delay";
 const prog_char trigThreshold[] PROGMEM = "threshld";
+const prog_char trigDelay[] PROGMEM="delay";
+const prog_char trigType[] PROGMEM="type";
 
 const prog_char * selectMenu[] PROGMEM  = 	   //options menu
 {   
-trigType,
+trigThreshold,	
 trigDelay,
-trigThreshold,
+trigType,
 };
 
 
@@ -94,7 +94,7 @@ onRise,onFall,onChange
   void Trigger::incSelect()
   {
 	select_++;
-	select_ = select_ % 3;  //TODO hard coded needs to be set somewhere..
+	select_ = select_ % maxOptionMenu;  //TODO hard coded needs to be set somewhere..
   }
 
 /***********************************************************
@@ -346,7 +346,7 @@ void Trigger::decSetting(char buffer[], int dec)
 	      if(option(TRIG_DELAY) == 0) //delay 0 is infinity 
 		  {
 				buffer[0] = 0;
-				strcat(buffer,"off");
+				strcat(buffer,"Off");
 				strcat(buffer,"\0");
 		  }
 		  else
@@ -387,7 +387,7 @@ void Trigger::incSetting(char buffer[], int inc)
 		  if(option(TRIG_DELAY) == 0) //delay 0 is infinity 
 		  {
 				buffer[0] = 0;
-				strcat(buffer,"off");
+				strcat(buffer,"Off");
 				strcat(buffer,"\0");
 		  }
 		  else
@@ -424,13 +424,13 @@ void Trigger::formatTimeString(unsigned int data, char buffer[])
 	//add minute data to buffer
 	strcat(buffer, tempBuffer);
 	//add minute symbol to buffer
-	strcat(buffer,"\'");
+	strcat(buffer,":");
 	//transform delay seconds into remainder seconds
+	if(data%60 < 10) strcat(buffer,"0");
 	utoa(data%60,tempBuffer,10);
 	//add second data to buffer
 	strcat(buffer,tempBuffer);
 	//add second symbol to buffer
-	strcat(buffer,"\"");
 	strcat(buffer,'\0');
 		
 }
@@ -448,13 +448,13 @@ void Trigger::formatThresholdString(unsigned int data, char buffer[])
 	char tempBuffer[5];
 	int level = sensorLevel();
 	
-	itoa (level,tempBuffer,10);
+	utoa(data,tempBuffer,10);
 	
 	strcat(buffer,tempBuffer);
 	
-	strcat(buffer,":");
+	strcat(buffer,"|");
 	
-	utoa(data,tempBuffer,10);
+	itoa (level,tempBuffer,10);
 	
 	strcat(buffer,tempBuffer);
 	
@@ -471,7 +471,7 @@ void Trigger::formatThresholdString(unsigned int data, char buffer[])
  ***********************************************************/
 void Trigger::resetShutter()
 {
-	//reset trigger low after small delay
+  //reset trigger low after small delay
   if(shutterStateA_ == true || shutterStateB_ == true)
   {
 	 if(millis() - shutterDelay > 10) 
@@ -582,10 +582,13 @@ void Trigger::saveState()
 	Serial.println("saveState");
 	#endif
 	
-	   eeprom_write(select_, optionSelect);
-	   eeprom_write(optionValues[0], optionVal[0]);
-	   eeprom_write(optionValues[1], optionVal[1]);
-	   eeprom_write(optionValues[2], optionVal[2]);
+	   //each trigger object will save to a seperate eeprom memory space
+	    int objectMemoryOffset = triggerIndex*10;
+	
+	   eeprom_write(select_, optionSelect,objectMemoryOffset);
+	   eeprom_write(optionValues[0], optionVal[0],objectMemoryOffset);
+	   eeprom_write(optionValues[1], optionVal[1],objectMemoryOffset);
+	   eeprom_write(optionValues[2], optionVal[2],objectMemoryOffset);
 	
 	
 /*	
@@ -610,11 +613,14 @@ void Trigger::restoreState()
 	Serial.println("restoreState");
 	#endif
 	
-	eeprom_read(select_, optionSelect);
+	//each trigger object will save to a seperate eeprom memory space
+	int objectMemoryOffset = triggerIndex*10;
+	
+	eeprom_read(select_, optionSelect,objectMemoryOffset);
 	if(select_ > 3 || select_ < 0) select_ = 0;
-	eeprom_read(optionValues[0], optionVal[0]);
-	eeprom_read(optionValues[1], optionVal[1]);
-	eeprom_read(optionValues[2], optionVal[2]);;
+	eeprom_read(optionValues[0], optionVal[0],objectMemoryOffset);
+	eeprom_read(optionValues[1], optionVal[1],objectMemoryOffset);
+	eeprom_read(optionValues[2], optionVal[2],objectMemoryOffset);
 }
 
 /***********************************************************
@@ -630,11 +636,32 @@ void Trigger::initState()
 	Serial.println("initState");
 	#endif
 	
-	   eeprom_write(0, optionSelect);
-	   eeprom_write(0, optionVal[0]);
-	   eeprom_write(0, optionVal[1]);
-	   eeprom_write(0, optionVal[2]);
+	//each trigger object will save to a seperate eeprom memory space
+	int objectMemoryOffset = triggerIndex*10;
+	
+	   eeprom_write(0, optionSelect,objectMemoryOffset);
+	   eeprom_write(0, optionVal[0],objectMemoryOffset);
+	   eeprom_write(0, optionVal[1],objectMemoryOffset);
+	   eeprom_write(0, optionVal[2],objectMemoryOffset);
 }
+/*
+void eeprom_read_to(dst_p, eeprom_field, dst_size,blockOffset)
+{
+	eeprom_read_block(dst_p, (void *)offsetof(__eeprom_data, eeprom_field)+blockOffset, MIN(dst_size, sizeof((__eeprom_data*)0)->eeprom_field));
+}
+
+void eeprom_read(dst, eeprom_field,blockOffset) eeprom_read_to(&dst, eeprom_field, sizeof(dst),blockOffset)
+
+void eeprom_write_from(src_p, eeprom_field, src_size,blockOffset)
+{
+	eeprom_write_block(src_p, (void *)offsetof(__eeprom_data, eeprom_field)+blockOffset, MIN(src_size, sizeof((__eeprom_data*)0)->eeprom_field));
+}
+
+void eeprom_write(src, eeprom_field,blockOffset) 
+{ 
+	typeof(src) x = src; eeprom_write_from(&x, eeprom_field, sizeof(x),blockOffset); 
+}
+*/
 
 /***********************************************************
  * 
@@ -645,7 +672,7 @@ void Trigger::initState()
  ***********************************************************/
 void Trigger::start(unsigned long startTime)
 { 
-
+	
 	shotCounter_ = 0; //reset shot count. 
 	startBttnTime = startTime; 
 	delayCount = 0; 

@@ -40,23 +40,38 @@ int const CHANGE_LASER_MODE = 2;
    //Mode Menu Listing
    const prog_char laserMenu[] PROGMEM= {"Laser"};
 
+	 //Option Menu default
+	const prog_char laserType[] PROGMEM = "type";
+	const prog_char laserDelay[] PROGMEM="delay";
+
+	const prog_char * laserOptionMenu[] PROGMEM  = 	   //options menu
+	{   
+	laserType,	
+	laserDelay,
+	};
+
+
  const prog_char onMake[] PROGMEM="On Make";
  const prog_char onBreak[] PROGMEM="On Break";	
  const prog_char onChange[] PROGMEM="On Chnge";
 
 
- const prog_char * laserSettingMenu[] PROGMEM  = 	   // select menu options
+const prog_char * laserSettingMenu[] PROGMEM  = 	   // setting menu options
 {   
-onMake,onBreak,onChange
+	onMake,onBreak,onChange
 };
+
+const int LASER_TYPE = 0;
+const int LASER_DELAY = 1; 
 
   Laser::Laser() 
   {
+	maxOptionMenu = 2; 
     triggerState_ = 0; //off
 	abortTrigger = false; 
-	setOption(TRIG_TYPE,0);
-	setOption(1,0);
-	setOption(2,0);
+	setOption(LASER_TYPE,0);
+	setOption(TRIG_THRESHOLD,128);
+	setOption(LASER_DELAY,0);
 	select_ = 0; 
     sensorPin_ = LASER_SENSOR;
 	
@@ -70,12 +85,14 @@ onMake,onBreak,onChange
 
   boolean Laser::trigger()
   {
-    boolean laserStatus = false;
+	setOption(TRIG_THRESHOLD,128); //just set laser to always be 128. Its really the safest value
+   
+ 	boolean laserStatus = false;
 
-	shutter(); 
+	shutter(true); 
 
 
-    switch (option(TRIG_TYPE))
+    switch (option(LASER_TYPE))
     {
     case MAKE_LASER_MODE:
 
@@ -128,6 +145,79 @@ onMake,onBreak,onChange
    	}
    	*/
 
+/***********************************************************
+ * 
+ * decSetting
+ *
+ * 
+ * 
+ ***********************************************************/
+void Laser::decSetting(char buffer[], int dec)
+{
+
+	
+		switch (select_)
+	    {
+	     case LASER_TYPE:
+	 	  decOption(LASER_TYPE, 2,dec);
+		  getSettingMenu(buffer); 
+	      break;
+	    case LASER_DELAY:
+	      decOption(LASER_DELAY, 54000,dec);
+	      if(option(LASER_DELAY) == 0) //delay 0 is off
+		  {
+				buffer[0] = 0;
+				strcat(buffer,"Off");
+				strcat(buffer,"\0");
+		  }
+		  else
+		  {
+	      	formatTimeString(option(LASER_DELAY),buffer);
+ 	  	  }
+	      break;
+	    default: 
+	      break;
+	    }
+
+}
+
+/***********************************************************
+ * 
+ * incSetting
+ *
+ * 
+ * 
+ ***********************************************************/
+void Laser::incSetting(char buffer[], int inc)
+{
+	
+	
+		switch (select_)
+	    {
+	     case LASER_TYPE:
+	 	  incOption(LASER_TYPE, 2,inc);
+		  getSettingMenu(buffer); 
+	      break;
+	    case LASER_DELAY:
+	      incOption(LASER_DELAY, 54000,inc);
+		  if(option(LASER_DELAY) == 0) //delay 0 is off
+		  {
+				buffer[0] = 0;
+				strcat(buffer,"Off");
+				strcat(buffer,"\0");
+		  }
+		  else
+		  {
+		  	formatTimeString(option(LASER_DELAY),buffer);
+	 	  }
+	      break;
+	    default: 
+	      break;
+	    }
+		
+}
+
+
   
 
 void Laser::getModeMenu(char buffer[])
@@ -136,9 +226,22 @@ void Laser::getModeMenu(char buffer[])
 	
 }
 
+/***********************************************************
+ * 
+ * getSelectMenu
+ *
+ *  
+ * 
+ ***********************************************************/
+void Laser::getSelectMenu(char buffer[])
+{
+	 //reads the timeSelectMenu options from flash memory
+	 strcpy_P(buffer, (const prog_char *)pgm_read_word(&(laserOptionMenu[select_])));
+}
+
 void Laser::getSettingMenu(char buffer[])
 {
-	strcpy_P(buffer, (const prog_char *)pgm_read_word(&(laserSettingMenu[option(TRIG_TYPE)]))); 
+	strcpy_P(buffer, (const prog_char *)pgm_read_word(&(laserSettingMenu[option(LASER_TYPE)]))); 
 }
 
 /***********************************************************

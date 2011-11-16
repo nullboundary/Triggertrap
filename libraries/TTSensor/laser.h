@@ -65,13 +65,15 @@ public:
    	
   */
 
-  
+	void incSetting(char buffer[], int inc);
+	
+	void decSetting(char buffer[], int inc);
 
 	void getModeMenu(char buffer[]);
 
 	void getActiveMessage(char buffer[]);
 
-//	void getSelectMenu(char buffer[]);
+	void getSelectMenu(char buffer[]);
 
 	void getSettingMenu(char buffer[]);
 

@@ -58,6 +58,7 @@
 	
 	for(int i=0;i<NUM_OF_SENSORS;++i)
 	{
+		triggers[i]->setIndex(i);
 		triggers[i]->restoreState();
 	}
 	
@@ -153,7 +154,7 @@ void TTUI::update()
 		        bttnMode();
 		        break;
 		      case SELECT_BTTN:
-		        bttnSelect();		
+		        bttnOption();		
 		        break;
 		      case DOWN_BTTN:
 		        bttnDown(hold); 
@@ -244,7 +245,7 @@ void TTUI::resetCheck()
 					setCursor(0,0);
 					print("reset");
 					setCursor(0,1);
-					print("device");
+					print("memory");
 					
 					for(int i=0;i<NUM_OF_SENSORS;++i)
 					{
@@ -291,7 +292,7 @@ void TTUI::initStart(unsigned long startTime)
 	}
 	else if(trapActive_ == false) 
 	{
-	
+		triggers[currentTrigger]->resetShutter(); //don't want to leave the shutter high forever
 		uiPowerOn();
 		//restore screen to so current select menu and value, better to show mode+select?
 		//set the value title in line 1
@@ -315,6 +316,7 @@ void TTUI::initStart(unsigned long startTime)
     
     currentTrigger+=1; //mode button has been pressed, advance the mode option to next
 	currentTrigger = currentTrigger % NUM_OF_SENSORS;
+	Serial.println(triggers[currentTrigger]->select());
 	
 	clear();
 	printMode(0);
@@ -324,10 +326,10 @@ void TTUI::initStart(unsigned long startTime)
 
 /***********************************************************
 * 
-* bttnSelect
+* bttnOption
 * 
 ***********************************************************/
-  void TTUI::bttnSelect()
+  void TTUI::bttnOption()
   {
 	char printBuffer[9];
 
