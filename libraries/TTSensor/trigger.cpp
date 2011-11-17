@@ -505,7 +505,7 @@ void Trigger::IRShutter()
 	irsend.sendNEC(0x61DC807F,32); //RM-2 (olympus) is probably NEC protocol
 	
 	unsigned int MLL3Buffer[] = {2000,27830,390,1580,410,3580,400}; //shutter from: http://www.bigmike.it/ircontrol/
-	for (int i = 0; i < 2; i++) { //send twice
+	for (int i = 0; i < 2; ++i) { //send twice
 		irsend.sendRaw(MLL3Buffer,7,38); //ML-L3 (Nikon), suppose to be 38.4khz
 		delay(63);
 	}
@@ -513,11 +513,15 @@ void Trigger::IRShutter()
 	unsigned int PentaxBuffer[] = {13000,3000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000}; //shutter
 		irsend.sendRaw(PentaxBuffer,16,38); //found here, not sure which pentax, all? http://sourceforge.net/project/showfiles.php?group_id=131383
 	
+	//we better read this: http://www.arcfn.com/2010/12/64-bit-rc6-codes-arduino-and-xbox.html we probably have mistakes and probably need to track the toggle bit
+	for (int i = 0; i < 3; ++i) {
+    	irsend.sendRC6(0x0, 20); // Cannon RC-5 code for shutter, MAY work for RC-6
+    	delay(100);
+	}
 	
-    irsend.sendRC6(0x0, 14); // Cannon RC-5 code for shutter, MAY work for RC-6
-    
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 3; ++i) {
 		irsend.sendSony(0xB4B8F,20); // or maybe 0x7478F both found here: http://sebastian.setz.name/arduino/my-libraries/multi-camera-ir-control#comment-110
+		delay(100);
 	}
 }
 

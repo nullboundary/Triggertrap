@@ -51,8 +51,8 @@ const int TRIG_THRESHOLD = 0;	 //Option menu option 0.
 const int TRIG_DELAY = 1;  //Option menu option 1. 
 const int TRIG_TYPE = 2; //Option menu option 2.  		
 
-const int CAMERA_TRIGGER_A = 12;		// D12 = Digital out - Camera Trigger A
-const int CAMERA_TRIGGER_B = 13;		// D13 = Digital out - Camera Trigger B
+const int CAMERA_TRIGGER_A = 13;		// D13 = Digital out - Camera Trigger A
+const int CAMERA_TRIGGER_B = 12;		// D12 = Digital out - Camera Trigger B
 
 
 //#define SERIAL_DEBUG //remove if you don't want serial statements

@@ -212,7 +212,16 @@ void TimeLapse::decSetting(char buffer[],int dec)
 	    {
 	     case TIME_DELAY:
 	 	  decOption(TIME_DELAY, 54000,dec); //max secs
-		   formatTimeString(option(TIME_DELAY),buffer); //format and save string in buffer
+		  if(option(TRIG_DELAY) == 0) //delay 0 is infinity 
+		  {
+				buffer[0] = 0;
+				strcat(buffer,"Off");
+				strcat(buffer,"\0");
+		  }
+		  else
+		  {	
+		   		formatTimeString(option(TIME_DELAY),buffer); //format and save string in buffer
+		  }
 	      break;
 	    case TIME_DELTA:
 	      decOption(TIME_DELTA, 54000,dec);
@@ -262,7 +271,16 @@ void TimeLapse::incSetting(char buffer[],int inc)
 	    {
 	     case TIME_DELAY:
 	 	   incOption(TIME_DELAY, 54000,inc); //max secs
-		   formatTimeString(option(TIME_DELAY),buffer); 
+		  if(option(TRIG_DELAY) == 0) //delay 0 is infinity 
+		  {
+				buffer[0] = 0;
+				strcat(buffer,"Off");
+				strcat(buffer,"\0");
+		  }
+		  else
+		  {	
+		   		formatTimeString(option(TIME_DELAY),buffer); 
+		  }
 	      break;
 	    case TIME_DELTA:
 	      incOption(TIME_DELTA, 54000,inc);
