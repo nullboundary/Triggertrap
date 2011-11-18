@@ -241,7 +241,10 @@ void TimeLapse::decSetting(char buffer[],int dec)
 	 	  if(option(TIME_NUMSHOTS) == 0) //numshots 0 is infinity 
 		  {
 				buffer[0] = 0;
-				strcat(buffer,"Infinite");
+				char inf[2];
+				inf[0] = (char)243;
+				inf[1] = '\0';
+				strcat(buffer,inf);
 				strcat(buffer,"\0");
 		  }
 		  else
@@ -300,7 +303,10 @@ void TimeLapse::incSetting(char buffer[],int inc)
 		  if(option(TIME_NUMSHOTS) == 0) //numshots 0 is infinity 
 		  {
 				buffer[0] = 0;
-				strcat(buffer,"Infinite");
+				char inf[2];
+				inf[0] = (char)243;
+				inf[1] = '\0';
+				strcat(buffer,inf);
 				strcat(buffer,"\0");
 		  }
 		  else
