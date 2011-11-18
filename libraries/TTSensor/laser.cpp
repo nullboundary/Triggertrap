@@ -85,6 +85,8 @@ const int LASER_DELAY = 1;
 
   boolean Laser::trigger()
   {
+	
+	
 	setOption(TRIG_THRESHOLD,128); //just set laser to always be 128. Its really the safest value
    
  	boolean laserStatus = false;
@@ -163,7 +165,7 @@ void Laser::decSetting(char buffer[], int dec)
 		  getSettingMenu(buffer); 
 	      break;
 	    case LASER_DELAY:
-	      decOption(LASER_DELAY, 54000,dec);
+	      decOption(LASER_DELAY, 9999,dec);
 	      if(option(LASER_DELAY) == 0) //delay 0 is off
 		  {
 				buffer[0] = 0;
@@ -172,7 +174,7 @@ void Laser::decSetting(char buffer[], int dec)
 		  }
 		  else
 		  {
-	      	formatTimeString(option(LASER_DELAY),buffer);
+	      	formatMSString(option(LASER_DELAY),buffer);
  	  	  }
 	      break;
 	    default: 
@@ -199,7 +201,7 @@ void Laser::incSetting(char buffer[], int inc)
 		  getSettingMenu(buffer); 
 	      break;
 	    case LASER_DELAY:
-	      incOption(LASER_DELAY, 54000,inc);
+	      incOption(LASER_DELAY, 9999,inc);
 		  if(option(LASER_DELAY) == 0) //delay 0 is off
 		  {
 				buffer[0] = 0;
@@ -208,7 +210,7 @@ void Laser::incSetting(char buffer[], int inc)
 		  }
 		  else
 		  {
-		  	formatTimeString(option(LASER_DELAY),buffer);
+		  	formatMSString(option(LASER_DELAY),buffer);
 	 	  }
 	      break;
 	    default: 

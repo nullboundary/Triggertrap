@@ -175,17 +175,27 @@ void Trigger::decOption(int menuOption, unsigned int maxValue, int dec)
  * 
  * 
  ***********************************************************/
-void Trigger::shutter(boolean delay)
+void Trigger::shutter(boolean delay,boolean delayUnitMs)
 {
+	int elapsed;
+	
 	resetShutter(); //make the shutter close after 10ms delay
 	
 	if(shutterReady == true) //trigger() set this to ready
 	{
 	
+	if(delayUnitMs)
+	{
+			unsigned long currentTime = millis();
+			unsigned long delaySec = delayCount;
+			elapsed = (int) (currentTime - delaySec);
+	}
+	else
+	{
 		int currentTime = millis()/1000;
 		int delaySec = delayCount/1000;
-		int elapsed = currentTime - delaySec;
-
+		elapsed = currentTime - delaySec;
+	}	
 	    //ready, but need to wait for delay timer, unless delay is false, then skip the delay
 		if(elapsed > option(TRIG_DELAY) || delay == false) 
 		{
@@ -342,7 +352,7 @@ void Trigger::decSetting(char buffer[], int dec)
 		  getSettingMenu(buffer); 
 	      break;
 	    case TRIG_DELAY:
-	      decOption(TRIG_DELAY, 54000,dec);
+	      decOption(TRIG_DELAY, 9999,dec);
 	      if(option(TRIG_DELAY) == 0) //delay 0 is infinity 
 		  {
 				buffer[0] = 0;
@@ -351,7 +361,7 @@ void Trigger::decSetting(char buffer[], int dec)
 		  }
 		  else
 		  {
-	      	formatTimeString(option(TRIG_DELAY),buffer);
+	      	formatMSString(option(TRIG_DELAY),buffer);
  	  	  }
 		  //itoa (option(TRIG_DELAY),buffer,10);
 	      break;
@@ -383,7 +393,7 @@ void Trigger::incSetting(char buffer[], int inc)
 		  getSettingMenu(buffer); 
 	      break;
 	    case TRIG_DELAY:
-	      incOption(TRIG_DELAY, 54000,inc);
+	      incOption(TRIG_DELAY, 9999,inc);
 		  if(option(TRIG_DELAY) == 0) //delay 0 is infinity 
 		  {
 				buffer[0] = 0;
@@ -392,7 +402,7 @@ void Trigger::incSetting(char buffer[], int inc)
 		  }
 		  else
 		  {
-		  	formatTimeString(option(TRIG_DELAY),buffer);
+		  	formatMSString(option(TRIG_DELAY),buffer);
 	 	  }
 		  //itoa (option(TRIG_DELAY),buffer,10);
 	      break;
@@ -433,6 +443,29 @@ void Trigger::formatTimeString(unsigned int data, char buffer[])
 	//add second symbol to buffer
 	strcat(buffer,'\0');
 		
+}
+
+void Trigger::formatMSString(unsigned int data,char buffer[])
+{
+	//setting the first char to 0 causes str functions to think 
+	//of the buffer as empty, like a clear buffer.
+	buffer[0] = 0;
+	char tempBuffer[5];
+	//transform delay ms into seconds
+	utoa (data/1000,tempBuffer,10);
+	//add second data to buffer
+	strcat(buffer, tempBuffer);
+	//add second delimiter symbol to buffer
+	strcat(buffer,".");
+	//transform delay seconds into remainder seconds
+	if(data%1000 < 100) strcat(buffer,"0");
+	if(data%1000 < 10) strcat(buffer,"0");
+	utoa(data%1000,tempBuffer,10);
+	//add second data to buffer
+	strcat(buffer,tempBuffer);
+	strcat(buffer,"sec");
+	//add second symbol to buffer
+	strcat(buffer,'\0');
 }
 
 /***********************************************************

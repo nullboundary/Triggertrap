@@ -96,7 +96,7 @@ virtual boolean trigger() = 0;
  *  Take the picture, bring shutterA and/or B low
  * 
  ***********************************************************/
-void shutter(boolean delay=true);
+void shutter(boolean delay=true,boolean delayUnitMs=true);
 
 /***********************************************************
  * 
@@ -238,7 +238,7 @@ void setIndex(int index) {triggerIndex = index;}
 
 protected: 
 	
- 	
+	
   int triggerIndex; //trigger list index number. Used with eeprom memory offset values 
   byte maxOptionMenu; //option menu highest menu number. set to 3 for 3 option bttn menus
   unsigned int optionValues[3];	//option menu settings values
@@ -349,6 +349,15 @@ void decOption(int menuOption, unsigned int maxValue,int dec=1);
  * 
  ***********************************************************/
 void formatTimeString(unsigned int data, char buffer[]);
+ 
+ /***********************************************************
+ * 
+ * formatMSString
+ *
+ * format milliseconds into seconds and ms place in char buffer. 
+ * 
+ ***********************************************************/
+void formatMSString(unsigned int data,char buffer[]);
 
 /***********************************************************
  * 

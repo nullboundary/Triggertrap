@@ -5,7 +5,7 @@ const prog_char timeMenu[] PROGMEM= {"TimeLaps"};
 
  //option Menu titles
 const prog_char delta[] PROGMEM="interval";
-const prog_char startdelay[] PROGMEM="delay";
+const prog_char startdelay[] PROGMEM="delay1st";
 const prog_char numShots[] PROGMEM = "#shots";
 
 const prog_char * timeSelectMenu[] PROGMEM  = 	   //options menu order
@@ -55,7 +55,7 @@ boolean TimeLapse::delayFirstShot()
 	{
 			if(delayCount == 0) { delayCount = millis(); } //set this only the first time through the loop
 			shutterReady = true; //if delay is up, take the first shot, 
-			shutter(true); //set delay to true, we want delay
+			shutter(true,false); //set delay to true, we want delay, set delay time unit false to seconds
 			return true; 
 	}
 	else
@@ -97,7 +97,7 @@ boolean TimeLapse::trigger()
 	}
 
 
-	shutter(false); //trigger shutter if shutterReady = true, set delay to false
+	shutter(false,false); //trigger shutter if shutterReady = true, set delay to false, false time unit seconds
 			
 	
 	//----------Sleep		
@@ -241,7 +241,7 @@ void TimeLapse::decSetting(char buffer[],int dec)
 	 	  if(option(TIME_NUMSHOTS) == 0) //numshots 0 is infinity 
 		  {
 				buffer[0] = 0;
-				strcat(buffer,"Inf");
+				strcat(buffer,"Infinite");
 				strcat(buffer,"\0");
 		  }
 		  else
@@ -300,7 +300,7 @@ void TimeLapse::incSetting(char buffer[],int inc)
 		  if(option(TIME_NUMSHOTS) == 0) //numshots 0 is infinity 
 		  {
 				buffer[0] = 0;
-				strcat(buffer,"Inf");
+				strcat(buffer,"Infinite");
 				strcat(buffer,"\0");
 		  }
 		  else
