@@ -256,6 +256,7 @@ protected:
   boolean abortTrigger;  //stop the trigger action. example, all timelapse shots finished 
   
   unsigned long shutterDelay; //keep track of the time the shutter has been low
+  unsigned long focusDelay; //keep track of the time the focus has been low
   unsigned long delayCount; //when trigger is ready, start counting, till delay time is up
   unsigned long startBttnTime; //the time when the start button is pressed. 
   

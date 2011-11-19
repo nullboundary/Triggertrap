@@ -181,21 +181,28 @@ void Trigger::shutter(boolean delay,boolean delayUnitMs)
 	
 	resetShutter(); //make the shutter close after 10ms delay
 	
+	//don't take a picture until its done taking a picture already!
+	if(shutterStateA_ == true || shutterStateB_ == true)
+	{
+		shutterReady = false;
+	}
+	
 	if(shutterReady == true) //trigger() set this to ready
 	{
 	
-	if(delayUnitMs)
-	{
-			unsigned long currentTime = millis();
-			unsigned long delaySec = delayCount;
-			elapsed = (int) (currentTime - delaySec);
-	}
-	else
-	{
-		int currentTime = millis()/1000;
-		int delaySec = delayCount/1000;
-		elapsed = currentTime - delaySec;
-	}	
+		if(delayUnitMs)
+		{
+				unsigned long currentTime = millis();
+				unsigned long delaySec = delayCount;
+				elapsed = (int) (currentTime - delaySec);
+		}
+		else
+		{
+			int currentTime = millis()/1000;
+			int delaySec = delayCount/1000;
+			elapsed = currentTime - delaySec;
+		}	
+		
 	    //ready, but need to wait for delay timer, unless delay is false, then skip the delay
 		if(elapsed > option(TRIG_DELAY) || delay == false) 
 		{
@@ -207,9 +214,11 @@ void Trigger::shutter(boolean delay,boolean delayUnitMs)
 			if(cameraA_ == true) //use cameraA?
 			{
 				PORTB |= (1<<PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
-				shutterDelay = millis();
+				focusDelay = millis();
 				shutterStateA_ = true;
 				digitalWrite(CAMERA_TRIGGER_A,LOW); //trigger camera
+		
+				
 		
 				#ifdef SERIAL_DEBUG
 				Serial.println("Focus");
@@ -224,7 +233,7 @@ void Trigger::shutter(boolean delay,boolean delayUnitMs)
 				shutterStateB_ = true;
 			 	digitalWrite(CAMERA_TRIGGER_B,LOW);
 	
-				IRShutter();
+				//IRShutter();
 	
 				#ifdef SERIAL_DEBUG
 				Serial.println("Shutter");
@@ -251,7 +260,7 @@ boolean Trigger::rise()
       	if(sensorLevel_ > option(TRIG_THRESHOLD)) //sesnor data being received, any value above threshold 
 	      {
 	        return true;
-			delayCount = millis(); //start counting till delay is up
+			
 	      }
 	      else //sensor, 0 value
 	      {
@@ -281,7 +290,7 @@ boolean Trigger::rise()
      	 if(sensorLevel_ <= option(TRIG_THRESHOLD)) //sensor low, stopped
 	      {
 	        return true;
-			delayCount = millis(); //start counting till delay is up
+			
 	      }
 	      else //sensor recieving data
 	      {
@@ -326,7 +335,7 @@ boolean Trigger::change()
     {
       triggerState_ = state;
       return true; //changed its status above or below threshold
-	  delayCount = millis(); //start counting till delay is up
+	  
     }
     else //nothing changing here
     {
@@ -505,7 +514,25 @@ void Trigger::formatThresholdString(unsigned int data, char buffer[])
 void Trigger::resetShutter()
 {
   //reset trigger low after small delay
-  if(shutterStateA_ == true || shutterStateB_ == true)
+  if(shutterStateA_ == true)
+  {
+	 if(millis() - focusDelay > 10) 
+	 {
+	    // save the last time you took a photo
+	    focusDelay = millis();
+
+		#ifdef SERIAL_DEBUG
+		Serial.println("clear A");
+		#endif
+
+		PORTB &= ~ (1<<PORTB7);        //digitalWrite(KEY_PAD_LEDS,LOW); //turn off led
+		shutterStateA_ = false;
+		digitalWrite(CAMERA_TRIGGER_A,HIGH);
+		
+	 }	
+  }		
+  //reset trigger low after small delay
+  if(shutterStateB_ == true)
   {
 	 if(millis() - shutterDelay > 10) 
 	 {
@@ -513,13 +540,11 @@ void Trigger::resetShutter()
 	    shutterDelay = millis();
 		
 		#ifdef SERIAL_DEBUG
-		Serial.println("clear");
+		Serial.println("clear B");
 		#endif
 		
 		
 		PORTB &= ~ (1<<PORTB7);        //digitalWrite(KEY_PAD_LEDS,LOW); //turn off led
-		shutterStateA_ = false;
-		digitalWrite(CAMERA_TRIGGER_A,HIGH);
 		shutterStateB_ = false; 
 		digitalWrite(CAMERA_TRIGGER_B,HIGH);
 	 }	

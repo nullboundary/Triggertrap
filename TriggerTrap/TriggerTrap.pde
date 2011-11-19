@@ -139,7 +139,7 @@ void loop() {
 void laserTrigger()
 {
 
-	laser.setShutters(false,true); //no focus, only shutter
+	laser.setShutters(true,true); //no focus, only shutter
 	laser.trigger();
 	
 	
@@ -148,7 +148,7 @@ void laserTrigger()
 void timeLapseTrigger()
 {
   
-  timeLapse.setShutters(false,true);
+  timeLapse.setShutters(true,true);
   if(timeLapse.trigger() == true)
   {
     #ifdef SERIAL_DEBUG
@@ -167,7 +167,7 @@ void soundTrigger()
 	if(mic.trigger() == true) //returns true if sound changes based on current mode type
 	{
                 #ifdef SERIAL_DEBUG
-                Serial.println("Focus");
+                Serial.println("Trigger");
                 #endif
 	}
 
@@ -176,7 +176,7 @@ void soundTrigger()
 void lightTrigger()
 {
       
-        light.setShutters(true,false); //no focus, only shutter
+        light.setShutters(true,true); //no focus, only shutter
 	if(light.trigger() == true) //returns true if sound changes based on current mode type
 	{
 

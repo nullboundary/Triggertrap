@@ -73,7 +73,7 @@ const int SOUND_IN = A7;
 
 	shutter(true);
  
-    soundStatus = change();
+    soundStatus = rise();
     
     if(soundStatus == true)
     {
