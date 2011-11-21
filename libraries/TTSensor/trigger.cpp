@@ -153,6 +153,14 @@ void Trigger::decOption(int menuOption, unsigned int maxValue, int dec)
 	optionValues[menuOption] = mOpt;
 }
 
+void Trigger::setShutters(boolean cameraA, boolean cameraB, boolean IRShutter, int shutterPulseTime) 
+{
+	cameraA_ = cameraA;
+	cameraB_ = cameraB;
+	IRShutter_ = IRShutter;
+	shutterPulseTime_ = shutterPulseTime;
+}
+
 /***********************************************************
  * 
  * trigger
@@ -175,11 +183,11 @@ void Trigger::decOption(int menuOption, unsigned int maxValue, int dec)
  * 
  * 
  ***********************************************************/
-void Trigger::shutter(boolean delay,boolean delayUnitMs)
+void Trigger::shutter(boolean delayActive,boolean delayUnitMs)
 {
 	int elapsed;
 	
-	resetShutter(); //make the shutter close after 10ms delay
+	resetShutter(); //make the shutter close after 50ms delay
 	
 	//don't take a picture until its done taking a picture already!
 	if(shutterStateA_ == true || shutterStateB_ == true)
@@ -204,7 +212,7 @@ void Trigger::shutter(boolean delay,boolean delayUnitMs)
 		}	
 		
 	    //ready, but need to wait for delay timer, unless delay is false, then skip the delay
-		if(elapsed > option(TRIG_DELAY) || delay == false) 
+		if(elapsed > option(TRIG_DELAY) || delayActive == false) 
 		{
 			shotCounter_++; 
 			shutterReady = false; 
@@ -214,15 +222,20 @@ void Trigger::shutter(boolean delay,boolean delayUnitMs)
 			if(cameraA_ == true) //use cameraA?
 			{
 				PORTB |= (1<<PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
-				focusDelay = millis();
+				//focusDelay = millis();
 				shutterStateA_ = true;
 				digitalWrite(CAMERA_TRIGGER_A,LOW); //trigger camera
-		
+					
+				delay(shutterPulseTime_); //if you are going to use focus you need to delay before the shutter anyway.
+				digitalWrite(CAMERA_TRIGGER_A,HIGH);
+				PORTB &= ~ (1<<PORTB7);        //digitalWrite(KEY_PAD_LEDS,LOW); //turn off led
+				shutterStateA_ = false;
+			
 				
-		
 				#ifdef SERIAL_DEBUG
 				Serial.println("Focus");
 				#endif
+			
 			}
 	
 			if(cameraB_ == true) //or use CameraB?
@@ -233,12 +246,19 @@ void Trigger::shutter(boolean delay,boolean delayUnitMs)
 				shutterStateB_ = true;
 			 	digitalWrite(CAMERA_TRIGGER_B,LOW);
 	
-				//IRShutter();
+				
 	
 				#ifdef SERIAL_DEBUG
 				Serial.println("Shutter");
 				#endif
 			}
+			
+			if(IRShutter_ == true)
+			{
+				IRTransmit();
+			}
+			
+			
 		}
 	}
 }
@@ -513,10 +533,12 @@ void Trigger::formatThresholdString(unsigned int data, char buffer[])
  ***********************************************************/
 void Trigger::resetShutter()
 {
+	
+	/*
   //reset trigger low after small delay
   if(shutterStateA_ == true)
   {
-	 if(millis() - focusDelay > 10) 
+	 if(millis() - focusDelay > shutterPulseTime_) 
 	 {
 	    // save the last time you took a photo
 	    focusDelay = millis();
@@ -530,11 +552,11 @@ void Trigger::resetShutter()
 		digitalWrite(CAMERA_TRIGGER_A,HIGH);
 		
 	 }	
-  }		
+  }		*/
   //reset trigger low after small delay
   if(shutterStateB_ == true)
   {
-	 if(millis() - shutterDelay > 10) 
+	 if(millis() - shutterDelay > shutterPulseTime_) 
 	 {
 	    // save the last time you took a photo
 	    shutterDelay = millis();
@@ -558,7 +580,7 @@ void Trigger::resetShutter()
  * 
  * 
  ***********************************************************/
-void Trigger::IRShutter()
+void Trigger::IRTransmit()
 {
 	irsend.sendNEC(0x61DC807F,32); //RM-2 (olympus) is probably NEC protocol
 	

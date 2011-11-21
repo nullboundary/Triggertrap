@@ -39,17 +39,21 @@
 #include <timeLapse.h>
 #include <auxiliary.h>
 
-//#define SERIAL_DEBUG
+//#define SERIAL_DEBUG //do you want to use Serial for debugging? uncomment this
 
-
-const int NUM_MODES = 5; //number of trigger modes
-const int TIMELAPSE_MODE = 3; 
+const int NUM_MODES = 5;  //number of trigger modes
 const int LASER_MODE = 0;
 const int SOUND_MODE = 1;
 const int LIGHT_MODE = 2;
+const int TIMELAPSE_MODE = 3; 
 const int AUX_MODE = 4;
 
+const boolean SHUTTER_ON = true;  //use the wired shutter?
+const boolean FOCUS_ON = true;   //focus your camera before each shot? WARNING Will cause shutter delays!
+const boolean IR_SHUTTER_ON = false;  //send IR transmitter codes for your camera?
+const int SHUTTER_PULSE_TIME = 50; //50ms shutter pin goes HIGH. 
 
+//the UI object, and the sensor objects
 TTUI tui;
 Laser laser;
 Light light;
@@ -66,23 +70,24 @@ TimeLapse timeLapse;
  ***********************************************************/
 void setup() {   
 
-  #ifdef SERIAL_DEBUG
+#ifdef SERIAL_DEBUG
   Serial.begin(9600);  
-  #endif
-  
-  #ifndef SERIAL_DEBUG
-      // USB Serial port configure as input, disable pullup
-      pinMode (0, INPUT);
-      pinMode (1, INPUT);
-      digitalWrite(0, LOW);
-      digitalWrite(1, LOW);
-  #endif
-  
+#endif
+
+
+#ifndef SERIAL_DEBUG
+  // USB Serial port configure as input, disable pullup
+  pinMode (0, INPUT);
+  pinMode (1, INPUT);
+  digitalWrite(0, LOW);
+  digitalWrite(1, LOW);
+#endif
+
   analogReference(INTERNAL);
 
-  tui.setup(laser,mic,light,timeLapse,aux); //setup touch input buttons, and lcd menus
-  
-  interrupts();
+  tui.setup(laser,mic,light,timeLapse,aux); //pass the sensors to the UI
+
+  interrupts(); //make sure interrupts are on
 
 }
 
@@ -93,100 +98,138 @@ void setup() {
  ***********************************************************/
 void loop() {
 
-  
-  
+
+
   tui.update(); //update the UI
 
   if(tui.trapActive() == true) //start button pressed
   {
-    
+
     switch (tui.trigger()) //which trigger are we using.
-  {
-  case TIMELAPSE_MODE:
+    {
+    case TIMELAPSE_MODE:
+      timeLapseTrigger();
+      break;
 
+    case LASER_MODE:
+      laserTrigger();
+      break;
 
-    	timeLapseTrigger();
-
-    break;
-
-  case LASER_MODE:
-
-	laserTrigger();
-    break;
-
-  case SOUND_MODE:
+    case SOUND_MODE:
       soundTrigger();
-      
-    break;
-  case LIGHT_MODE:
-    lightTrigger();
-  break;  
+      break;
 
-  case AUX_MODE:
+    case LIGHT_MODE:
+      lightTrigger();
+      break;  
 
-    break;
+    case AUX_MODE:
+      auxTrigger();
+      break;
 
-  default: //no default option.
-    break;
-  }
+    default: //no default option.
+      break;
+    }
   }
 
 
 }
 
 
-
+/***********************************************************
+ * 
+ * laserTrigger
+ *
+ * 
+ * 
+ ***********************************************************/
 void laserTrigger()
 {
 
-	laser.setShutters(true,true); //no focus, only shutter
-	laser.trigger();
-	
-	
+  laser.setShutters(FOCUS_ON, SHUTTER_ON, IR_SHUTTER_ON, SHUTTER_PULSE_TIME); //no focus, only shutter
+  laser.trigger(); //check to see if TT should take a picture
+
 }
 
+/***********************************************************
+ * 
+ * timeLapseTrigger
+ *
+ * 
+ * 
+ ***********************************************************/
 void timeLapseTrigger()
 {
-  
-  timeLapse.setShutters(true,true);
+
+  timeLapse.setShutters(FOCUS_ON, SHUTTER_ON, IR_SHUTTER_ON, SHUTTER_PULSE_TIME);
   if(timeLapse.trigger() == true)
   {
-    #ifdef SERIAL_DEBUG
+#ifdef SERIAL_DEBUG
     Serial.print(timeLapse.shotCount());
-    #endif
-   
+#endif
+
   }
 
 
-
 }
-
+/***********************************************************
+ * 
+ * soundTrigger
+ *
+ * 
+ * 
+ ***********************************************************/
 void soundTrigger()
 {
-        mic.setShutters(true,true); //no focus, only shutter
-	if(mic.trigger() == true) //returns true if sound changes based on current mode type
-	{
-                #ifdef SERIAL_DEBUG
-                Serial.println("Trigger");
-                #endif
-	}
+  //(focus,shutter,IR,shutterOpenTime)
+  mic.setShutters(FOCUS_ON, SHUTTER_ON, IR_SHUTTER_ON, SHUTTER_PULSE_TIME); //no focus, only shutter
+  if(mic.trigger() == true) //returns true if sound changes based on current mode type
+  {
+#ifdef SERIAL_DEBUG
+    Serial.println("Trigger");
+#endif
+  }
 
 }
-
+/***********************************************************
+ * 
+ * lightTrigger
+ *
+ * 
+ * 
+ ***********************************************************/
 void lightTrigger()
 {
-      
-        light.setShutters(true,true); //no focus, only shutter
-	if(light.trigger() == true) //returns true if sound changes based on current mode type
-	{
 
-                #ifdef SERIAL_DEBUG
-                Serial.println(light.sensorLevel());  
-                #endif
+  light.setShutters(FOCUS_ON, SHUTTER_ON, IR_SHUTTER_ON, SHUTTER_PULSE_TIME); //no focus, only shutter
+  if(light.trigger() == true) //returns true if sound changes based on current mode type
+  {
 
-	}
+#ifdef SERIAL_DEBUG
+    Serial.println(light.sensorLevel());  
+#endif
+
+  }
 
 }
+/***********************************************************
+ * 
+ * auxTrigger
+ *
+ * 
+ * 
+ ***********************************************************/
+void auxTrigger()
+{
+
+  aux.setShutters(FOCUS_ON, SHUTTER_ON, IR_SHUTTER_ON, SHUTTER_PULSE_TIME); //no focus, only shutter
+  aux.trigger(); //returns a boolean but you don't need to use it
+
+
+}
+
+
+
 
 
 

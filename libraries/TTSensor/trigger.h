@@ -96,7 +96,7 @@ virtual boolean trigger() = 0;
  *  Take the picture, bring shutterA and/or B low
  * 
  ***********************************************************/
-void shutter(boolean delay=true,boolean delayUnitMs=true);
+void shutter(boolean delayActive=true,boolean delayUnitMs=true);
 
 /***********************************************************
  * 
@@ -187,7 +187,7 @@ virtual boolean stop();
  * send shutter command via IR transmitter
  * 
  ***********************************************************/
-void IRShutter();
+void IRTransmit();
 
 /***********************************************************
  * 
@@ -205,7 +205,7 @@ void resetShutter();
  * set which line will be used, Focus or Shutter 
  * 
  ***********************************************************/
-void setShutters(boolean cameraA, boolean cameraB) { cameraA_ = cameraA; cameraB_ = cameraB; }
+void setShutters(boolean cameraA, boolean cameraB, boolean IRshutter, int shutterPulseTime); 
 
 /***********************************************************
  * 
@@ -252,11 +252,14 @@ protected:
   boolean shutterStateB_; //status of shutter B, high or low. Goes low for small amount of time at shot
   boolean cameraA_;  //camera A on
   boolean cameraB_; //camera B on
+  boolean IRShutter_; //use IR shutter?
   boolean shutterReady; //trigger is ready, take a picture
   boolean abortTrigger;  //stop the trigger action. example, all timelapse shots finished 
   
+ int shutterPulseTime_; //the time shutter pin is low 
+
   unsigned long shutterDelay; //keep track of the time the shutter has been low
-  unsigned long focusDelay; //keep track of the time the focus has been low
+  //unsigned long focusDelay; //keep track of the time the focus has been low
   unsigned long delayCount; //when trigger is ready, start counting, till delay time is up
   unsigned long startBttnTime; //the time when the start button is pressed. 
   
