@@ -71,6 +71,12 @@
     digitalWrite(START_BUTTON, HIGH);   // turn on pullup resistor for Start button
 	attachInterrupt(0,startDownHandler,FALLING); //trigger ISR function on start button press.
 	
+	//Shutter and Focus pins set to output
+	pinMode(13, OUTPUT);
+    pinMode(12, OUTPUT);
+    digitalWrite(13, HIGH); // is off
+    digitalWrite(12, HIGH); // is off
+	
 	//set UI Power
 	 DDRB |= (1<<PORTB7);   //pinMode(KEY_PAD_LEDS, OUTPUT);      // LED on UI
 	 DDRB |= (1<<PORTB6);   //pinMode(POWER_UI,OUTPUT);
