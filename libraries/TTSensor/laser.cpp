@@ -62,16 +62,17 @@ const prog_char * laserSettingMenu[] PROGMEM  = 	   // setting menu options
 };
 
 const int LASER_TYPE = 0;
-const int LASER_DELAY = 1; 
+const int LASER_DELAY = 1;
+const int LASER_THRESHOLD = 2; 
 
   Laser::Laser() 
   {
 	maxOptionMenu = 2; 
-    triggerState_ = 0; //off
+    triggerState_ = false; //off
 	abortTrigger = false; 
 	setOption(LASER_TYPE,0);
-	setOption(TRIG_THRESHOLD,128);
 	setOption(LASER_DELAY,0);
+	setOption(LASER_THRESHOLD,128);
 	select_ = 0; 
     sensorPin_ = LASER_SENSOR;
 	
@@ -87,7 +88,7 @@ const int LASER_DELAY = 1;
   {
 	
 	
-	setOption(TRIG_THRESHOLD,128); //just set laser to always be 128. Its really the safest value
+	setOption(LASER_THRESHOLD,128); //just set laser to always be 128. Its really the safest value
    
  	boolean laserStatus = false;
 

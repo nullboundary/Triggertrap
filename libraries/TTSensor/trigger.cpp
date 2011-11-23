@@ -211,7 +211,7 @@ void Trigger::shutter(boolean delayActive,boolean delayUnitMs)
 			elapsed = currentTime - delaySec;
 		}	
 		
-	    //ready, but need to wait for delay timer, unless delay is false, then skip the delay
+	    //ready, but need to wait for delay timer, unless delayActive is false, then skip the delay
 		if(elapsed > option(TRIG_DELAY) || delayActive == false) 
 		{
 			shotCounter_++; 
