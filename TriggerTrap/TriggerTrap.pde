@@ -29,7 +29,7 @@
 #include <I2C.h>
 #include <AtTouch.h>
 #include <TTSleep.h>
-#include <IRremote.h>
+#include <TTIRremote.h>
 //#include <TTSensor.h>
 #include <TTUI.h>
 #include <laser.h>

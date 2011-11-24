@@ -37,7 +37,7 @@
 #include <WProgram.h>
 #include <avr/pgmspace.h>
 #include <avr/eeprom.h>
-#include <IRremote.h>
+#include <TTIRremote.h>
 
 //Eeprom read/write Macros
 #define eeprom_read_to(dst_p, eeprom_field, dst_size,blockOffset) eeprom_read_block(dst_p, (void *)(blockOffset+offsetof(__eeprom_data, eeprom_field)), MIN(dst_size, sizeof((__eeprom_data*)0)->eeprom_field))

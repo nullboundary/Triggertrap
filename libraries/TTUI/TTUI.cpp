@@ -132,8 +132,8 @@ void TTUI::update()
 	boolean hold = false; 
 	int hitKeyVal = 0;
   
-	if(trapActive_ == false) //waiting for UI input
-	{
+	    systemCheck(); //check for stop or reset
+		updateLCD(); //updates the lcd if something needs to change in realtime
 
   	 	if(touch.hold() == true) //press and hold key pad
 		{
@@ -147,6 +147,7 @@ void TTUI::update()
 	   	 	keyDown = true;
 		 	hitKeyVal = touch.readActiveKey(); //read which key was hit
 		} 
+	
 	
 
 		//call a specific function based on which key is pressed
@@ -171,25 +172,53 @@ void TTUI::update()
 		      default: //no default option, just here for compiler
 		        break;
 	      }
-
-	    }
+		}
 		
 		if(batteryPower() == true)
 		{
 		 	uiPowerTimeOut(); //if there has been no activity turn off lcd power
-		}
-		
-		resetCheck();
+		}	
+
+
+
+}
+
+void TTUI::updateLCD()
+{
 	
-		
-	}
-	else if(trapActive_ == true) //start button was pressed, active
+	//only update LCD every 300ms
+	int now = millis()/100; //100 ms 
+	int elapsed = now - activeRefreshTime;
+
+	if(elapsed > 3)  //300ms
 	{
-		updateActive();
+		activeRefreshTime = now;
+	
+		if(trapActive_ == true)
+		{
+			if(batteryPower() == false) //USB connected
+			{
+				clear();
+				printMode(0);
+
+				char printBuffer[9];
+				triggers[currentTrigger]->getActiveMessage(printBuffer);
+				setCursor(0,1);
+				print(printBuffer);
+					
+			}
+		}
+		else if(trapActive_ == false) //waiting for UI input
+		{
+			if(activeMenu == UP_MENU || activeMenu == DOWN_MENU)
+			{
+					clear();
+					printSelect(0);
+					printInc(1,0);
+			}
+		}
 	}
-
-   
-
+	
 }
 
 /***********************************************************
@@ -197,34 +226,17 @@ void TTUI::update()
 * updateActive
 * 
 ***********************************************************/
-void TTUI::updateActive()
+void TTUI::systemCheck()
 {
-		if(triggers[currentTrigger]->stop() == true) //stop the UI if the trigger requests a stop
+		if(trapActive_ == true)
 		{
-			initStart(millis());
-		}
-		else if(batteryPower() == false) //USB connected
-		{
-			//only update LCD every 300ms
-			int now = millis()/100; //100 ms 
-			int elapsed = now - activeRefreshTime;
-			
-			if(elapsed > 3)  //300ms
+			if(triggers[currentTrigger]->stop() == true) //stop the UI if the trigger requests a stop
 			{
-				activeRefreshTime = now;
-				
-				clear();
-				
-				printMode(0);
-			
-				char printBuffer[9];
-				triggers[currentTrigger]->getActiveMessage(printBuffer);
-				setCursor(0,1);
-				print(printBuffer);
-			}	
+				initStart(millis());
+			}
 		}
 		
-	
+		resetCheck();
 	
 }
 
@@ -320,9 +332,10 @@ void TTUI::initStart(unsigned long startTime)
   void TTUI::bttnMode()  
   {
     
+	activeMenu = MODE_MENU;
     currentTrigger+=1; //mode button has been pressed, advance the mode option to next
 	currentTrigger = currentTrigger % NUM_OF_SENSORS;
-	Serial.println(triggers[currentTrigger]->select());
+	//Serial.println(triggers[currentTrigger]->select());
 	
 	clear();
 	printMode(0);
@@ -338,7 +351,7 @@ void TTUI::initStart(unsigned long startTime)
   void TTUI::bttnOption()
   {
 	char printBuffer[9];
-
+	activeMenu = OPTION_MENU;
 	triggers[currentTrigger]->incSelect(); //set sensor to next select mode
 	
 	clear();
@@ -355,7 +368,7 @@ void TTUI::initStart(unsigned long startTime)
 void TTUI::bttnUp(boolean hold)
 {
 	int incVal = 1; 
-	
+	activeMenu = UP_MENU;
 	if(hold == true)
 	{
 		//speed up increment if held down for a long time
@@ -366,7 +379,7 @@ void TTUI::bttnUp(boolean hold)
 
 	clear();
 	printSelect(0);
-	printInc(1,incVal);
+	printInc(1,incVal); //don't print, just inc
 	
 }
    
@@ -378,7 +391,7 @@ void TTUI::bttnUp(boolean hold)
 void TTUI::bttnDown(boolean hold)
 {
 	int decVal = 1; 
-	
+	activeMenu = DOWN_MENU; 
 	if(hold == true)
 	{
 		//speed up increment if held down for a long time
@@ -388,7 +401,7 @@ void TTUI::bttnDown(boolean hold)
 
 	clear();
 	printSelect(0);
-	printDec(1,decVal);
+	printDec(1,decVal); //don't print just dec
 }
 
 /***********************************************************
@@ -448,7 +461,7 @@ void TTUI::uiPowerOff()
       detachInterrupt(1);    // disable the touch key interrupt
       I2c.end();              // stop i2c
 
-        //if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB connected
+        
         if(batteryPower() == false) //USB connected
         {
           //do nothing
@@ -565,8 +578,10 @@ void TTUI::printInc(int row,int incVal)
 	char printBuffer[9];
 	triggers[currentTrigger]->incSetting(printBuffer,incVal); //increment the current selected value, pass char buffer
 	//set the value in line 2	
-	setCursor(0,row);
-	print(printBuffer);
+	
+		setCursor(0,row);
+		print(printBuffer);
+
 	
 	#ifdef SERIAL_DEBUG
 	Serial.println(printBuffer);
@@ -583,8 +598,10 @@ void TTUI::printDec(int row,int decVal)
 	char printBuffer[9];
 	triggers[currentTrigger]->decSetting(printBuffer,decVal); //increment the current selected value, pass char buffer
 	//set the value in line 2	
-	setCursor(0,row);
-	print(printBuffer);
+	
+		setCursor(0,row);
+		print(printBuffer);
+
 	
 	#ifdef SERIAL_DEBUG
 	Serial.println(printBuffer);

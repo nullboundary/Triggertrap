@@ -4,7 +4,8 @@
  * 	Author  : Noah Shibley, NoMi Design                         
  * 	Date    : July 10th 2011                                    
  * 	Version : 0.1                                              
- * 	Notes   : Most of this code comes from "Cloudy" in this post http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1292898715
+ * 	Notes   : Most of this code comes from "Cloudy" on the arduino form
+ *			  http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1292898715
  * 
  * 	 Copyright (c) 2011 NoMi Design All right reserved.
  * 

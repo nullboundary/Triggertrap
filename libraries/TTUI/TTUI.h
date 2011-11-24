@@ -43,6 +43,11 @@ const byte SELECT_BTTN = 3;//select bttn address
 const byte UP_BTTN = 6; //up bttn address
 const byte DOWN_BTTN = 5;  //down bttn address
 
+const byte MODE_MENU= 0; //mode menu 
+const byte OPTION_MENU = 1;//option menu
+const byte UP_MENU = 2; //up menu
+const byte DOWN_MENU = 3;  //down menu
+
 const byte POWER_UI = PORTB6;				// A3 = Digital out - UI power mosfet switch
 const byte KEY_PAD_LEDS = PORTB7;				// D4 = Digital out - LED on keypad
 const byte START_BUTTON = 2;				// D2 = Digital in - Start button 
@@ -133,12 +138,14 @@ private:
 	
 	  volatile boolean trapActive_;	//trigger was activated on start button press
 	  byte currentTrigger;   //which trigger (mode) is active
+	  byte activeMenu; //which menu is being displayed? Mode, Option, Inc, Dec
 	  static TTUI* pTTUI; //ptr to TTUI class for the ISR
 
 	  AtTouch touch;  //touch sensor library object
 	
 	  Trigger *triggers[5]; //array of trigger object pointers
 	
+	  
 	  int activeRefreshTime; //time counter for refresh of LCD, during trigger active
 	  unsigned long 	previousMillis_UIPower; //time counter for powering down the leds and screen
 	  
@@ -155,7 +162,9 @@ private:
  * handles update when the trap is active
  * 
  ***********************************************************/
-void updateActive();
+void systemCheck();
+
+void updateLCD();
 
 /***********************************************************
  * 
