@@ -75,6 +75,9 @@ const int LASER_THRESHOLD = 2;
 	setOption(LASER_THRESHOLD,128);
 	select_ = 0; 
     sensorPin_ = LASER_SENSOR;
+	cameraA_ = false; //focus on/off default
+	cameraB_ = true; //shutter on/off default
+	IRShutter_ = false;  //IR on/off default
 	
   }
 

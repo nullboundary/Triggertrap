@@ -186,6 +186,7 @@ void Trigger::setShutters(boolean cameraA, boolean cameraB, boolean IRShutter, i
 void Trigger::shutter(boolean delayActive,boolean delayUnitMs)
 {
 	int elapsed;
+	shutterPulseTime_ = SHUTTER_PULSE_TIME;
 	
 	resetShutter(); //make the shutter close after 50ms delay
 	
@@ -255,7 +256,9 @@ void Trigger::shutter(boolean delayActive,boolean delayUnitMs)
 			
 			if(IRShutter_ == true)
 			{
+				PORTB |= (1<<PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
 				IRTransmit();
+				PORTB &= ~ (1<<PORTB7);        //digitalWrite(KEY_PAD_LEDS,LOW); //turn off led
 			}
 			
 			
@@ -667,13 +670,15 @@ void Trigger::saveState()
 	#endif
 	
 	   //each trigger object will save to a seperate eeprom memory space
-	    int objectMemoryOffset = triggerIndex*10;
+	    int objectMemoryOffset = triggerIndex*16;
 	
 	   eeprom_write(select_, optionSelect,objectMemoryOffset);
 	   eeprom_write(optionValues[0], optionVal[0],objectMemoryOffset);
 	   eeprom_write(optionValues[1], optionVal[1],objectMemoryOffset);
 	   eeprom_write(optionValues[2], optionVal[2],objectMemoryOffset);
-	
+	   eeprom_write(cameraA_,cameraFocus,objectMemoryOffset);
+	   eeprom_write(cameraB_,cameraShutter,objectMemoryOffset);
+	   eeprom_write(IRShutter_,cameraIR,objectMemoryOffset);
 	
 /*	
   unsigned int optionValues[3];	
@@ -698,13 +703,17 @@ void Trigger::restoreState()
 	#endif
 	
 	//each trigger object will save to a seperate eeprom memory space
-	int objectMemoryOffset = triggerIndex*10;
+	int objectMemoryOffset = triggerIndex*16;
 	
 	eeprom_read(select_, optionSelect,objectMemoryOffset);
 	if(select_ > 3 || select_ < 0) select_ = 0;
 	eeprom_read(optionValues[0], optionVal[0],objectMemoryOffset);
 	eeprom_read(optionValues[1], optionVal[1],objectMemoryOffset);
 	eeprom_read(optionValues[2], optionVal[2],objectMemoryOffset);
+	eeprom_read(cameraA_,cameraFocus,objectMemoryOffset);
+	eeprom_read(cameraB_,cameraShutter,objectMemoryOffset);
+	eeprom_read(IRShutter_,cameraIR,objectMemoryOffset);
+	
 }
 
 /***********************************************************
@@ -721,12 +730,15 @@ void Trigger::initState()
 	#endif
 	
 	//each trigger object will save to a seperate eeprom memory space
-	int objectMemoryOffset = triggerIndex*10;
+	int objectMemoryOffset = triggerIndex*16;
 	
 	   eeprom_write(0, optionSelect,objectMemoryOffset);
 	   eeprom_write(0, optionVal[0],objectMemoryOffset);
 	   eeprom_write(0, optionVal[1],objectMemoryOffset);
 	   eeprom_write(0, optionVal[2],objectMemoryOffset);
+	   eeprom_write(false,cameraFocus,objectMemoryOffset);
+	   eeprom_write(true,cameraShutter,objectMemoryOffset);
+	   eeprom_write(false,cameraIR,objectMemoryOffset);
 }
 /*
 void eeprom_read_to(dst_p, eeprom_field, dst_size,blockOffset)

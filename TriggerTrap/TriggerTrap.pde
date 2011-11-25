@@ -48,10 +48,12 @@ const int LIGHT_MODE = 2;
 const int TIMELAPSE_MODE = 3; 
 const int AUX_MODE = 4;
 
+/*
 const boolean SHUTTER_ON = true;  //use the wired shutter?
 const boolean FOCUS_ON = true;   //focus your camera before each shot? WARNING Will cause shutter delays!
 const boolean IR_SHUTTER_ON = false;  //send IR transmitter codes for your camera?
-const int SHUTTER_PULSE_TIME = 50; //50ms shutter pin goes HIGH. 
+*/
+//const int SHUTTER_PULSE_TIME = 50; //50ms shutter pin goes HIGH. 
 
 //the UI object, and the sensor objects
 TTUI tui;
@@ -146,7 +148,7 @@ void loop() {
 void laserTrigger()
 {
 
-  laser.setShutters(FOCUS_ON, SHUTTER_ON, IR_SHUTTER_ON, SHUTTER_PULSE_TIME); //no focus, only shutter
+  //laser.setShutters(FOCUS_ON, SHUTTER_ON, IR_SHUTTER_ON, SHUTTER_PULSE_TIME); //no focus, only shutter
   laser.trigger(); //check to see if TT should take a picture
 
 }
@@ -161,7 +163,7 @@ void laserTrigger()
 void timeLapseTrigger()
 {
 
-  timeLapse.setShutters(FOCUS_ON, SHUTTER_ON, IR_SHUTTER_ON, SHUTTER_PULSE_TIME);
+ // timeLapse.setShutters(FOCUS_ON, SHUTTER_ON, IR_SHUTTER_ON, SHUTTER_PULSE_TIME);
   if(timeLapse.trigger() == true)
   {
 #ifdef SERIAL_DEBUG
@@ -182,7 +184,7 @@ void timeLapseTrigger()
 void soundTrigger()
 {
   //(focus,shutter,IR,shutterOpenTime)
-  mic.setShutters(FOCUS_ON, SHUTTER_ON, IR_SHUTTER_ON, SHUTTER_PULSE_TIME); //no focus, only shutter
+  //mic.setShutters(FOCUS_ON, SHUTTER_ON, IR_SHUTTER_ON, SHUTTER_PULSE_TIME); //no focus, only shutter
   if(mic.trigger() == true) //returns true if sound changes based on current mode type
   {
 #ifdef SERIAL_DEBUG
@@ -201,7 +203,7 @@ void soundTrigger()
 void lightTrigger()
 {
 
-  light.setShutters(FOCUS_ON, SHUTTER_ON, IR_SHUTTER_ON, SHUTTER_PULSE_TIME); //no focus, only shutter
+  //light.setShutters(FOCUS_ON, SHUTTER_ON, IR_SHUTTER_ON, SHUTTER_PULSE_TIME); //no focus, only shutter
   if(light.trigger() == true) //returns true if sound changes based on current mode type
   {
 
@@ -222,7 +224,7 @@ void lightTrigger()
 void auxTrigger()
 {
 
-  aux.setShutters(FOCUS_ON, SHUTTER_ON, IR_SHUTTER_ON, SHUTTER_PULSE_TIME); //no focus, only shutter
+ // aux.setShutters(FOCUS_ON, SHUTTER_ON, IR_SHUTTER_ON, SHUTTER_PULSE_TIME); //no focus, only shutter
   aux.trigger(); //returns a boolean but you don't need to use it
 
 

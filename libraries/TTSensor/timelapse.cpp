@@ -37,6 +37,9 @@ TimeLapse::TimeLapse(){
 		setOption(TIME_NUMSHOTS,0); //set #shots to 0
 		delayCount = 0; 
 		select_ = 0;  //set 
+		cameraA_ = false; //focus on/off default
+		cameraB_ = true; //shutter on/off default
+		IRShutter_ = false;  //IR on/off default
 
 	  	
 	

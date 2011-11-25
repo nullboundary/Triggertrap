@@ -54,6 +54,7 @@ const int TRIG_TYPE = 2; //Option menu option 2.
 const int CAMERA_TRIGGER_A = 13;		// D13 = Digital out - Camera Trigger A
 const int CAMERA_TRIGGER_B = 12;		// D12 = Digital out - Camera Trigger B
 
+const int SHUTTER_PULSE_TIME = 50; //50ms shutter pin goes HIGH. 
 
 //#define SERIAL_DEBUG //remove if you don't want serial statements
 
@@ -207,6 +208,13 @@ void resetShutter();
  ***********************************************************/
 void setShutters(boolean cameraA, boolean cameraB, boolean IRshutter, int shutterPulseTime); 
 
+void shutterOn(boolean cameraA){cameraA_ = cameraA;}
+boolean getShutter() {return cameraA_;}
+void focusOn(boolean cameraB){cameraB_ = cameraB;}
+boolean getFocus() {return cameraB_;}
+void IRShutterOn(boolean IRShutter){IRShutter_ = IRShutter;}
+boolean getIRShutter() { return IRShutter_; }
+
 /***********************************************************
  * 
  * saveState
@@ -271,6 +279,9 @@ protected:
 	struct __eeprom_data {
 	  byte optionSelect; //select_
 	  unsigned int optionVal[3]; //optionValues array
+	  boolean cameraFocus;
+	  boolean cameraShutter;
+	  boolean cameraIR;
 	};
 
 /***********************************************************

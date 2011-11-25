@@ -57,6 +57,9 @@ const int SOUND_IN = A7;
 	setOption(TRIG_DELAY,0);
 	select_ = 1; 
     sensorPin_ = SOUND_IN;
+	cameraA_ = false; //focus on/off default
+	cameraB_ = true; //shutter on/off default
+	IRShutter_ = false;  //IR on/off default
 	
 
  }

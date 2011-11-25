@@ -54,6 +54,9 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
 	setOption(TRIG_DELAY,0);
 	select_ = 0; 
     sensorPin_ = AUX;
+	cameraA_ = false; //focus on/off default
+	cameraB_ = true; //shutter on/off default
+	IRShutter_ = false;  //IR on/off default
 
 };
  

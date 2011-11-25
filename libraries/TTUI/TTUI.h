@@ -139,6 +139,11 @@ private:
 	  volatile boolean trapActive_;	//trigger was activated on start button press
 	  byte currentTrigger;   //which trigger (mode) is active
 	  byte activeMenu; //which menu is being displayed? Mode, Option, Inc, Dec
+	  byte incSystemOption; //increment system option index value
+	  boolean systemSetting; //value of current system setting. on/off
+	  
+	  byte systemMenu; //index value of the system menu.
+	
 	  static TTUI* pTTUI; //ptr to TTUI class for the ISR
 
 	  AtTouch touch;  //touch sensor library object
@@ -210,6 +215,12 @@ void updateLCD();
  * 
  ***********************************************************/
 void uiPowerTimeOut();
+
+void getSystemModeMenu(char buffer[]);
+
+void getSystemOptionMenu(char buffer[]);
+
+void setSystemSettingMenu(char buffer[],int change);
                       
 /***********************************************************
  * 

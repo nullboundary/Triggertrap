@@ -50,6 +50,9 @@ int const LIGHT_CHANGE_MODE = 2;
 	setOption(TRIG_DELAY,0);
 	select_ = 0; 
     sensorPin_ = AMBIENT_LIGHT_SENSOR;
+	cameraA_ = false; //focus on/off default
+	cameraB_ = true; //shutter on/off default
+	IRShutter_ = false;  //IR on/off default
 	
 };
  
