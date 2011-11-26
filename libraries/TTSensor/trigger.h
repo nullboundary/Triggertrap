@@ -208,10 +208,10 @@ void resetShutter();
  ***********************************************************/
 void setShutters(boolean cameraA, boolean cameraB, boolean IRshutter, int shutterPulseTime); 
 
-void shutterOn(boolean cameraA){cameraA_ = cameraA;}
-boolean getShutter() {return cameraA_;}
-void focusOn(boolean cameraB){cameraB_ = cameraB;}
-boolean getFocus() {return cameraB_;}
+void focusOn(boolean cameraA){cameraA_ = cameraA;}
+boolean getFocus() {return cameraA_;}
+void shutterOn(boolean cameraB){cameraB_ = cameraB;}
+boolean getShutter() {return cameraB_;}
 void IRShutterOn(boolean IRShutter){IRShutter_ = IRShutter;}
 boolean getIRShutter() { return IRShutter_; }
 
@@ -258,8 +258,8 @@ protected:
  
   boolean shutterStateA_; //status of shutter A, high or low. Goes low for small amount of time at shot
   boolean shutterStateB_; //status of shutter B, high or low. Goes low for small amount of time at shot
-  boolean cameraA_;  //camera A on
-  boolean cameraB_; //camera B on
+  boolean cameraA_;  //camera A on    TODO CHANGE VAR NAME TO FOCUS
+  boolean cameraB_; //camera B on     TODO CHANGE VAR NAME TO SHUTTER, cameraA, cameraB is confusing...
   boolean IRShutter_; //use IR shutter?
   boolean shutterReady; //trigger is ready, take a picture
   boolean abortTrigger;  //stop the trigger action. example, all timelapse shots finished 
