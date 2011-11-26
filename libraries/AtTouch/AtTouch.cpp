@@ -145,7 +145,7 @@ int AtTouch::readActiveKey()
   
   
   int keyAddress = readActiveAddress();
-  //Serial.println(keyAddress);
+ 
   
   int keyValue = 0; //start at one, for key0
   for(int i = keyAddress ;i>0;i = i>>1) //shift until you hit 1, thats which bit place
@@ -153,8 +153,8 @@ int AtTouch::readActiveKey()
    keyValue++; //increment keyValue to find bit place
   }
  	activeKey_ = (byte) keyValue; //save the keyValue for later
-	if(keyValue == 9) { holdDown_ = false; } //9 is key up, so stop press and hold timer
-
+	if(keyValue == 9 || keyValue == 0) { holdDown_ = false; } //9 is key up, so stop press and hold timer
+  
   return keyValue;
   
   

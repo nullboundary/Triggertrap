@@ -32,6 +32,7 @@
 #define TTUI_H
 
 #include <LiquidCrystalFast.h>
+#include <avr/sleep.h>
 #include <AtTouch.h>
 #include <TTSensor.h>
 #include <WProgram.h>
@@ -58,6 +59,9 @@ const byte NUM_OF_SENSORS = 5; //the number of sensor triggers
 
 extern "C" void startDownHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
 extern "C" void startUpHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
+extern "C" void sleepHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
+
+
 
 class TTUI: public LiquidCrystalFast {
 
@@ -65,10 +69,10 @@ class TTUI: public LiquidCrystalFast {
 public:
 
 
-	TTUI();
+TTUI();
 
-friend void startDownHandler(void); //make the ISR routine a friend of this class
-friend void startUpHandler(void); //make the ISR routine a friend of this class
+friend void startDownHandler(void); //make the ISR a friend of this class
+friend void startUpHandler(void); //make the ISR a friend of this class
 
 /***********************************************************
  * 
@@ -162,13 +166,20 @@ private:
  
 /***********************************************************
  * 
- * updateActive
+ * systemCheck
  *
- * handles update when the trap is active
+ *
  * 
  ***********************************************************/
 void systemCheck();
 
+/***********************************************************
+ * 
+ * updateLCD
+ *
+ * handles updating the LCD display every 300ms
+ * 
+ ***********************************************************/
 void updateLCD();
 
 /***********************************************************
@@ -216,10 +227,32 @@ void updateLCD();
  ***********************************************************/
 void uiPowerTimeOut();
 
+/***********************************************************
+ * 
+ * getSystemModeMenu
+ *
+ * fills the char buffer with the text to be displayed by the system mode menu
+ * 
+ ***********************************************************/
 void getSystemModeMenu(char buffer[]);
 
+/***********************************************************
+ * 
+ * getSystemOptionMenu
+ *
+ * fills the char buffer with the text to be displayed by the system option menu
+ * 
+ ***********************************************************/
 void getSystemOptionMenu(char buffer[]);
 
+/***********************************************************
+ * 
+ * setSystemSettingMenu
+ *
+ * fills the char buffer with the text to be displayed by 
+ *  the system setting values, and sets the values
+ * 
+ ***********************************************************/
 void setSystemSettingMenu(char buffer[],int change);
                       
 /***********************************************************

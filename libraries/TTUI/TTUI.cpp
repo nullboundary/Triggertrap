@@ -160,19 +160,22 @@ void TTUI::update()
 			keyDown = true;
 			hold = true;  
 			hitKeyVal = touch.getKey();
+		
 		}
 
 		if(touch.hit() == true) //just press key pad
 		{ 
 	   	 	keyDown = true;
 		 	hitKeyVal = touch.readActiveKey(); //read which key was hit
+	
 		} 
 	
 	
 
 		//call a specific function based on which key is pressed
 	    if(keyDown == true)
-	    {
+		{ 
+		  
 		  previousMillis_UIPower = millis(); //time key was active
 		  keyDown = false;
 	      switch (hitKeyVal)
@@ -301,7 +304,7 @@ void TTUI::resetCheck()
 		}
 		else if(startBttnHold == false && trapActive_ == true )
 		{
-			//if(batteryPower() == true && )
+			
 						 detachInterrupt(0);
 						 attachInterrupt(0,startDownHandler,FALLING); //trigger ISR function on start button press.
 		}		
@@ -541,10 +544,23 @@ void TTUI::uiPowerOff()
     if(state_UIPower == true)
     {
       
-
-      if(millis() - previousMillis_UIPower > UI_SLEEP_MS) 
+	
+      if((millis() - previousMillis_UIPower) > UI_SLEEP_MS) 
       {
+	    	
 		uiPowerOff();
+		set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+	    sleep_enable();
+		sei(); //make sure interrupts are on!
+		detachInterrupt(0);
+	  	attachInterrupt(0,sleepHandler, FALLING);
+	
+	  	sleep_mode();  //sleep now
+		//----------------------------- ZZZZZZ sleeping here----------------------
+	    sleep_disable(); //disable sleep, awake now
+		attachInterrupt(0,startDownHandler,FALLING); //trigger ISR function on start button press.
+		uiPowerOn();
+	    
       }
     }
   }
@@ -769,6 +785,12 @@ void startUpHandler(void)
 		}
 		TTUI::pTTUI->startBttnHold = false;
 	
+	
+	
+}
+
+void sleepHandler(void)
+{
 	
 	
 }
