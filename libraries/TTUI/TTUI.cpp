@@ -34,14 +34,14 @@
     const prog_char systemModeMenu[] PROGMEM= {"System"};
 
 	 //System Option Menus
-	const prog_char systemFocus[] PROGMEM="Focus";
 	const prog_char systemShutter[] PROGMEM = "Shutter";
+	const prog_char systemFocus[] PROGMEM="Focus";
 	const prog_char systemIR[] PROGMEM="IRremote";
 
 	const prog_char * systemOptionMenu[] PROGMEM  = 	//options menu
-	{   	
+	{   
+	systemShutter,	
 	systemFocus,
-	systemShutter,
 	systemIR,
 	};
 	
@@ -590,17 +590,16 @@ void TTUI::setSystemSettingMenu(char buffer[],int change)
 		{
 			if(incSystemOption == 0)
 			{
-				systemSetting = triggers[0]->getFocus();
-				systemSetting = !systemSetting; //flip the boolean
-				triggers[i]->focusOn(systemSetting);
-			}
-			else if(incSystemOption == 1)
-			{
 				systemSetting = triggers[0]->getShutter();
 				systemSetting = !systemSetting; //flip the boolean
 				triggers[i]->shutterOn(systemSetting);
 			}
-	
+			else if(incSystemOption == 1)
+			{
+				systemSetting = triggers[0]->getFocus();
+				systemSetting = !systemSetting; //flip the boolean
+				triggers[i]->focusOn(systemSetting);
+			}
 			else if(incSystemOption == 2)
 			{
 				systemSetting = triggers[0]->getIRShutter();
@@ -690,7 +689,8 @@ void TTUI::printInc(int row,int incVal)
 		triggers[currentTrigger]->incSetting(printBuffer,incVal); //increment the current selected value, pass char buffer
 	}
 	else //system menu
-	{	
+	{
+	
 		setSystemSettingMenu(printBuffer,incVal);
 	}
 	
@@ -717,7 +717,8 @@ void TTUI::printDec(int row,int decVal)
 		triggers[currentTrigger]->decSetting(printBuffer,decVal); //increment the current selected value, pass char buffer
 	}
 	else //system menu
-	{	
+	{
+	
 		setSystemSettingMenu(printBuffer,decVal);
 	}
 	
