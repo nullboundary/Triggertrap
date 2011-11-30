@@ -54,8 +54,8 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
 	setOption(TRIG_DELAY,0);
 	select_ = 0; 
     sensorPin_ = AUX;
-	cameraA_ = false; //focus on/off default
-	cameraB_ = true; //shutter on/off default
+	focusArmed = false; //focus on/off default
+	shutterArmed = true; //shutter on/off default
 	IRShutter_ = false;  //IR on/off default
 
 };
@@ -96,7 +96,9 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
      if(auxStatus == true)
     {
 		delayCount = millis(); //start counting till delay is up
+		focusReady = true; 
 		shutterReady = true;
+		IRReady = true; 
 		return auxStatus;
 	}	
 	else

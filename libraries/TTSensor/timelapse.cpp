@@ -37,8 +37,8 @@ TimeLapse::TimeLapse(){
 		setOption(TIME_NUMSHOTS,0); //set #shots to 0
 		delayCount = 0; 
 		select_ = 0;  //set 
-		cameraA_ = false; //focus on/off default
-		cameraB_ = true; //shutter on/off default
+		focusArmed = false; //focus on/off default
+		shutterArmed = true; //shutter on/off default
 		IRShutter_ = false;  //IR on/off default
 
 	  	
@@ -57,7 +57,9 @@ boolean TimeLapse::delayFirstShot()
 	if(shotCounter_ < 1) //first shot happens RIGHT away on start button press, unless delayed
 	{
 			if(delayCount == 0) { delayCount = millis(); } //set this only the first time through the loop
+			focusReady = true; 
 			shutterReady = true; //if delay is up, take the first shot, 
+			IRReady = true; 
 			shutter(true,false); //set delay to true, we want delay, set delay time unit false to seconds
 			return true; 
 	}
@@ -85,7 +87,7 @@ boolean TimeLapse::trigger()
 	//if you set a shot limit, stop take pictures when it is reached
 	if(shotCounter_ >= option(TIME_NUMSHOTS) && option(TIME_NUMSHOTS) != 0) 
 	{
-		if(shutterStateA_ == false && shutterStateB_ == false) //don't abort if shutter is triggered
+		if(focusActive == false && shutterActive == false) //don't abort if shutter is triggered
 		{
 		 	abortTrigger = true; return false;
 		}
@@ -99,14 +101,14 @@ boolean TimeLapse::trigger()
 		return true;
 	}
 
-
+	
 	shutter(false,false); //trigger shutter if shutterReady = true, set delay to false, false time unit seconds
 			
 	
 	//----------Sleep		
 	if(batteryPower() == true)
 	{
-		if(shutterStateA_ == false && shutterStateB_ == false) //don't sleep if shutter is triggered
+		if(focusActive == false && shutterActive == false) //don't sleep if shutter is triggered
 		{
 	
 			sleepNow(remainTime); //sleep now if there is time left to sleep
@@ -123,10 +125,10 @@ boolean TimeLapse::trigger()
 	  {
 			//times up,take a shot
 			delayCount = millis(); //start counting till delay is up
-
 			startBttnTime = delayCount; //don't call millis twice, just use delayCount, reset startButtnTime
-		//	timelapseCountDown = startBttnTime; 
+			focusReady = true; 
 			shutterReady = true; //set shutter ready, will activate shutter next time through loop
+			IRReady = true; 
 			return shutterReady;
 	  }
 	  else

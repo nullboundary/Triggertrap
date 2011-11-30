@@ -153,11 +153,9 @@ void Trigger::decOption(int menuOption, unsigned int maxValue, int dec)
 	optionValues[menuOption] = mOpt;
 }
 
-void Trigger::setShutters(boolean cameraA, boolean cameraB, boolean IRShutter, int shutterPulseTime) 
+void Trigger::setTriggerPulseTime(int focusPulseTime, int shutterPulseTime) 
 {
-	cameraA_ = cameraA;
-	cameraB_ = cameraB;
-	IRShutter_ = IRShutter;
+	focusPulseTime_ = focusPulseTime;
 	shutterPulseTime_ = shutterPulseTime;
 }
 
@@ -185,20 +183,225 @@ void Trigger::setShutters(boolean cameraA, boolean cameraB, boolean IRShutter, i
  ***********************************************************/
 void Trigger::shutter(boolean delayActive,boolean delayUnitMs)
 {
-	int elapsed;
-	shutterPulseTime_ = SHUTTER_PULSE_TIME;
+    //shutter & focus ready
+    //wait for focus OR shutter delay (depending on which is active)
+    //fire focus, when focus is complete or almost complete (return a value from resetFocus)
+    //fire shutter
+    //reset both
+
 	
-	resetShutter(); //make the shutter close after 50ms delay
+	resetFocus(false);
+	resetShutter(false); //make the shutter close after 50ms delay
 	
-	//don't take a picture until its done taking a picture already!
-	if(shutterStateA_ == true || shutterStateB_ == true)
+	   //ready, but need to wait for delay timer, unless delayActive is false, then skip the delay
+	if(delayActive == false || delayFire(delayUnitMs, option(TRIG_DELAY)) == true) 
 	{
-		shutterReady = false;
+		focusFire();
+		
+		//fire shutter when focus is almost complete.
+		if(focusArmed == false || delayFire(true, (focusPulseTime_- shutterPulseTime_)) == true)
+		{
+			shutterFire();
+
+			if(shutterArmed == false || shutterActive == false) //wait for shutter and focus to finish before you fire IR. or shutter is off
+			{	
+				if(focusActive == false) //make sure focus isn't active either
+				{
+					IRFire();
+				}	
+			}
+			
+		}
+		
 	}
 	
-	if(shutterReady == true) //trigger() set this to ready
-	{
+}
+
+/***********************************************************
+ * 
+ * focusFire
+ *
+ * 
+ * 
+ ***********************************************************/
+void Trigger::focusFire()
+{
+		if(focusArmed == true) //focus
+		{
+			if(focusReady == true) //trigger() set this to ready
+			{
+				focusReady = false; //turn off, focus only once.
+			
+				digitalWrite(CAMERA_TRIGGER_A,LOW); //trigger camera
+				focusDelay = millis();
+				PORTB |= (1<<PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
+				focusActive = true;
+			
+				if(shutterArmed == false && IRShutter_ == false) //only update shotCounter if nothing else is
+				{
+					shotCounter_++;
+				}
+			
+				#ifdef SERIAL_DEBUG
+				Serial.println("Focus");
+				#endif
+			}
+		}
+		else
+		{
+			focusReady = false; //turn it off if its not armed. 
+		}
+}
+
+/***********************************************************
+ * 
+ * shutterFire
+ *
+ * 
+ * 
+ ***********************************************************/
+void Trigger::shutterFire()
+{
 	
+			if(shutterArmed == true) //shutter
+			{
+				if(shutterReady == true) //trigger() set this to ready
+				{
+				
+					shutterReady = false; 
+				
+					digitalWrite(CAMERA_TRIGGER_B,LOW);
+					shutterDelay = millis(); 
+					PORTB |= (1<<PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
+					shutterActive = true;
+			 
+					shotCounter_++; 
+
+					#ifdef SERIAL_DEBUG
+					Serial.println("Shutter");
+					#endif
+				}	
+			}
+			else
+			{
+				shutterReady = false; //turn it off if its not armed
+			}
+}
+/***********************************************************
+ * 
+ * IRFire
+ *
+ * 
+ * 
+ ***********************************************************/
+void Trigger::IRFire()
+{
+		if(IRShutter_ == true)
+		{
+			if(IRReady == true)
+			{
+				IRReady = false; 
+				#ifdef SERIAL_DEBUG
+				Serial.println("IR");
+				#endif
+				
+				PORTB |= (1<<PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
+				IRTransmit();
+				PORTB &= ~ (1<<PORTB7);        //digitalWrite(KEY_PAD_LEDS,LOW); //turn off led
+				
+				if(shutterArmed == false) //only increment shotcounter if shutter is not doing it
+				{
+					shotCounter_++; 
+				}
+			
+			
+			}	
+		}
+		else
+		{
+			IRReady = false; 
+		}
+}
+
+/***********************************************************
+ * 
+ * resetFocus
+ *
+ * 
+ * 
+ ***********************************************************/
+void Trigger::resetFocus(boolean resetNow)
+{
+	
+  //reset trigger low after small delay
+  if(focusActive == true)
+  {
+	 focusReady = false; //don't take a picture again until its done taking a picture already!
+	
+	 if(resetNow == true || (millis() - focusDelay > focusPulseTime_)) 
+	 {
+	   
+		#ifdef SERIAL_DEBUG
+		Serial.println("clear focus");
+		#endif
+	
+		digitalWrite(CAMERA_TRIGGER_A,HIGH);
+		focusDelay = millis();  // save the last time you took a photo
+		focusActive = false;
+		PORTB &= ~ (1<<PORTB7);        //digitalWrite(KEY_PAD_LEDS,LOW); //turn off led
+
+	 }	
+  }		
+}
+
+/***********************************************************
+ * 
+ * resetShutter
+ *
+ * 
+ * 
+ ***********************************************************/
+void Trigger::resetShutter(boolean resetNow)
+{
+	
+
+  //reset trigger low after small delay
+  if(shutterActive == true)
+  {
+
+	  shutterReady = false; //don't take a picture again until its done taking a picture already!
+	
+	 if(resetNow == true || (millis() - shutterDelay > shutterPulseTime_)) 
+	 {
+	   	
+		#ifdef SERIAL_DEBUG
+		Serial.println("clear shutter");
+		#endif
+		
+		digitalWrite(CAMERA_TRIGGER_B,HIGH);
+		shutterDelay = millis(); // save the last time you took a photo
+		shutterActive = false; 
+		PORTB &= ~ (1<<PORTB7);        //digitalWrite(KEY_PAD_LEDS,LOW); //turn off led
+	 }	
+  }
+}
+
+
+/***********************************************************
+ * 
+ * delayFire
+ *
+ * 
+ * 
+ ***********************************************************/
+boolean Trigger::delayFire(boolean delayUnitMs, int expireTime)
+
+{	int elapsed;
+	
+	if(shutterReady == true || focusReady == true || IRReady == true) //trigger() set this to ready
+	{
+		
+		
 		if(delayUnitMs)
 		{
 				unsigned long currentTime = millis();
@@ -210,60 +413,22 @@ void Trigger::shutter(boolean delayActive,boolean delayUnitMs)
 			int currentTime = millis()/1000;
 			int delaySec = delayCount/1000;
 			elapsed = currentTime - delaySec;
-		}	
-		
-	    //ready, but need to wait for delay timer, unless delayActive is false, then skip the delay
-		if(elapsed > option(TRIG_DELAY) || delayActive == false) 
+		}
+	
+		if(elapsed > expireTime) 
 		{
-			shotCounter_++; 
-			shutterReady = false; 
-			
-		
 	
-			if(cameraA_ == true) //use cameraA?
-			{
-				PORTB |= (1<<PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
-				//focusDelay = millis();
-				shutterStateA_ = true;
-				digitalWrite(CAMERA_TRIGGER_A,LOW); //trigger camera
-					
-				delay(shutterPulseTime_); //if you are going to use focus you need to delay before the shutter anyway.
-				digitalWrite(CAMERA_TRIGGER_A,HIGH);
-				PORTB &= ~ (1<<PORTB7);        //digitalWrite(KEY_PAD_LEDS,LOW); //turn off led
-				shutterStateA_ = false;
-			
-				
-				#ifdef SERIAL_DEBUG
-				Serial.println("Focus");
-				#endif
-			
-			}
-	
-			if(cameraB_ == true) //or use CameraB?
-			{
-				
-				PORTB |= (1<<PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
-				shutterDelay = millis(); 
-				shutterStateB_ = true;
-			 	digitalWrite(CAMERA_TRIGGER_B,LOW);
-	
-				
-	
-				#ifdef SERIAL_DEBUG
-				Serial.println("Shutter");
-				#endif
-			}
-			
-			if(IRShutter_ == true)
-			{
-				PORTB |= (1<<PORTB7);		    //digitalWrite(KEY_PAD_LEDS,HIGH); turn on keypad LEDs
-				IRTransmit();
-				PORTB &= ~ (1<<PORTB7);        //digitalWrite(KEY_PAD_LEDS,LOW); //turn off led
-			}
-			
-			
+			return true; //delays up, fire
+		}
+		else
+		{
+			return false; //times not up, wait some more
 		}
 	}
+	else
+	{
+		return false; //shutter or focus is not ready
+	}	
 }
 
 
@@ -527,54 +692,6 @@ void Trigger::formatThresholdString(unsigned int data, char buffer[])
 	
 }
 
-/***********************************************************
- * 
- * resetShutter
- *
- * 
- * 
- ***********************************************************/
-void Trigger::resetShutter()
-{
-	
-	/*
-  //reset trigger low after small delay
-  if(shutterStateA_ == true)
-  {
-	 if(millis() - focusDelay > shutterPulseTime_) 
-	 {
-	    // save the last time you took a photo
-	    focusDelay = millis();
-
-		#ifdef SERIAL_DEBUG
-		Serial.println("clear A");
-		#endif
-
-		PORTB &= ~ (1<<PORTB7);        //digitalWrite(KEY_PAD_LEDS,LOW); //turn off led
-		shutterStateA_ = false;
-		digitalWrite(CAMERA_TRIGGER_A,HIGH);
-		
-	 }	
-  }		*/
-  //reset trigger low after small delay
-  if(shutterStateB_ == true)
-  {
-	 if(millis() - shutterDelay > shutterPulseTime_) 
-	 {
-	    // save the last time you took a photo
-	    shutterDelay = millis();
-		
-		#ifdef SERIAL_DEBUG
-		Serial.println("clear B");
-		#endif
-		
-		
-		PORTB &= ~ (1<<PORTB7);        //digitalWrite(KEY_PAD_LEDS,LOW); //turn off led
-		shutterStateB_ = false; 
-		digitalWrite(CAMERA_TRIGGER_B,HIGH);
-	 }	
-  }
-}
 
 /***********************************************************
  * 
@@ -676,18 +793,8 @@ void Trigger::saveState()
 	   eeprom_write(optionValues[0], optionVal[0],objectMemoryOffset);
 	   eeprom_write(optionValues[1], optionVal[1],objectMemoryOffset);
 	   eeprom_write(optionValues[2], optionVal[2],objectMemoryOffset);
-	   eeprom_write(cameraA_,cameraFocus,objectMemoryOffset);
-	   eeprom_write(cameraB_,cameraShutter,objectMemoryOffset);
-	   eeprom_write(IRShutter_,cameraIR,objectMemoryOffset);
-	
-/*	
-  unsigned int optionValues[3];	
-  byte select_; //trigger on START,STOP or CHANGE
-  
-  boolean cameraA_;  //camera A on
-  boolean cameraB_; //camera B on
-  
- */
+	 
+
 }
 /***********************************************************
  * 
@@ -710,10 +817,33 @@ void Trigger::restoreState()
 	eeprom_read(optionValues[0], optionVal[0],objectMemoryOffset);
 	eeprom_read(optionValues[1], optionVal[1],objectMemoryOffset);
 	eeprom_read(optionValues[2], optionVal[2],objectMemoryOffset);
-	eeprom_read(cameraA_,cameraFocus,objectMemoryOffset);
-	eeprom_read(cameraB_,cameraShutter,objectMemoryOffset);
-	eeprom_read(IRShutter_,cameraIR,objectMemoryOffset);
+
+}
+
+void Trigger::saveSystem()
+{
+	//each trigger object will save to a seperate eeprom memory space
+	int objectMemoryOffset = triggerIndex*16;
 	
+	  eeprom_write(focusArmed,cameraFocus,objectMemoryOffset);
+
+	   eeprom_write(shutterArmed,cameraShutter,objectMemoryOffset);
+
+	   eeprom_write(IRShutter_,cameraIR,objectMemoryOffset);
+
+}
+
+void Trigger::restoreSystem()
+{
+	//each trigger object will save to a seperate eeprom memory space
+	int objectMemoryOffset = triggerIndex*16;
+	
+	eeprom_read(focusArmed,cameraFocus,objectMemoryOffset);
+	if(focusArmed == 255) focusArmed = false;  //check just in case. Eeprom could be blank.
+	eeprom_read(shutterArmed,cameraShutter,objectMemoryOffset);
+	if(shutterArmed == 255) shutterArmed = true; 
+	eeprom_read(IRShutter_,cameraIR,objectMemoryOffset);
+	if(IRShutter_ == 255) IRShutter_ = false;
 }
 
 /***********************************************************

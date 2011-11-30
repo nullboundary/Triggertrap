@@ -54,8 +54,6 @@ const int TRIG_TYPE = 2; //Option menu option 2.
 const int CAMERA_TRIGGER_A = 13;		// D13 = Digital out - Camera Trigger A
 const int CAMERA_TRIGGER_B = 12;		// D12 = Digital out - Camera Trigger B
 
-const int SHUTTER_PULSE_TIME = 50; //50ms shutter pin goes HIGH. 
-
 //#define SERIAL_DEBUG //remove if you don't want serial statements
 
 class Trigger {
@@ -197,7 +195,9 @@ void IRTransmit();
  * this resets the shutter HIGH after being LOW for 10 ms. 
  * 
  ***********************************************************/
-void resetShutter();
+void resetShutter(boolean resetNow);
+
+void resetFocus(boolean resetNow);
 
 /***********************************************************
  * 
@@ -206,12 +206,12 @@ void resetShutter();
  * set which line will be used, Focus or Shutter 
  * 
  ***********************************************************/
-void setShutters(boolean cameraA, boolean cameraB, boolean IRshutter, int shutterPulseTime); 
+void setTriggerPulseTime(int focusPulseTime, int shutterPulseTime); 
 
-void focusOn(boolean cameraA){cameraA_ = cameraA;}
-boolean getFocus() {return cameraA_;}
-void shutterOn(boolean cameraB){cameraB_ = cameraB;}
-boolean getShutter() {return cameraB_;}
+void focusOn(boolean armFocus){focusArmed = armFocus;}
+boolean getFocus() {return focusArmed;}
+void shutterOn(boolean armShutter){shutterArmed = armShutter;}
+boolean getShutter() {return shutterArmed;}
 void IRShutterOn(boolean IRShutter){IRShutter_ = IRShutter;}
 boolean getIRShutter() { return IRShutter_; }
 
@@ -224,6 +224,8 @@ boolean getIRShutter() { return IRShutter_; }
  ***********************************************************/
 void saveState();
 
+void saveSystem();
+
 /***********************************************************
  * 
  * restoreState
@@ -232,6 +234,8 @@ void saveState();
  * 
  ***********************************************************/
 void restoreState();
+
+void restoreSystem();
 
 /***********************************************************
  * 
@@ -256,18 +260,21 @@ protected:
   unsigned int shotCounter_; // current shot since pressing the start button
   byte sensorPin_; //the sensor pin
  
-  boolean shutterStateA_; //status of shutter A, high or low. Goes low for small amount of time at shot
-  boolean shutterStateB_; //status of shutter B, high or low. Goes low for small amount of time at shot
-  boolean cameraA_;  //camera A on    TODO CHANGE VAR NAME TO FOCUS
-  boolean cameraB_; //camera B on     TODO CHANGE VAR NAME TO SHUTTER, cameraA, cameraB is confusing...
+  boolean focusActive; //status of shutter A, high or low. Goes low for small amount of time at shot
+  boolean shutterActive; //status of shutter B, high or low. Goes low for small amount of time at shot
+  boolean focusArmed;  //camera A on    TODO CHANGE VAR NAME TO FOCUS
+  boolean shutterArmed; //camera B on     TODO CHANGE VAR NAME TO SHUTTER, cameraA, cameraB is confusing...
   boolean IRShutter_; //use IR shutter?
+  boolean focusReady;
   boolean shutterReady; //trigger is ready, take a picture
+  boolean IRReady;
   boolean abortTrigger;  //stop the trigger action. example, all timelapse shots finished 
   
- int shutterPulseTime_; //the time shutter pin is low 
+  int shutterPulseTime_; //the time shutter pin is low 
+  int focusPulseTime_;
 
   unsigned long shutterDelay; //keep track of the time the shutter has been low
-  //unsigned long focusDelay; //keep track of the time the focus has been low
+  unsigned long focusDelay; //keep track of the time the focus has been low
   unsigned long delayCount; //when trigger is ready, start counting, till delay time is up
   unsigned long startBttnTime; //the time when the start button is pressed. 
   
@@ -283,6 +290,11 @@ protected:
 	  boolean cameraShutter;
 	  boolean cameraIR;
 	};
+
+void shutterFire();
+void focusFire();
+void IRFire();
+boolean delayFire(boolean delayUnitMs, int expireTime);
 
 /***********************************************************
  * 

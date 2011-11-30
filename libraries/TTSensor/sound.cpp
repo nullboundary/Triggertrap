@@ -57,8 +57,8 @@ const int SOUND_IN = A7;
 	setOption(TRIG_DELAY,0);
 	select_ = 1; 
     sensorPin_ = SOUND_IN;
-	cameraA_ = false; //focus on/off default
-	cameraB_ = true; //shutter on/off default
+	focusArmed = false; //focus on/off default
+	shutterArmed = true; //shutter on/off default
 	IRShutter_ = false;  //IR on/off default
 	
 
@@ -82,7 +82,9 @@ const int SOUND_IN = A7;
     {
 		delayCount = millis(); //start counting till delay is up
 		startBttnTime = delayCount; //don't call millis twice, just use delayCount, same value.
+		focusReady = true; 
 		shutterReady = true;
+		IRReady = true; 
 		return soundStatus;
 	}	
 	else

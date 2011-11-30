@@ -75,8 +75,8 @@ const int LASER_THRESHOLD = 2;
 	setOption(LASER_THRESHOLD,128);
 	select_ = 0; 
     sensorPin_ = LASER_SENSOR;
-	cameraA_ = false; //focus on/off default
-	cameraB_ = true; //shutter on/off default
+	focusArmed = false; //focus on/off default
+	shutterArmed = true; //shutter on/off default
 	IRShutter_ = false;  //IR on/off default
 	
   }
@@ -119,7 +119,9 @@ const int LASER_THRESHOLD = 2;
     if(laserStatus == true)
     {
 		delayCount = millis(); //start counting till delay is up
+		focusReady = true; 
 		shutterReady = true;
+		IRReady = true; 
 		return laserStatus;
 	}	
 	else

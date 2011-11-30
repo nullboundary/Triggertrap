@@ -73,11 +73,21 @@
 	triggers[3] = &timeLapse;
 	triggers[4] = &aux;
 	
+	triggers[0]->restoreSystem(); //restore system menu settings from trigger 0. Could work with any trigger though
+	boolean focusSetting = triggers[0]->getFocus();
+	boolean shutterSetting = triggers[0]->getShutter();
+	boolean IRSetting = triggers[0]->getIRShutter();
+	
 	for(int i=0;i<NUM_OF_SENSORS;++i)
 	{
 		triggers[i]->setIndex(i);
 		triggers[i]->restoreState();
+		triggers[i]->focusOn(focusSetting);
+		triggers[i]->shutterOn(shutterSetting);
+		triggers[i]->IRShutterOn(IRSetting);
+		
 	}
+
 	
 	systemMenu = NUM_OF_SENSORS; //system Menu is always the last menu, even if you add more sensors
 	incSystemOption = 0;
@@ -127,7 +137,7 @@
 		
 	}
 	
-
+	activeMenu == START_MESSAGE;
 	//this class inherits from LCD, so call lcd functions as part of this class
     begin(8, 2);
   	// Print a message to the LCD.
@@ -240,9 +250,22 @@ void TTUI::updateLCD()
 		{
 			if(activeMenu == UP_MENU || activeMenu == DOWN_MENU)
 			{
-					clear();
-					printSelect(0);
-					printInc(1,0);
+				clear();
+				printSelect(0);
+				printInc(1,0);
+			}
+			else if(activeMenu == MODE_MENU || activeMenu == OPTION_MENU)
+			{
+				clear();
+			 	printMode(0);
+			 	printSelect(1);
+			}
+			else if(activeMenu == START_MESSAGE)
+			{
+				clear();
+				print("Trigger");
+				setCursor(0,1);
+				print("Trap0v39");
 			}
 		}
 	}
@@ -333,13 +356,19 @@ void TTUI::initStart(unsigned long startTime)
 		
 			activeRefreshTime = startTime/100; //100ms
 			triggers[currentTrigger]->saveState(); //save the values of active trigger to eeprom
+			triggers[0]->saveSystem(); //save system menu settings, to trigger 0. 
 			triggers[currentTrigger]->start(startTime); //set start time for the active trigger 
 			uiPowerOff();
 		
 		}
 		else if(trapActive_ == false) 
 		{
-			triggers[currentTrigger]->resetShutter(); //don't want to leave the shutter high forever
+			#ifdef SERIAL_DEBUG
+			Serial.println("Inactive");
+			#endif
+			
+			triggers[currentTrigger]->resetFocus(true);
+			triggers[currentTrigger]->resetShutter(true); //don't want to leave the shutter high forever
 			uiPowerOn();
 			//restore screen to so current select menu and value, better to show mode+select?
 			//set the value title in line 1
@@ -361,11 +390,14 @@ void TTUI::initStart(unsigned long startTime)
 ***********************************************************/
   void TTUI::bttnMode()  
   {
-    
+
+	if(activeMenu == MODE_MENU || activeMenu == OPTION_MENU) //only increment when its the second+ time pressed for this bttn
+	{
+    	currentTrigger+=1; //mode button has been pressed, advance the mode option to next
+		currentTrigger = currentTrigger % (NUM_OF_SENSORS+1); //plus 1 for system menu
+	}
+	
 	activeMenu = MODE_MENU;
-    currentTrigger+=1; //mode button has been pressed, advance the mode option to next
-	currentTrigger = currentTrigger % (NUM_OF_SENSORS+1); //plus 1 for system menu
-	//Serial.println(triggers[currentTrigger]->select());
 	
 	clear();
 	printMode(0);
@@ -381,17 +413,21 @@ void TTUI::initStart(unsigned long startTime)
   void TTUI::bttnOption()
   {
 	char printBuffer[9];
-	activeMenu = OPTION_MENU;
 	
-	if(currentTrigger < NUM_OF_SENSORS)
-	{
-		triggers[currentTrigger]->incSelect(); //set sensor to next select mode
+	if(activeMenu == MODE_MENU || activeMenu == OPTION_MENU) //only increment when its the second+ time pressed for this bttn
+	{	
+		if(currentTrigger < NUM_OF_SENSORS)
+		{
+			triggers[currentTrigger]->incSelect(); //set sensor to next select mode
+		}
+		else //system Menu
+		{
+			incSystemOption++;
+			incSystemOption = incSystemOption % 3;
+		}
 	}
-	else //system Menu
-	{
-		incSystemOption++;
-		incSystemOption = incSystemOption % 3;
-	}
+	
+	activeMenu = OPTION_MENU;
 	
 	clear();
 	printMode(0);
@@ -406,15 +442,21 @@ void TTUI::initStart(unsigned long startTime)
 ***********************************************************/
 void TTUI::bttnUp(boolean hold)
 {
-	int incVal = 1; 
-	activeMenu = UP_MENU;
-	if(hold == true)
+	int incVal = 0; 
+
+	if(activeMenu == UP_MENU || activeMenu == DOWN_MENU) //only increment when its the second+ time pressed for this bttn
 	{
-		//speed up increment if held down for a long time
-		unsigned long holdTime = millis() - touch.getStartTime();
-		if(holdTime > 5000) { incVal = 5; } //increase after 5sec
-		if(holdTime > 15000) { incVal = 10; } //increase after 15sec
-	}	
+		incVal = 1; 
+		if(hold == true)
+		{
+			//speed up increment if held down for a long time
+			unsigned long holdTime = millis() - touch.getStartTime();
+			if(holdTime > 5000) { incVal = 5; } //increase after 5sec
+			if(holdTime > 15000) { incVal = 10; } //increase after 15sec
+		}
+	}
+	
+	activeMenu = UP_MENU;	
 
 	clear();
 	printSelect(0);
@@ -429,14 +471,21 @@ void TTUI::bttnUp(boolean hold)
 ***********************************************************/
 void TTUI::bttnDown(boolean hold)
 {
-	int decVal = 1; 
-	activeMenu = DOWN_MENU; 
-	if(hold == true)
+	int decVal = 0; 
+	
+	if(activeMenu == DOWN_MENU || activeMenu == UP_MENU) //only increment when its the second+ time pressed for this bttn
 	{
-		//speed up increment if held down for a long time
-		unsigned long holdTime = millis() - touch.getStartTime();
-		if(holdTime > 10000) { decVal = 5; } //increase after 10sec
+		decVal = 1; 
+	 
+		if(hold == true)
+		{
+			//speed up increment if held down for a long time
+			unsigned long holdTime = millis() - touch.getStartTime();
+			if(holdTime > 10000) { decVal = 5; } //increase after 10sec
+		}
 	}
+	
+	activeMenu = DOWN_MENU;	
 
 	clear();
 	printSelect(0);
@@ -599,40 +648,58 @@ void TTUI::getSystemOptionMenu(char buffer[])
 void TTUI::setSystemSettingMenu(char buffer[],int change)
 {
 	
-	
-	if(change != 0)	//don't update settings if its just an LCD refresh
-	{
-		for(int i=0;i<NUM_OF_SENSORS;++i)
-		{
-			if(incSystemOption == 0)
+		if(incSystemOption == 0)
+			{   
+				
+			systemSetting = triggers[0]->getFocus();
+			
+			if(change != 0)	//don't update settings if its just an LCD refresh
 			{
-				systemSetting = triggers[0]->getFocus();
+		
 				systemSetting = !systemSetting; //flip the boolean
-				triggers[i]->focusOn(systemSetting);
-			}
-			else if(incSystemOption == 1)
-			{
-				systemSetting = triggers[0]->getShutter();
-				systemSetting = !systemSetting; //flip the boolean
-				triggers[i]->shutterOn(systemSetting);
-			}
-	
-			else if(incSystemOption == 2)
-			{
-				systemSetting = triggers[0]->getIRShutter();
-				systemSetting = !systemSetting; //flip the boolean
-				triggers[i]->IRShutterOn(systemSetting);
+				for(int i=0;i<NUM_OF_SENSORS;++i)
+				{
+					triggers[i]->focusOn(systemSetting);
+				}	
 			}	
 		}
-	}
+		else if(incSystemOption == 1)
+		{
+			systemSetting = triggers[0]->getShutter();
+			
+			if(change != 0)	//don't update settings if its just an LCD refresh
+			{
+				systemSetting = !systemSetting; //flip the boolean
+				for(int i=0;i<NUM_OF_SENSORS;++i)
+				{
+					triggers[i]->shutterOn(systemSetting);
+				}
+			}		
+		}
+
+		else if(incSystemOption == 2)
+		{
+			systemSetting = triggers[0]->getIRShutter();
+			
+			if(change != 0)	//don't update settings if its just an LCD refresh
+			{
+				systemSetting = !systemSetting; //flip the boolean
+				for(int i=0;i<NUM_OF_SENSORS;++i)
+				{
+					triggers[i]->IRShutterOn(systemSetting);
+				}
+			}		
+		}	
 		
+	
+
 		if(systemSetting == true)
 		{
 			buffer[0] = 0;
 			strcat(buffer,"On");
 			strcat(buffer,"\0");
 		}
-		else 
+		else if(systemSetting == false)
 		{
 			buffer[0] = 0;
 			strcat(buffer,"Off");
@@ -707,6 +774,7 @@ void TTUI::printInc(int row,int incVal)
 	}
 	else //system menu
 	{	
+
 		setSystemSettingMenu(printBuffer,incVal);
 	}
 	

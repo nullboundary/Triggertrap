@@ -44,10 +44,12 @@ const byte SELECT_BTTN = 3;//select bttn address
 const byte UP_BTTN = 6; //up bttn address
 const byte DOWN_BTTN = 5;  //down bttn address
 
-const byte MODE_MENU= 0; //mode menu 
-const byte OPTION_MENU = 1;//option menu
-const byte UP_MENU = 2; //up menu
-const byte DOWN_MENU = 3;  //down menu
+const byte START_MESSAGE = 0; //startup screen
+const byte MODE_MENU= 1; //mode menu 
+const byte OPTION_MENU = 2;//option menu
+const byte UP_MENU = 3; //up menu
+const byte DOWN_MENU = 4;  //down menu
+const byte SETTING_MENU = 5;
 
 const byte POWER_UI = PORTB6;				// A3 = Digital out - UI power mosfet switch
 const byte KEY_PAD_LEDS = PORTB7;				// D4 = Digital out - LED on keypad
