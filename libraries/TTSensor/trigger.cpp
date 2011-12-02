@@ -713,9 +713,22 @@ void Trigger::IRTransmit()
 	unsigned int PentaxBuffer[] = {13000,3000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000}; //shutter
 		irsend.sendRaw(PentaxBuffer,16,38); //found here, not sure which pentax, all? http://sourceforge.net/project/showfiles.php?group_id=131383
 	
+	//1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1
+	unsigned int WLDC100Buffer[] = {9200,4400,612,1621,612,1621,612,1621,612,1621,612,1621,  //11111
+									612,512,612,512,612,512,612,512,612,512,612,512,612,512,612,512, //000000000
+									612,1621,612,1621,612,1621, //111
+									599}; //trailing 1
+	irsend.sendRaw(WLDC100Buffer,16,32);	
+		
+
 	//we better read this: http://www.arcfn.com/2010/12/64-bit-rc6-codes-arduino-and-xbox.html we probably have mistakes and probably need to track the toggle bit
 	for (int i = 0; i < 3; ++i) {
     	irsend.sendRC6(0x0, 20); // Cannon RC-5 code for shutter, MAY work for RC-6
+    	delay(100);
+	}
+	
+	for (int i = 0; i < 3; ++i) {
+    	irsend.sendRC5(0x0, 32); // Cannon RC-5 code for shutter, MAY work for RC-6
     	delay(100);
 	}
 	

@@ -113,7 +113,7 @@ boolean TimeLapse::trigger()
 	
 			sleepNow(remainTime); //sleep now if there is time left to sleep
 			remainTime = 0;
-	
+		
 		}	
 	}
 			
