@@ -64,8 +64,8 @@ Sleep();
 	void standbyMode(){setSleepMode(SLEEP_MODE_STANDBY);}
 	void pwrDownMode(){setSleepMode(SLEEP_MODE_PWR_DOWN);}
 
-	void sleepDelay(unsigned long sleepTime,int shotCount);
-	void calibrateTime(unsigned long sleepTime); //calibrate the time keeping difference between WDT and Timer0
+	void sleepDelay(boolean &abortTrigger, unsigned long sleepTime,int shotCount);
+	void calibrateTime(boolean &abortTrigger, unsigned long sleepTime); //calibrate the time keeping difference between WDT and Timer0
 	unsigned long WDTMillis();	//estimated millis based on WDT during sleep. 
 	
    
@@ -83,7 +83,7 @@ static Sleep* pSleep; //static ptr to Sleep class for the ISR
   void setSleepMode(int mode);
   void WDT_Off();
   void WDT_On(byte psMask);
-  int sleepNow(unsigned long remainTime);
+  int sleepNow(boolean &abortTrigger,unsigned long remainTime);
 
 };
 

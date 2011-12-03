@@ -217,7 +217,7 @@ void IRsend::enableIROut(int khz) {
   TCCR2B = _BV(WGM22) | _BV(CS20); // ?kraz -- no change here - fixed with constant = 52 below
 
   // The top value for the timer.  The modulation frequency will be SYSCLOCK / 2 / OCR2A.
-  OCR2A = 52; //SYSCLOCK / 2 / khz / 1000; 			// ?kraz - set to 52
+  OCR2A = SYSCLOCK / 4 / khz / 1000;  			// ?kraz - set to 52
   //OCR2B = 17; // OCR2A / 3; // 33% duty cycle 			// ?kraz not reqr
 }
 

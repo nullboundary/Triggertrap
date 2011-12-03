@@ -226,8 +226,17 @@ void Trigger::shutter(boolean delayActive,boolean delayUnitMs)
  ***********************************************************/
 void Trigger::focusFire()
 {
-		if(focusArmed == true) //focus
+		if(focusArmed == false) //focus
 		{
+			focusPulseTime_ = shutterPulseTime_;
+		}
+		else
+		{
+			focusPulseTime_ = 500; 
+		}
+	
+	//	if(focusArmed == true) //focus
+	//	{
 			if(focusReady == true) //trigger() set this to ready
 			{
 				focusReady = false; //turn off, focus only once.
@@ -246,11 +255,11 @@ void Trigger::focusFire()
 				Serial.println("Focus");
 				#endif
 			}
-		}
-		else
-		{
-			focusReady = false; //turn it off if its not armed. 
-		}
+	//	}
+	//	else
+	//	{
+	//		focusReady = false; //turn it off if its not armed. 
+	//	}
 }
 
 /***********************************************************
@@ -727,10 +736,11 @@ void Trigger::IRTransmit()
     	delay(100);
 	}
 	
-	for (int i = 0; i < 3; ++i) {
-    	irsend.sendRC5(0x0, 32); // Cannon RC-5 code for shutter, MAY work for RC-6
-    	delay(100);
-	}
+	unsigned int CanonBuffer[] = {490,7730,490,7730}; //shutter
+	    for (int i = 0; i < 3; ++i) {
+	        irsend.sendRaw(CanonBuffer,4,38);
+	        delay(100);
+	    }
 	
 	for (int i = 0; i < 3; ++i) {
 		irsend.sendSony(0xB4B8F,20); // or maybe 0x7478F both found here: http://sebastian.setz.name/arduino/my-libraries/multi-camera-ir-control#comment-110
@@ -919,12 +929,12 @@ void Trigger::start(unsigned long startTime)
 }
 /***********************************************************
  * 
- * stop
+ * getStop
  *
  * 
  * 
  ***********************************************************/
-boolean Trigger::stop()
+boolean Trigger::getStop()
 {
 	return abortTrigger;  
 }

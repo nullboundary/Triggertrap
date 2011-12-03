@@ -172,12 +172,14 @@ virtual void start(unsigned long startTime);
 
 /***********************************************************
  * 
- * stop
+ * getStop
  *
  * return abortTrigger, tell the UI to stop the trigger action
  * 
  ***********************************************************/
-virtual boolean stop();
+virtual boolean getStop();
+
+void stop() { abortTrigger = true; }
 
 /***********************************************************
  * 
@@ -262,8 +264,8 @@ protected:
  
   boolean focusActive; //status of shutter A, high or low. Goes low for small amount of time at shot
   boolean shutterActive; //status of shutter B, high or low. Goes low for small amount of time at shot
-  boolean focusArmed;  //camera A on    TODO CHANGE VAR NAME TO FOCUS
-  boolean shutterArmed; //camera B on     TODO CHANGE VAR NAME TO SHUTTER, cameraA, cameraB is confusing...
+  boolean focusArmed;  //use focus 
+  boolean shutterArmed; //use shutter
   boolean IRShutter_; //use IR shutter?
   boolean focusReady;
   boolean shutterReady; //trigger is ready, take a picture

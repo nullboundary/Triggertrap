@@ -50,6 +50,8 @@ int const LIGHT_CHANGE_MODE = 2;
 	setOption(TRIG_DELAY,0);
 	select_ = 0; 
     sensorPin_ = AMBIENT_LIGHT_SENSOR;
+	focusPulseTime_ = 500;
+	shutterPulseTime_ = 50;
 	focusArmed = false; //focus on/off default
 	shutterArmed = true; //shutter on/off default
 	IRShutter_ = false;  //IR on/off default

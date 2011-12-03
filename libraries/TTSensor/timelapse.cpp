@@ -37,6 +37,8 @@ TimeLapse::TimeLapse(){
 		setOption(TIME_NUMSHOTS,0); //set #shots to 0
 		delayCount = 0; 
 		select_ = 0;  //set 
+		focusPulseTime_ = 500;
+		shutterPulseTime_ = 50;
 		focusArmed = false; //focus on/off default
 		shutterArmed = true; //shutter on/off default
 		IRShutter_ = false;  //IR on/off default
@@ -198,7 +200,7 @@ void TimeLapse::sleepNow(unsigned long remainTime)
 {
 
 	sleep.pwrDownMode(); //deepest sleep
-	sleep.sleepDelay(remainTime,shotCounter_);
+	sleep.sleepDelay(abortTrigger,remainTime,shotCounter_);
 	  
 }
 

@@ -48,11 +48,11 @@ void Sleep::setSleepMode(int mode)
 }
 
 // Calibrate watchdog timer with millis() timer(timer0)
-void Sleep::calibrateTime(unsigned long sleepTime) {
+void Sleep::calibrateTime(boolean &abortTrigger, unsigned long sleepTime) {
   // timer0 continues to run in idle sleep mode
   set_sleep_mode(SLEEP_MODE_IDLE);
   long tt1=millis();
-  sleepNow(sleepTime);
+  sleepNow(abortTrigger,sleepTime);
   long tt2=millis();
 
   calibv = (float) sleepTime/(tt2-tt1);
@@ -66,19 +66,19 @@ unsigned long Sleep::WDTMillis() {
 }
 
 // Delay function
-void Sleep::sleepDelay(unsigned long sleepTime,int shotCount) {
+void Sleep::sleepDelay(boolean &abortTrigger, unsigned long sleepTime,int shotCount) {
   ADCSRA &= ~(1<<ADEN);  // adc off
    // PRR = 0xEF; // modules off
   
   int modShot = shotCount % 100; //recalibrate every 100
   if(modShot == 1)
   {
-	calibrateTime(sleepTime);
+	calibrateTime(abortTrigger,sleepTime);
   }
   else
   {
   	set_sleep_mode(sleepMode_);
-  	int trem = sleepNow(sleepTime*calibv); 
+  	int trem = sleepNow(abortTrigger,sleepTime*calibv); 
   	timeSleep += (sleepTime-trem);
   }
   // PRR = 0x00; //modules on
@@ -86,7 +86,7 @@ void Sleep::sleepDelay(unsigned long sleepTime,int shotCount) {
 }
 
 // internal function.  
-int Sleep::sleepNow(unsigned long remainTime) {
+int Sleep::sleepNow(boolean &abortTrigger,unsigned long remainTime) {
   
    #if defined(WDP3)
  	 byte WDTps = 9;  // WDT Prescaler value, 9 = 8192ms
@@ -104,7 +104,7 @@ int Sleep::sleepNow(unsigned long remainTime) {
     // send prescaler mask to WDT_On
     WDT_On((WDTps & 0x08 ? (1<<WDP3) : 0x00) | (WDTps & 0x07));
     isrcalled=0;
-    while (isrcalled==0) {
+    while (isrcalled==0 && abortTrigger == false) {
       // turn bod off
       MCUCR |= (1<<BODS) | (1<<BODSE);
       MCUCR &= ~(1<<BODSE);  // must be done right before sleep

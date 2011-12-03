@@ -54,7 +54,7 @@ public:
    	*/
 
   /*
-	boolean stop();
+	boolean getStop();
    	*/
   /*
 	boolean change();

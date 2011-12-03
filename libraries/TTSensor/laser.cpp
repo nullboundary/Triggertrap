@@ -75,6 +75,8 @@ const int LASER_THRESHOLD = 2;
 	setOption(LASER_THRESHOLD,128);
 	select_ = 0; 
     sensorPin_ = LASER_SENSOR;
+	focusPulseTime_ = 500;
+	shutterPulseTime_ = 50;
 	focusArmed = false; //focus on/off default
 	shutterArmed = true; //shutter on/off default
 	IRShutter_ = false;  //IR on/off default

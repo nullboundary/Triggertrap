@@ -57,6 +57,8 @@ const int SOUND_IN = A7;
 	setOption(TRIG_DELAY,0);
 	select_ = 1; 
     sensorPin_ = SOUND_IN;
+	focusPulseTime_ = 500;
+	shutterPulseTime_ = 50;
 	focusArmed = false; //focus on/off default
 	shutterArmed = true; //shutter on/off default
 	IRShutter_ = false;  //IR on/off default

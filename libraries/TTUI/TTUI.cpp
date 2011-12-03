@@ -282,7 +282,7 @@ void TTUI::systemCheck()
 {
 		if(trapActive_ == true)
 		{
-			if(triggers[currentTrigger]->stop() == true) //stop the UI if the trigger requests a stop
+			if(triggers[currentTrigger]->getStop() == true) //stop the UI if the trigger requests a stop
 			{
 				initStart(millis());
 			}
@@ -370,26 +370,14 @@ void TTUI::initStart(unsigned long startTime)
 			
 			triggers[currentTrigger]->resetFocus(true);
 			triggers[currentTrigger]->resetShutter(true); //don't want to leave the shutter high forever
+			triggers[currentTrigger]->stop(); //set abortTrigger to true
 			uiPowerOn();
 			//restore screen to so current select menu and value, better to show mode+select?
 			//set the value title in line 1
-	//		sleep_disable(); //if sleep is on, disable it.
-	//		cli();
-		 // wdt_reset();
-		  /* Clear WDRF in MCUSR */
-	//	  MCUSR &= ~(1<<WDRF);
-		  /* Write logical one to WDCE and WDE */
-		  /* Keep old prescaler setting to prevent unintentional time-out */
-	//	  WDTCSR |= (1<<WDCE) | (1<<WDE);
-		  /* Turn off WDT */
-	//	  WDTCSR = 0x00;
-	//	  sei();
-		
 			clear();
 			printSelect(0);
 			printInc(1,0); //inc 0 so just display, don't actually increment
 			
-			//	PORTB |= (1<<PORTB7);
 
 		}
 	}

@@ -48,8 +48,8 @@ const int LIGHT_MODE = 2;
 const int TIMELAPSE_MODE = 3; 
 const int AUX_MODE = 4;
 
-const int FOCUS_PULSE_TIME = 500; //500ms focus pin goes HIGH. 
-const int SHUTTER_PULSE_TIME = 50; //50ms shutter pin goes HIGH. 
+//const int FOCUS_PULSE_TIME = 500; //500ms focus pin goes HIGH. 
+//const int SHUTTER_PULSE_TIME = 50; //50ms shutter pin goes HIGH. 
 
 
 //the UI object, and the sensor objects
@@ -145,7 +145,7 @@ void loop() {
 void laserTrigger()
 {
 
-  laser.setTriggerPulseTime(FOCUS_PULSE_TIME,SHUTTER_PULSE_TIME);
+ // laser.setTriggerPulseTime(FOCUS_PULSE_TIME,SHUTTER_PULSE_TIME);
   laser.trigger(); //check to see if TT should take a picture
 
 }
@@ -160,7 +160,7 @@ void laserTrigger()
 void timeLapseTrigger()
 {
 
-  timeLapse.setTriggerPulseTime(FOCUS_PULSE_TIME,SHUTTER_PULSE_TIME);
+  //timeLapse.setTriggerPulseTime(FOCUS_PULSE_TIME,SHUTTER_PULSE_TIME);
   if(timeLapse.trigger() == true)
   {
 //#ifdef SERIAL_DEBUG
@@ -181,7 +181,7 @@ void timeLapseTrigger()
 void soundTrigger()
 {
   
-  mic.setTriggerPulseTime(FOCUS_PULSE_TIME,SHUTTER_PULSE_TIME);
+ // mic.setTriggerPulseTime(FOCUS_PULSE_TIME,SHUTTER_PULSE_TIME);
   if(mic.trigger() == true) //returns true if sound changes based on current mode type
   {
 #ifdef SERIAL_DEBUG
@@ -200,7 +200,7 @@ void soundTrigger()
 void lightTrigger()
 {
 
-  light.setTriggerPulseTime(FOCUS_PULSE_TIME,SHUTTER_PULSE_TIME);
+  //light.setTriggerPulseTime(FOCUS_PULSE_TIME,SHUTTER_PULSE_TIME);
   if(light.trigger() == true) //returns true if sound changes based on current mode type
   {
 
@@ -221,7 +221,7 @@ void lightTrigger()
 void auxTrigger()
 {
 
-  aux.setTriggerPulseTime(FOCUS_PULSE_TIME,SHUTTER_PULSE_TIME);
+//  aux.setTriggerPulseTime(FOCUS_PULSE_TIME,SHUTTER_PULSE_TIME);
   aux.trigger(); //returns a boolean but you don't need to use it
 
 
