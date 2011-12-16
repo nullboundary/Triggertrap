@@ -1,7 +1,7 @@
 /************************************************************************************
  * 	
  * 	Name    : Trigger Trap sleep.h                         
- * 	Author  : Noah Shibley, NoMi Design                         
+ * 	Author  : Noah Shibley, NoMi Design n0m1.com                         
  * 	Date    : July 10th 2011                                    
  * 	Version : 0.1                                              
  * 	Notes   : Most of this code comes from "Cloudy" on the arduino form
@@ -36,7 +36,11 @@
 
 #include <avr/sleep.h>
 #include <avr/wdt.h>
-#include <WProgram.h>
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "Arduino.h"    // for digitalRead, digitalWrite, pinMode, delayMicroseconds
+#else
+#include "WProgram.h"
+#endif
 
 extern "C" void WDT_vect(void) __attribute__ ((signal));
 

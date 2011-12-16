@@ -28,19 +28,23 @@
  * 
  ***********************************************************************************/
 
-#include "light.h"
+#include "auxiliary.h"
 
-const int AMBIENT_LIGHT_SENSOR = A0;
-int const LIGHT_RISE_MODE = 0;
-int const LIGHT_FALL_MODE = 1;
-int const LIGHT_CHANGE_MODE = 2;
 
-//Menu Sensor Strings
+int const AUX_RISE_MODE = 0;
+int const AUX_FALL_MODE = 1;
+int const AUX_CHANGE_MODE = 2;
 
-   //Mode Menu Listing
-   const prog_char lightMenu[] PROGMEM= {"Light"};
+//Mode Menu Listing
+const prog_char auxMenu[] PROGMEM= {"Aux"};
 
-  Light::Light() 
+ //Option Menu titles
+const prog_char trigType[] PROGMEM="type";
+const prog_char trigDelay[] PROGMEM="delay";
+const prog_char trigThreshold[] PROGMEM = "threshold";
+
+
+  Aux::Aux() 
   {
 	maxOptionMenu = 3;
     triggerState_ = false; //off
@@ -49,87 +53,86 @@ int const LIGHT_CHANGE_MODE = 2;
 	setOption(TRIG_THRESHOLD,0);
 	setOption(TRIG_DELAY,0);
 	select_ = 0; 
-    sensorPin_ = AMBIENT_LIGHT_SENSOR;
-	focusPulseTime_ = 500;
-	shutterPulseTime_ = 50;
+    sensorPin_ = AUX;
+	focusPulseTime_ = DEFAULT_FOCUS_TIME;
+	shutterPulseTime_ = DEFAULT_SHUTTER_TIME;
 	focusArmed = false; //focus on/off default
 	shutterArmed = true; //shutter on/off default
 	IRShutter_ = false;  //IR on/off default
-	
+
 };
  
   
 
-  int Light::sensorLevel()
+  int Aux::sensorLevel()
   {
     sensorLevel_ = analogRead(sensorPin_) >> 2;
 	return sensorLevel_;
   }
 
-  boolean Light::trigger()
+
+  boolean Aux::trigger()
   {
-    boolean lightStatus = false;
+    boolean auxStatus = false;
 
 	shutter(true); 
-	
 
     switch (option(TRIG_TYPE))
     {
-    case LIGHT_RISE_MODE:
+    case AUX_RISE_MODE:
 
-      lightStatus = rise();
+      auxStatus = rise();
       break;
-    case LIGHT_FALL_MODE:
+    case AUX_FALL_MODE:
 
-      lightStatus = fall();
+      auxStatus = fall();
       break;
-    case LIGHT_CHANGE_MODE:
+    case AUX_CHANGE_MODE:
 
-      lightStatus = change();
+      auxStatus = change();
       break;
     default: //no default option
       break;
     }
 
-	if(lightStatus == true)
+     if(auxStatus == true)
     {
 		delayCount = millis(); //start counting till delay is up
 		focusReady = true; 
 		shutterReady = true;
 		IRReady = true; 
-		return lightStatus;
+		return auxStatus;
 	}	
 	else
 	{
-    	 return lightStatus;
+    	return auxStatus;
 	}
-   
   }
 
-  //To change the behavior of these functions for the light sensor, edit here
-  //Or add a new function here, to customize light sensor
+  //To change the behavior of these functions for the aux sensor, edit here
+  //Or add a new function here, to customize aux sensor
   /*
-	boolean Light::high()
+	boolean Aux::high()
    	{
    	
    	}
    	*/
 
   /*
-	boolean Light::low()
+	boolean Aux::low()
    	{
    	
    	}
    	*/
   /*
-	boolean Light::change()
+	boolean Aux::change()
    	{
    	
    	}
    	*/
-	void Light::getModeMenu(char buffer[])
+	void Aux::getModeMenu(char buffer[])
   {
-	 strcpy_P(buffer, lightMenu); 
+	 strcpy_P(buffer, auxMenu); 
 
   }
 
@@ -140,7 +143,7 @@ int const LIGHT_CHANGE_MODE = 2;
  * get the current sensors LCD message to print during trap Active mode.
  * 
  ***********************************************************/
-void Light::getActiveMessage(char buffer[])
+void Aux::getActiveMessage(char buffer[])
 {
 	buffer[0] = 0;
 	

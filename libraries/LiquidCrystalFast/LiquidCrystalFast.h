@@ -98,7 +98,12 @@ public:
 	
 	void createChar(uint8_t, uint8_t[]);
 	void setCursor(uint8_t, uint8_t);
-	void write(uint8_t);
+	#if defined(ARDUINO) && ARDUINO >= 100
+		size_t write(uint8_t);
+	#else
+		void write(uint8_t);
+	#endif
+
 	void command(uint8_t);
 	void commandBoth(uint8_t);
 	inline LiquidCrystalFast& operator() (uint8_t x, uint8_t y) {setCursor(x,y); return *this;}  //use along w Streaming.h to support: lcd(col,line)<<"a="<<a;

@@ -148,7 +148,7 @@ int AtTouch::readActiveKey()
  
   
   int keyValue = 0; //start at one, for key0
-  for(int i = keyAddress ;i>0;i = i>>1) //shift until you hit 1, thats which bit place
+  for(uint8_t i = keyAddress ;i>0;i = i>>1) //shift until you hit 1, thats which bit place
   {
    keyValue++; //increment keyValue to find bit place
   }

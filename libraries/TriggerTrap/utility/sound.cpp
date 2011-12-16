@@ -1,10 +1,10 @@
 /************************************************************************************
  * 	
- * 	Name    : Trigger Trap light.h                         
+ * 	Name    : Trigger Trap Sound.h                         
  * 	Author  : Noah Shibley, NoMi Design                         
  * 	Date    : July 10th 2011                                    
  * 	Version : 0.1                                              
- * 	Notes   : The ambient light sensor. Sub class of Sensor, inherits all Sensor functions           
+ * 	Notes   : The sound input mic. Sub class of Sensor, inherits all Sensor functions           
  * 
  * 	 Copyright (c) 2011 NoMi Design All right reserved.
  * 
@@ -28,113 +28,101 @@
  * 
  ***********************************************************************************/
 
-#include "auxiliary.h"
-
-const int AUX = A2;  //Aux Pin
-int const AUX_RISE_MODE = 0;
-int const AUX_FALL_MODE = 1;
-int const AUX_CHANGE_MODE = 2;
-
-//Mode Menu Listing
-const prog_char auxMenu[] PROGMEM= {"Aux"};
-
- //Option Menu titles
-const prog_char trigType[] PROGMEM="type";
-const prog_char trigDelay[] PROGMEM="delay";
-const prog_char trigThreshold[] PROGMEM = "threshold";
+#include "sound.h"
 
 
-  Aux::Aux() 
+
+//Menu Sensor Strings
+
+   //Mode Menu Listing
+   const prog_char soundMenu[] PROGMEM= {"Sound"};
+   
+	 //Option Menu default
+	const prog_char soundThreshold[] PROGMEM = "threshld";
+	const prog_char soundDelay[] PROGMEM="delay";
+
+	const prog_char * soundOptionMenu[] PROGMEM  = 	   //options menu
+	{   
+	soundThreshold,	
+	soundDelay,
+	};
+
+  Sound::Sound() 
   {
-	maxOptionMenu = 3;
+	maxOptionMenu = 2;
     triggerState_ = false; //off
-	abortTrigger = false; 
-	setOption(TRIG_TYPE,0);
+    abortTrigger = false; 
+	setOption(TRIG_TYPE,2);
 	setOption(TRIG_THRESHOLD,0);
 	setOption(TRIG_DELAY,0);
-	select_ = 0; 
-    sensorPin_ = AUX;
-	focusPulseTime_ = 500;
-	shutterPulseTime_ = 50; 
+	select_ = 1; 
+    sensorPin_ = SOUND_IN;
+	focusPulseTime_ = DEFAULT_FOCUS_TIME;
+	shutterPulseTime_ = DEFAULT_SHUTTER_TIME;
 	focusArmed = false; //focus on/off default
 	shutterArmed = true; //shutter on/off default
 	IRShutter_ = false;  //IR on/off default
+	
 
-};
- 
-  
+ }
 
-  int Aux::sensorLevel()
+  int Sound::sensorLevel()
   {
-    sensorLevel_ = analogRead(sensorPin_) >> 2;
+   	sensorLevel_ = analogRead(sensorPin_) >> 2;
 	return sensorLevel_;
   }
 
-
-  boolean Aux::trigger()
+  boolean Sound::trigger()
   {
-    boolean auxStatus = false;
+    boolean soundStatus = false;
 
-	shutter(true); 
-
-    switch (option(TRIG_TYPE))
-    {
-    case AUX_RISE_MODE:
-
-      auxStatus = rise();
-      break;
-    case AUX_FALL_MODE:
-
-      auxStatus = fall();
-      break;
-    case AUX_CHANGE_MODE:
-
-      auxStatus = change();
-      break;
-    default: //no default option
-      break;
-    }
-
-     if(auxStatus == true)
+	shutter(true);
+ 
+    soundStatus = rise();
+    
+    if(soundStatus == true)
     {
 		delayCount = millis(); //start counting till delay is up
+		startBttnTime = delayCount; //don't call millis twice, just use delayCount, same value.
 		focusReady = true; 
 		shutterReady = true;
 		IRReady = true; 
-		return auxStatus;
+		return soundStatus;
 	}	
 	else
 	{
-    	return auxStatus;
+    	return soundStatus;
 	}
+		
   }
 
-  //To change the behavior of these functions for the aux sensor, edit here
-  //Or add a new function here, to customize aux sensor
+  //to change the behavior of the following functions for the mic, edit here. 
+  //the current functional behavior is in the base trigger class.
+  //Or add a new function here, to customize mic sensor
   /*
-	boolean Aux::high()
+	boolean Sound::change()
    	{
    	
    	}
    	*/
 
-  /*
-	boolean Aux::low()
-   	{
-   	
-   	}
-   	*/
-  /*
-	boolean Aux::change()
-   	{
-   	
-   	}
-   	*/
-	void Aux::getModeMenu(char buffer[])
-  {
-	 strcpy_P(buffer, auxMenu); 
+/***********************************************************
+ * 
+ * getOptionMenu
+ *
+ *  
+ * 
+ ***********************************************************/
+void Sound::getOptionMenu(char buffer[])
+{
+	 //reads the timeSelectMenu options from flash memory
+	 strcpy_P(buffer, (const prog_char *)pgm_read_word(&(soundOptionMenu[select_])));
+}
 
-  }
+void Sound::getModeMenu(char buffer[])
+{
+	 strcpy_P(buffer, soundMenu); 
+}
 
 /***********************************************************
  * 
@@ -143,7 +131,7 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
  * get the current sensors LCD message to print during trap Active mode.
  * 
  ***********************************************************/
-void Aux::getActiveMessage(char buffer[])
+void Sound::getActiveMessage(char buffer[])
 {
 	buffer[0] = 0;
 	
@@ -151,3 +139,6 @@ void Aux::getActiveMessage(char buffer[])
 	
 	
 }
+
+
+

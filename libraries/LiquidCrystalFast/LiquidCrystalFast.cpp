@@ -340,7 +340,11 @@ void LiquidCrystalFast::commandBoth(uint8_t value)
 }
 
 //print calls  this to send characters to the LCD
-void LiquidCrystalFast::write(uint8_t value) {
+#if defined(ARDUINO) && ARDUINO >= 100
+	size_t LiquidCrystalFast::write(uint8_t value) {
+#else
+	void LiquidCrystalFast::write(uint8_t value) {
+#endif
 	if ((_scroll_count != 0) || (_setCursFlag != 0) ) setCursor(_x,_y);   //first we call setCursor and send the character
 	if ((value != '\r') && (value != '\n') ) send(value, HIGH);
 

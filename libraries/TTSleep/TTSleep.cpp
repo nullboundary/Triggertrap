@@ -1,7 +1,7 @@
 /************************************************************************************
  * 	
  * 	Name    : Trigger Trap sleep.cpp                         
- * 	Author  : Noah Shibley, NoMi Design                         
+ * 	Author  : Noah Shibley, NoMi Design n0m1.com                      
  * 	Date    : July 10th 2011                                    
  * 	Version : 0.1                                              
  * 	Notes   : Most of this code comes from "Cloudy" on the arduino form
