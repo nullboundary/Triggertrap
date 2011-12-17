@@ -28,9 +28,14 @@
 
 #include <LiquidCrystalFast.h>
 #include <I2C.h>
+#include <PinChangeInt.h>
+#include <PinChangeIntConfig.h>
+#include <AtTouch.h>
 #include <TTSleep.h>
 #include <TTIRremote.h>
 #include <TriggerTrap.h>
+
+
 
 const int LASER_MODE = 0;
 const int SOUND_MODE = 1;
