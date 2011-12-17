@@ -1,4 +1,4 @@
-/*  Name    :  Trigger Trap TTIRremote.cpp                                              
+/*  Name    :  Triggertrap TTIRremote.cpp                                              
  * 	Date    :  Nov 24th 2011                                                                              
  * 	Notes   :  This is Ken Shirriffs IRremote library for arduino (see below).
  *			   A few small timer/pin mods have been made for custom use with the TT. 

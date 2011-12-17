@@ -1,3 +1,30 @@
+/************************************************************************************
+ * 	
+ * 	Name    : Triggertrap TriggerTrap.cpp                        
+ * 	Author  : Noah Shibley, NoMi Design                         
+ * 	Date    : July 10th 2011                                    
+ * 	Version : 0.1                                              
+ * 	Notes   : Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-K)                      
+ * 
+ * 	Copyright (c) 2011 NoMi Design All right reserved.
+ * 
+ * 	This file is part of Triggertrap. See Triggertrap.com for more information.
+ * 
+ * 		    Triggertrap is free software: you can redistribute it and/or modify
+ * 		    it under the terms of the GNU General Public License as published by
+ * 		    the Free Software Foundation, either version 3 of the License, or
+ * 		    (at your option) any later version.
+ * 
+ * 		    Triggertrap is distributed in the hope that it will be useful,
+ * 		    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * 		    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * 		    GNU General Public License for more details.
+ * 
+ * 		    You should have received a copy of the GNU General Public License
+ * 		    along with Triggertrap.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ ***********************************************************************************/
+
 #include "triggerTrap.h"
 
 

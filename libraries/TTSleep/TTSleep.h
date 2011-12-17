@@ -1,31 +1,30 @@
 /************************************************************************************
  * 	
- * 	Name    : Trigger Trap sleep.h                         
+ * 	Name    : Triggertrap sleep.h                         
  * 	Author  : Noah Shibley, NoMi Design n0m1.com                         
  * 	Date    : July 10th 2011                                    
  * 	Version : 0.1                                              
  * 	Notes   : Most of this code comes from "Cloudy" on the arduino form
  *			  http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1292898715
  * 
- * 	 Copyright (c) 2011 NoMi Design All right reserved.
+ * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-K)                      
  * 
- *     
- *
+ * 	Copyright (c) 2011 NoMi Design All right reserved.
  * 
- * 	This file is part of Trigger Trap.
+ * 	This file is part of Triggertrap. See Triggertrap.com for more information.
  * 
- * 		    Trigger Trap is free software: you can redistribute it and/or modify
+ * 		    Triggertrap is free software: you can redistribute it and/or modify
  * 		    it under the terms of the GNU General Public License as published by
  * 		    the Free Software Foundation, either version 3 of the License, or
  * 		    (at your option) any later version.
  * 
- * 		    Trigger Trap is distributed in the hope that it will be useful,
+ * 		    Triggertrap is distributed in the hope that it will be useful,
  * 		    but WITHOUT ANY WARRANTY; without even the implied warranty of
  * 		    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * 		    GNU General Public License for more details.
  * 
  * 		    You should have received a copy of the GNU General Public License
- * 		    along with Trigger Trap.  If not, see <http://www.gnu.org/licenses/>.
+ * 		    along with Triggertrap.  If not, see <http://www.gnu.org/licenses/>.
  * 
  ***********************************************************************************/
 
