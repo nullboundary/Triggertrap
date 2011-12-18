@@ -35,7 +35,7 @@ TriggerTrap::TriggerTrap()
 
 void TriggerTrap::setup()
 {
-  tui.setup(laser,mic,light,timeLapse,aux); //pass the sensors to the UI
+  tui.setup(laser,mic,light,timeLapse,aux,flipFlop); //pass the sensors to the UI
 }
 
 void TriggerTrap::update()
@@ -56,11 +56,11 @@ boolean TriggerTrap::trigger()
 	   break;
 
 	   case LASER_TRIG:
-	   triggerStatus = laser.trigger();
+	  	triggerStatus = laser.trigger();
 	   break;
 
 	   case SOUND_TRIG:
-	   triggerStatus = mic.trigger();
+	  	triggerStatus = mic.trigger();
 	   break;
 
 	   case LIGHT_TRIG:
@@ -68,7 +68,12 @@ boolean TriggerTrap::trigger()
 	   break;  
 
 	   case AUX_TRIG:
-	   triggerStatus = aux.trigger();
+	  	triggerStatus = aux.trigger();
+	   break;
+
+		// Activating the FlipFlop Trigger
+	   case FLIPFLOP_TRIG:
+	  	triggerStatus = flipFlop.trigger();
 	   break;
 
 	   default: //no default option.

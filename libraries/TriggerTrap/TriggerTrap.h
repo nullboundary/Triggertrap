@@ -45,6 +45,7 @@
 #include <utility/trigger.h>
 #include <utility/sound.h>
 #include <utility/timeLapse.h>
+#include <utility/flipflop.h>
 #include <auxiliary.h>
 
 	const int LASER_TRIG = 0;
@@ -52,6 +53,7 @@
 	const int LIGHT_TRIG = 2;
 	const int TIMELAPSE_TRIG = 3; 
 	const int AUX_TRIG= 4;
+	const int FLIPFLOP_TRIG= 5;
 
 
 class TriggerTrap {
@@ -67,8 +69,6 @@ public:
 
 private:
 
-
-
 	//the UI object, and the sensor objects
 	TTUI tui;
 	Laser laser;
@@ -76,7 +76,7 @@ private:
 	Sound mic; 
 	Aux aux;
 	TimeLapse timeLapse;
-
+	FlipFlop flipFlop;
 
 };
 

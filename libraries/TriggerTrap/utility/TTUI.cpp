@@ -62,7 +62,7 @@
    * begin
    * 
    ***********************************************************/
-  void TTUI::setup(Trigger& laser, Trigger& sound, Trigger& light,Trigger& timeLapse, Trigger& aux)
+  void TTUI::setup(Trigger& laser, Trigger& sound, Trigger& light,Trigger& timeLapse, Trigger& aux, Trigger& flipFlop)
   {
 
 	#ifdef SERIAL_DEBUG
@@ -85,6 +85,7 @@
 	triggers[2] = &light;
 	triggers[3] = &timeLapse;
 	triggers[4] = &aux;
+	triggers[5] = &flipFlop;
 	
 	triggers[0]->restoreSystem(); //restore system menu settings from trigger 0. Could work with any trigger though
 	boolean focusSetting = triggers[0]->getFocus();

@@ -37,6 +37,7 @@ const int SOUND_MODE = 1;
 const int LIGHT_MODE = 2;
 const int TIMELAPSE_MODE = 3; 
 const int AUX_MODE = 4;
+const int FLIPFLOP_MODE = 5;
 
 
 TriggerTrap tt;

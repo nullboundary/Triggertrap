@@ -108,7 +108,7 @@
  #endif
 
  
- const byte NUM_OF_SENSORS = 5; //the number of sensor triggers
+ const byte NUM_OF_SENSORS = 6; //the number of sensor triggers
 
 
 

@@ -85,7 +85,7 @@ friend void startUpHandler(void); //make the ISR a friend of this class
  * pass every Trigger object to the UI
  * 
  ***********************************************************/
-void setup(Trigger& laser, Trigger& sound, Trigger& light, Trigger& timeLapse, Trigger& aux );
+void setup(Trigger& laser, Trigger& sound, Trigger& light, Trigger& timeLapse, Trigger& aux , Trigger& flipFlop );
 
 /***********************************************************
  * 
@@ -160,7 +160,7 @@ private:
 	  	AtTouch touch;  //touch sensor library object
 	  #endif
 	
-	  Trigger *triggers[5]; //array of trigger object pointers
+	  Trigger *triggers[NUM_OF_SENSORS]; //array of trigger object pointers
 	
 	  
 	  int activeRefreshTime; //time counter for refresh of LCD, during trigger active
