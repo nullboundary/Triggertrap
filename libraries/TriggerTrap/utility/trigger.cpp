@@ -153,6 +153,13 @@ void Trigger::decOption(int menuOption, unsigned int maxValue, int dec)
 	optionValues[menuOption] = mOpt;
 }
 
+/***********************************************************
+ * 
+ * setTriggerPulseTime
+ *
+ * 
+ * 
+ ***********************************************************/
 void Trigger::setTriggerPulseTime(int focusPulseTime, int shutterPulseTime) 
 {
 	focusPulseTime_ = focusPulseTime;
@@ -651,6 +658,13 @@ void Trigger::formatTimeString(unsigned int data, char buffer[])
 		
 }
 
+/***********************************************************
+ * 
+ * formatMSString
+ *
+ * 
+ * 
+ ***********************************************************/
 void Trigger::formatMSString(unsigned int data,char buffer[])
 {
 	//setting the first char to 0 causes str functions to think 
@@ -747,6 +761,10 @@ void Trigger::IRTransmit()
 			irsend.sendSony(0xB4B8F,20); // or maybe 0x7478F both found here: http://sebastian.setz.name/arduino/my-libraries/multi-camera-ir-control#comment-110
 			delay(100);
 		}
+	#endif
+	
+	#ifdef FUJI
+	irsend.sendNEC(0xD30C817E,32); //Fuji NEC protocol
 	#endif
 }
 
@@ -845,6 +863,13 @@ void Trigger::restoreState()
 
 }
 
+/***********************************************************
+ * 
+ * saveSystem
+ *
+ * 
+ * 
+ ***********************************************************/
 void Trigger::saveSystem()
 {
 	//each trigger object will save to a seperate eeprom memory space
@@ -858,6 +883,13 @@ void Trigger::saveSystem()
 
 }
 
+/***********************************************************
+ * 
+ * restoreSystem
+ *
+ * 
+ * 
+ ***********************************************************/
 void Trigger::restoreSystem()
 {
 	//each trigger object will save to a seperate eeprom memory space

@@ -180,6 +180,13 @@ virtual void start(unsigned long startTime);
  ***********************************************************/
 virtual boolean getStop();
 
+/***********************************************************
+ * 
+ * stop
+ *
+ * set abortTrigger to true, this will deactivate the trigger
+ * 
+ ***********************************************************/
 void stop() { abortTrigger = true; }
 
 /***********************************************************
@@ -211,18 +218,61 @@ void resetFocus(boolean resetNow);
 
 /***********************************************************
  * 
- * setShutters
+ * setShutterPulseTime
  *
- * set which line will be used, Focus or Shutter 
+ * set the amount of time the pin goes low in ms.
  * 
  ***********************************************************/
 void setTriggerPulseTime(int focusPulseTime, int shutterPulseTime); 
 
+/***********************************************************
+ * 
+ * focusOn
+ *
+ * arm the focus pin, to fire when the trigger is set. 
+ * 
+ ***********************************************************/
 void focusOn(boolean armFocus){focusArmed = armFocus;}
+
+/***********************************************************
+ * 
+ * getFocus
+ *
+ * returns true if the focus is armed
+ * 
+ ***********************************************************/
 boolean getFocus() {return focusArmed;}
+/***********************************************************
+ * 
+ * shutterOn
+ *
+ * arm the shutter pin, to fire when the trigger is set
+ * 
+ ***********************************************************/
 void shutterOn(boolean armShutter){shutterArmed = armShutter;}
+/***********************************************************
+ * 
+ * getShutter
+ *
+ * returns true if the shutter is armed. 
+ * 
+ ***********************************************************/
 boolean getShutter() {return shutterArmed;}
+/***********************************************************
+ * 
+ * IRShutterOn
+ *
+ * arm the IR transmitter, to transmit when the trigger is set. 
+ * 
+ ***********************************************************/
 void IRShutterOn(boolean IRShutter){IRShutter_ = IRShutter;}
+/***********************************************************
+ * 
+ * getIRShutter
+ *
+ * returns true if the IRShutter transmitter is armed 
+ * 
+ ***********************************************************/
 boolean getIRShutter() { return IRShutter_; }
 
 /***********************************************************

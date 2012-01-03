@@ -192,6 +192,11 @@ boolean TTShield::hold()
    }	
 }
 
+/***********************************************************
+ * 
+ * clear
+ * 
+ ***********************************************************/
 void TTShield::clear()
 {
 	PCintPort::detachInterrupt(DOWN_BTTN_PIN);

@@ -48,8 +48,7 @@
  * 'commented out' will be skipped by the Triggertrap - this makes triggering faster.
  * 
  ***********************************************************************************/
- #define CANON_RC6   
- #define CANON_RC5
+ #define CANON   
  #define FUJI
  #define NIKON	
  #define OLYMPUS

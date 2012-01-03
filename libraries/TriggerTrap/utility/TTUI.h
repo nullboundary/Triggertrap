@@ -6,12 +6,10 @@
  * 	Version : 0.1                                              
  * 	Notes   :  All the interface stuff for trigger trap, buttons and screen menus                 
  * 
- * 	 Copyright (c) 2011 NoMi Design All right reserved.
+ * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-K)                      
  * 
- *     
- *
  * 
- * 	This file is part of Triggertrap.
+ * 	This file is part of Triggertrap. See Triggertrap.com for more information.
  * 
  * 		    Triggertrap is free software: you can redistribute it and/or modify
  * 		    it under the terms of the GNU General Public License as published by
