@@ -47,16 +47,20 @@ void TTShield::begin()
   holdRefreshInterval = 1; //1 for 100ms 1000ms/100 = 10 so 100ms/100 = 1
 
   pinMode(DOWN_BTTN_PIN, INPUT);
-  PCintPort::attachInterrupt(DOWN_BTTN_PIN,bttnShieldISR,FALLING);  //setup the key change interrupt, call bttnpress on interrupt	
+ digitalWrite(DOWN_BTTN_PIN,HIGH);
+  PCintPort::attachInterrupt(DOWN_BTTN_PIN,bttnShieldISR,CHANGE);  //setup the key change interrupt, call bttnpress on interrupt	
 
   pinMode(UP_BTTN_PIN, INPUT);
-  PCintPort::attachInterrupt(UP_BTTN_PIN ,bttnShieldISR,FALLING);  //setup the key change interrupt, call bttnpress on interrupt
+  digitalWrite(UP_BTTN_PIN,HIGH);
+  PCintPort::attachInterrupt(UP_BTTN_PIN ,bttnShieldISR,CHANGE);  //setup the key change interrupt, call bttnpress on interrupt
 
   pinMode(OPTION_BTTN_PIN, INPUT);
-  PCintPort::attachInterrupt(OPTION_BTTN_PIN,bttnShieldISR,FALLING);  //setup the key change interrupt, call bttnpress on interrupt
+  digitalWrite(OPTION_BTTN_PIN,HIGH);
+  PCintPort::attachInterrupt(OPTION_BTTN_PIN,bttnShieldISR,CHANGE);  //setup the key change interrupt, call bttnpress on interrupt
 
   pinMode(MODE_BTTN_PIN, INPUT);
-  PCintPort::attachInterrupt(MODE_BTTN_PIN,bttnShieldISR,FALLING);  //setup the key change interrupt, call bttnpress on interrupt
+  digitalWrite(MODE_BTTN_PIN,HIGH);
+  PCintPort::attachInterrupt(MODE_BTTN_PIN,bttnShieldISR,CHANGE);  //setup the key change interrupt, call bttnpress on interrupt
 }
 
 /***********************************************************
@@ -123,7 +127,9 @@ int TTShield::getKey()
 int TTShield::readActiveKey()
 {
   byte keyValue = 0;
-	
+
+  keyHit = false; //so it will only count 1 hit for each press
+ 
   if(PCintPort::arduinoPin == DOWN_BTTN_PIN)
   {
 	keyValue = 5; //value used in TTUI matches values from ATTouch CapSense chip
@@ -140,9 +146,11 @@ int TTShield::readActiveKey()
   {
 	keyValue = 2;
   }
-  else
+  
+  if(digitalRead(PCintPort::arduinoPin) == HIGH) //if the pin that just changed is now HIGH (not pressed)
   {
 	keyValue = 9; //Nothing pressed
+	
   }
   
   activeKey_ = (byte) keyValue; //save the keyValue for later

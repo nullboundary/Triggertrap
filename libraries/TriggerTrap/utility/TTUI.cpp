@@ -50,7 +50,11 @@
   //for the ISR
   TTUI* TTUI::pTTUI = 0; 
 
+#ifdef TT_SHIELD
+  TTUI::TTUI():LiquidCrystal_SR_LCD3(11, 10, 12 ,2) 
+#else
   TTUI::TTUI():LiquidCrystalFast(A3,4,5, 6, 7, 8, 9) 
+#endif
   {
 	
 	pTTUI = this;	//the ptr points to this object
@@ -113,10 +117,10 @@
 	attachInterrupt(0,startDownHandler,FALLING); //trigger ISR function on start button press.
 	
 	//Shutter and Focus pins set to output
-	pinMode(13, OUTPUT);
-    pinMode(12, OUTPUT);
-    digitalWrite(13, HIGH); // is off
-    digitalWrite(12, HIGH); // is off
+	pinMode(FOCUS_TRIGGER_PIN, OUTPUT);
+    pinMode(SHUTTER_TRIGGER_PIN, OUTPUT);
+    digitalWrite(FOCUS_TRIGGER_PIN, HIGH); // is off
+    digitalWrite(SHUTTER_TRIGGER_PIN, HIGH); // is off
 	
 	//set UI Power
 	 #ifndef TT_SHIELD //if TT is normal not Shield
@@ -131,29 +135,32 @@
 	 	touch.begin();
 	 #else
      	touch.begin(KEY_CHANGE);  //init touch UI with key change interrupt
-	 #endif
+	 #endif //TT_SHIELD endif
 
-	//LCD Stuff
-	TCCR1B = TCCR1B & 0b11111000 | 0x01; //-- sets the pwm base
-	
-	pinMode (10, OUTPUT); // lcd contrast output 
-	
-	if(batteryPower() == true)
-	{
-		long lcdContrast = analogRead(A1);
-		lcdContrast = 175 - ((lcdContrast * 5)  / 32);
-		analogWrite (10, lcdContrast);
-		
-	}
-	else
-	{
-		byte lcdContrast = 25; 
-		analogWrite (10, lcdContrast);
-		
-	}
-	
 	activeMenu == START_MESSAGE;
+	
 	//this class inherits from LCD, so call lcd functions as part of this class
+ 	#ifndef TT_SHIELD //if TT is normal not Shield
+		//LCD Stuff
+		TCCR1B = TCCR1B & 0b11111000 | 0x01; //-- sets the pwm base
+
+		pinMode (10, OUTPUT); // lcd contrast output 
+
+		if(batteryPower() == true)
+		{
+			long lcdContrast = analogRead(A1);
+			lcdContrast = 175 - ((lcdContrast * 5)  / 32);
+			analogWrite (10, lcdContrast);
+
+		}
+		else
+		{
+			byte lcdContrast = 25; 
+			analogWrite (10, lcdContrast);
+
+		}
+	#endif // END TT if
+    
     begin(8, 2);
   	// Print a message to the LCD.
   	print("Trigger");
@@ -187,7 +194,6 @@ void TTUI::update()
 			keyDown = true;
 			hold = true;  
 			hitKeyVal = touch.getKey();
-		
 		}
 
 		
@@ -195,7 +201,6 @@ void TTUI::update()
 		{ 
 	   	 	keyDown = true;
 		 	hitKeyVal = touch.readActiveKey(); //read which key was hit
-	
 		} 
 	
 	
@@ -540,7 +545,6 @@ void TTUI::uiPowerOn()
 	          }
 	          else //battery power
 	          {
-
 	              // restart the LCD     
 	            LiquidCrystalFast(A3,4,5, 6, 7, 8, 9);
 	            begin(8,2);    

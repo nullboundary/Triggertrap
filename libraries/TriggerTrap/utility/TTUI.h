@@ -29,7 +29,7 @@
 #ifndef TTUI_H
 #define TTUI_H
 
-#include <LiquidCrystalFast.h>
+
 #include <avr/sleep.h>
 
 #if defined(ARDUINO) && ARDUINO >= 100
@@ -39,10 +39,13 @@
 #endif
 #include <TTConfig.h>
 #ifdef TT_SHIELD
+  #include <LCD.h>
+  #include <LiquidCrystal_SR_LCD3.h>
   #include <PinChangeInt.h>
   #include <PinChangeIntConfig.h>
   #include "utility/TTShield.h"
 #else
+  #include <LiquidCrystalFast.h>
   #include <AtTouch.h>
 #endif
 #include <utility/trigger.h>
@@ -63,10 +66,11 @@ extern "C" void startDownHandler(void) __attribute__ ((signal));  //ISR function
 extern "C" void startUpHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
 extern "C" void sleepHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
 
-
-
+#ifdef TT_SHIELD
+class TTUI: public LiquidCrystal_SR_LCD3 {
+#else
 class TTUI: public LiquidCrystalFast {
-
+#endif
 
 public:
 
