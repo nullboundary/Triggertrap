@@ -163,12 +163,14 @@
     
     begin(8, 2);
   	// Print a message to the LCD.
-  	print("Trigger");
+  	print(" TrigTrap");
 	setCursor(0,1);
-	print("Trap0v39");
+	print("v");
+	print(FIRMWARE_VERSION);
 
     #ifdef SERIAL_DEBUG
-	Serial.println("TT 0v39");
+	Serial.print("TT v");
+	Serial.println(FIRMWARE_VERSION);
     #endif
 
 	 interrupts(); //make sure interrupts are on
@@ -287,9 +289,10 @@ void TTUI::updateLCD()
 			else if(activeMenu == START_MESSAGE)
 			{
 				clear();
-				print("Trigger");
+				print(" TrigTrap");
 				setCursor(0,1);
-				print("Trap0v39");
+				print("v");
+				print(FIRMWARE_VERSION);
 			}
 		}
 	}

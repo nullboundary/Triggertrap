@@ -60,20 +60,14 @@ void AtTouch::begin(int interruptPin,boolean disableAutoCal){
   I2c.begin(); 
   I2c.pullup(0);	
   // reset device by writing non-zero value to register 0x39  
-  I2c.beginTransmission(0x1B); // transmit to device 
-  I2c.send(0x39);             // sets register pointer to the reset register (0x39)  
-  I2c.send(0xFF);             // send non-zero value to initiate a reset
-  I2c.endTransmission();      // stop transmitting 
+  I2c.write(0x1B, 0x39, 0xFF);
   delay(100); // wait for device to restart
   I2c.begin(); // re-open the i2c after device has restarted
   I2c.pullup(0);
   if(disableAutoCal == true)
   {
-	delay(100);  
-	I2c.beginTransmission(0x1B);   // 
-  	I2c.send(0x37); //set to register 0x37, disable hold down auto calibration
-  	I2c.send(0);
-	I2c.endTransmission();
+	delay(100);
+	I2c.write(0x1B, 0x37, 0);  
   }
   pinMode(_changePin, INPUT);
   attachInterrupt(_interruptVal,bttnPressISR,FALLING);  //setup the key change interrupt, call bttnpress on interrupt
@@ -178,16 +172,10 @@ int AtTouch::readActiveAddress(){
     int bttnNum = 0;
 
     // to clear change int we must read both status bytes 02 and 03
-    I2c.beginTransmission(0x1B); // transmit to device 
-    I2c.send(0x02); // want to read detection status // set pointer
-    I2c.endTransmission();      // stop transmitting
-    I2c.requestFrom(0x1B, 1);    // request 1 byte from slave device
+    I2c.read(0x1B, 0x02, 1); 
     readstatus = I2c.receive();
 
-    I2c.beginTransmission(0x1B); // transmit to device 
-    I2c.send(0x03); // want to read key status // set pointer
-    I2c.endTransmission();      // stop transmitting
-    I2c.requestFrom(0x1B, 1);    // request 1 byte from slave device
+	I2c.read(0x1B, 0x03, 1); 
     bttnNum = I2c.receive();
 
     keyHit = false;
