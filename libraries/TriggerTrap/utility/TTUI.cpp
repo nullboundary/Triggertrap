@@ -114,7 +114,11 @@
 	//configure start button
 	pinMode(START_BUTTON, INPUT);       // Start Button
     digitalWrite(START_BUTTON, HIGH);   // turn on pullup resistor for Start button
-	attachInterrupt(0,startDownHandler,FALLING); //trigger ISR function on start button press.
+	#ifdef TT_SHIELD
+	    PCintPort::attachInterrupt(START_BUTTON,startDownHandler,FALLING);  
+	#else
+		attachInterrupt(0,startDownHandler,FALLING); //trigger ISR function on start button press.
+	#endif
 	
 	//Shutter and Focus pins set to output
 	pinMode(FOCUS_TRIGGER_PIN, OUTPUT);
@@ -354,9 +358,13 @@ void TTUI::resetCheck()
 		}
 		else if(startBttnHold == false && trapActive_ == true )
 		{
-			
+				#ifdef TT_SHIELD
+						 PCintPort::detachInterrupt(START_BUTTON);
+					     PCintPort::attachInterrupt(START_BUTTON,startDownHandler,FALLING);  
+				#else
 						 detachInterrupt(0);
 						 attachInterrupt(0,startDownHandler,FALLING); //trigger ISR function on start button press.
+				#endif
 		}		
 		
 		
@@ -862,8 +870,14 @@ void startDownHandler(void)
 	  //maybe most of this stuff should happen in loop? (speed ok..but maybe better outside?)
 	  unsigned long currentTime = millis();
 
-	    detachInterrupt(0);
-		attachInterrupt(0,startUpHandler,RISING); //trigger ISR function on start button press.
+		#ifdef TT_SHIELD
+				 PCintPort::detachInterrupt(START_BUTTON);
+			     PCintPort::attachInterrupt(START_BUTTON,startUpHandler,RISING);  
+		#else
+				 detachInterrupt(0);
+				 attachInterrupt(0,startUpHandler,RISING); //trigger ISR function on start button press.
+		#endif
+
 		TTUI::pTTUI->startBttnHold = true;
 		TTUI::pTTUI->holdBttnStart = currentTime/1000;
 		
@@ -882,8 +896,13 @@ void startUpHandler(void)
 
 	  unsigned long currentTime = millis();
 
-		detachInterrupt(0);
-		attachInterrupt(0,startDownHandler,FALLING); //trigger ISR function on start button press.
+		#ifdef TT_SHIELD
+				 PCintPort::detachInterrupt(START_BUTTON);
+			     PCintPort::attachInterrupt(START_BUTTON,startDownHandler,FALLING);  
+		#else
+				 detachInterrupt(0);
+				 attachInterrupt(0,startDownHandler,FALLING); //trigger ISR function on start button press.
+		#endif
 		
 		if(TTUI::pTTUI->startBttnHold == true) //press&hold reset wasn't done, so count it as a normal press
 		{

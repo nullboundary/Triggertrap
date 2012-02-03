@@ -11,7 +11,7 @@
 // Define the value MAX_PIN_CHANGE_PINS to limit the number of pins that may be 
 // used for pin change interrupts. This value determines the number of pin change 
 // interrupts supported for all ports.
-#define	MAX_PIN_CHANGE_PINS 4
+#define	MAX_PIN_CHANGE_PINS 5
 
 // declare ports without pin change interrupts used
 #define	NO_PORTB_PINCHANGES
