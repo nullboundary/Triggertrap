@@ -24,17 +24,17 @@
  * 		    along with Trigger Trap.  If not, see <http://www.gnu.org/licenses/>.
  * 
  ***********************************************************************************/
-
-#include <LiquidCrystalFast.h>
 #include <I2C.h>
 #include <PinChangeInt.h>
 #include <PinChangeIntConfig.h>
 #include <LCD.h>
+#include <LiquidCrystal.h>
 #include <LiquidCrystal_SR_LCD3.h>
 #include <AtTouch.h>
 #include <TTSleep.h>
 #include <TTIRremote.h>
 #include <TriggerTrap.h>
+
 
 
 
@@ -69,13 +69,29 @@ void loop() {
 
   tt.update();
   
-  if(tt.trigger() == true)
+  if(tt.trigger())
   {
     
      if(tt.triggerMode() == SOUND_MODE)
      {
-       //Serial.println(sound trigger);
+       //Serial.println("sound trigger");
+     }
+     else if(tt.triggerMode() == LASER_MODE)
+     {
+       //Serial.println("laser trigger");
      }  
+     else if(tt.triggerMode() == LIGHT_MODE)
+     {
+       //Serial.println("light trigger");
+     }  
+     else if(tt.triggerMode() == TIMELAPSE_MODE)
+     {
+       //Serial.println("timelapse trigger");
+     }   
+     else if(tt.triggerMode() == AUX_MODE)
+     {
+       //Serial.println("aux trigger");
+     }    
     
     
     

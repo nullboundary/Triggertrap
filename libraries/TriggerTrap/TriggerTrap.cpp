@@ -47,7 +47,7 @@ boolean TriggerTrap::trigger()
 {	
 	boolean triggerStatus = false;
 	 
-  	if(tui.trapActive() == true) //if start button pressed
+  	if(tui.trapActive()) //if start button pressed = true
     {
 	   switch (tui.trigger()) //which trigger are we using.
 	   {

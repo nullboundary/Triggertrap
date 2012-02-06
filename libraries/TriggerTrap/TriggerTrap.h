@@ -37,9 +37,14 @@
 #endif
 
 #include "TTConfig.h"
-#include "utility/TTUI.h"
+
+ #ifdef HARDWARE_TEST  //set in TTConfig.h used for factory QA
+	#include "utility/HWTest.h"
+ #else
+	#include "utility/TTUI.h"
+ #endif
+
 #include "utility/trigger.h"
-#include <utility/TTUI.h>
 #include <utility/laser.h>
 #include <utility/light.h>
 #include <utility/trigger.h>
@@ -70,7 +75,13 @@ private:
 
 
 	//the UI object, and the sensor objects
-	TTUI tui;
+	
+	#ifdef HARDWARE_TEST 
+		HWTest tui;
+	#else //NORMAL TT
+		TTUI tui;
+	#endif
+
 	Laser laser;
 	Light light;
 	Sound mic; 

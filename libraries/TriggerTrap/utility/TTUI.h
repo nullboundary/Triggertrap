@@ -38,14 +38,14 @@
 #include "WProgram.h"
 #endif
 #include <TTConfig.h>
+#include <LCD.h>
 #ifdef TT_SHIELD
-  #include <LCD.h>
   #include <LiquidCrystal_SR_LCD3.h>
   #include <PinChangeInt.h>
   #include <PinChangeIntConfig.h>
   #include "utility/TTShield.h"
 #else
-  #include <LiquidCrystalFast.h>
+  #include <LiquidCrystal.h>
   #include <AtTouch.h>
 #endif
 #include <utility/trigger.h>
@@ -69,7 +69,7 @@ extern "C" void sleepHandler(void) __attribute__ ((signal));  //ISR function for
 #ifdef TT_SHIELD
 class TTUI: public LiquidCrystal_SR_LCD3 {
 #else
-class TTUI: public LiquidCrystalFast {
+class TTUI: public LiquidCrystal {
 #endif
 
 public:

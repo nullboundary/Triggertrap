@@ -36,6 +36,16 @@
 
   //#define SERIAL_DEBUG 
 
+/*** HARDWARE QA TESTING ***********************************************************
+ * 	
+ * 	If you need to do some QA testing to verify quickly and easily that all sensors
+ *  are working, and all buttons are working, uncomment below. 
+ *  
+ * 
+ ***********************************************************************************/
+
+ // #define HARDWARE_TEST
+
 /*** CHOOSE CAMERAS TO TRIGGER OVER INFRA-RED ***************************************
  * 	
  * 	The Triggertrap supports camera triggering over IR, but the IR protocol is very

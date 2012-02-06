@@ -53,7 +53,7 @@
 #ifdef TT_SHIELD
   TTUI::TTUI():LiquidCrystal_SR_LCD3(11, 10, 12 ,2) 
 #else
-  TTUI::TTUI():LiquidCrystalFast(A3,4,5, 6, 7, 8, 9) 
+  TTUI::TTUI():LiquidCrystal(A3,4,5, 6, 7, 8, 9) 
 #endif
   {
 	
@@ -167,7 +167,7 @@
     
     begin(8, 2);
   	// Print a message to the LCD.
-  	print(" TrigTrap");
+  	print("TrigTrap");
 	setCursor(0,1);
 	print("v");
 	print(FIRMWARE_VERSION);
@@ -293,7 +293,7 @@ void TTUI::updateLCD()
 			else if(activeMenu == START_MESSAGE)
 			{
 				clear();
-				print(" TrigTrap");
+				print("TrigTrap");
 				setCursor(0,1);
 				print("v");
 				print(FIRMWARE_VERSION);
@@ -557,7 +557,7 @@ void TTUI::uiPowerOn()
 	          else //battery power
 	          {
 	              // restart the LCD     
-	            LiquidCrystalFast(A3,4,5, 6, 7, 8, 9);
+	            LiquidCrystal(A3,4,5, 6, 7, 8, 9);
 	            begin(8,2);    
 	            display(); 
 	            // test battery level and set LCD contrast PWM
