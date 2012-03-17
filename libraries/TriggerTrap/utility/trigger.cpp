@@ -756,7 +756,7 @@ void Trigger::IRTransmit()
 		irsend.sendRaw(CanonBuffer,4,33);
 	#endif
 
-	#ifdef SONY
+	#ifdef SONYCAM
 		for (int i = 0; i < 3; ++i) {
 			irsend.sendSony(0xB4B8F,20); // or maybe 0x7478F both found here: http://sebastian.setz.name/arduino/my-libraries/multi-camera-ir-control#comment-110
 			delay(100);

@@ -42,7 +42,7 @@
 #include <TTConfig.h>
 #include <avr/pgmspace.h>
 #include <avr/eeprom.h>
-#include <TTIRremote.h>
+#include "TTIRremote.h"
 
 
 //Eeprom read/write Macros

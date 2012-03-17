@@ -16,11 +16,19 @@
 #include "TTIRremote.h"
 #include "TTIRremoteInt.h"
 
+#include <TTConfig.h>
+
 // Provides ISR
 #include <avr/interrupt.h>
 
 volatile irparams_t irparams;
 
+
+// this is used in bitbang mode to pass the freq into mark
+#ifdef TT_SHIELD
+int bitbangfreq = 0;
+#endif	
+	
 // These versions of MATCH, MATCH_MARK, and MATCH_SPACE are only for debugging.
 // To use them, set DEBUG in IRremoteInt.h
 // Normally macros are used for efficiency
@@ -171,22 +179,52 @@ void IRsend::sendRC6(unsigned long data, int nbits)
 }
 
 void IRsend::mark(int time) {
+
+// for shield use bitbang
+#ifdef TT_SHIELD
+	int countrun =  ((long) time *  bitbangfreq) / 1000 ; 
+  	int wavetime = 1000/ (bitbangfreq*2) ;
+	
+	for (int i=0; i <= countrun; i++){
+  		PORTD |=  _BV (2);
+		delayMicroseconds(wavetime);
+ 		PORTD &= ~ _BV (2);
+		delayMicroseconds(wavetime);
+   }
+
+#endif
+
+// for device use pwm
+#ifndef TT_SHIELD
   // Sends an IR mark for the specified number of microseconds.
   // The mark output is modulated at the PWM frequency.
  // TCCR2A |= _BV(COM2B1); // Enable pin 3 PWM output // ?kraz
   TCCR2A |= _BV(COM2A0); // Enable pin 3 PWM output // ?kraz
   //  TCCR2A |= _BV(COM2A1); // Enable pin 3 PWM output // ?kraz
   delayMicroseconds(time);
+#endif
+
 }
 
 /* Leave pin off for time (given in microseconds) */
 void IRsend::space(int time) {
+
+// for shield use bitbang
+#ifdef TT_SHIELD
+	// send pin low during space
+	PORTD &= ~ _BV (2);
+#endif
+
+// for device use pwm
+#ifndef TT_SHIELD
   // Sends an IR space for the specified number of microseconds.
   // A space is no output, so the PWM output is disabled.
   //TCCR2A &= ~(_BV(COM2B1)); // Disable pin 3 PWM output // ?kraz
   TCCR2A &= ~(_BV(COM2A0)); // Disable pin 3 PWM output // ?kraz
    //TCCR2A &= ~(_BV(COM2A1)); // Disable pin 3 PWM output // ?kraz
-  delayMicroseconds(time);
+#endif 
+
+ delayMicroseconds(time);
 }
 
 void IRsend::enableIROut(int khz) {
@@ -201,14 +239,22 @@ void IRsend::enableIROut(int khz) {
   // A few hours staring at the ATmega documentation and this will all make sense.
   // See my Secrets of Arduino PWM at http://arcfn.com/2009/07/secrets-of-arduino-pwm.html for details.
 
+  #ifdef TT_SHIELD
+  pinMode(2, OUTPUT); 
+  digitalWrite(2, LOW); // When not sending PWM, we want it low 
+  //pass the frequncy to a global for use in bitbang mark
+  bitbangfreq = khz;
+  #endif
   
+ #ifndef TT_SHIELD
   // Disable the Timer2 Interrupt (which is used for receiving IR)
   TIMSK2 &= ~_BV(TOIE2); //Timer2 Overflow Interrupt
   
- 
+  
   pinMode(11, OUTPUT); // ?kraz 
   digitalWrite(11, LOW); // When not sending PWM, we want it low // ?kraz
-  
+ 
+
   // COM2A = 00: disconnect OC2A
   // COM2B = 00: disconnect OC2B; to send signal set to 10: OC2B non-inverted
   // WGM2 = 101: phase-correct PWM with OCRA as top
@@ -219,6 +265,8 @@ void IRsend::enableIROut(int khz) {
   // The top value for the timer.  The modulation frequency will be SYSCLOCK / 2 / OCR2A.
   OCR2A = SYSCLOCK / 4 / khz / 1000;  			// ?kraz - set to 52
   //OCR2B = 17; // OCR2A / 3; // 33% duty cycle 			// ?kraz not reqr
+ #endif
+
 }
 
 IRrecv::IRrecv(int recvpin)

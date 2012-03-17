@@ -44,6 +44,7 @@
 	#include "utility/TTUI.h"
  #endif
 
+#include "utility/TTIRremote.h"
 #include "utility/trigger.h"
 #include <utility/laser.h>
 #include <utility/light.h>

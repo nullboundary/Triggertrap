@@ -63,7 +63,7 @@
  #define NIKON	
  #define OLYMPUS
  #define PENTAX
- #define SONY
+ #define SONYCAM
  #define WLDC100
 
 /*** FOCUS, SHUTTER, AND SLEEP SETTINGS ********************************************
