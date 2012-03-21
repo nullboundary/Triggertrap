@@ -1,4 +1,6 @@
-/*  Name    :  Trigger Trap TTIRremote.cpp                                              
+/************************************************************************************
+ * 	
+ *	Name    :  Trigger Trap TTIRremote.cpp                                              
  * 	Date    :  Nov 24th 2011                                                                              
  * 	Notes   :  This is Ken Shirriffs IRremote library for arduino (see below).
  *			   A few small timer/pin mods have been made for custom use with the TT. 
@@ -11,7 +13,12 @@
  * Interrupt code based on NECIRrcv by Joe Knapp
  * http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1210243556
  * Also influenced by http://zovirl.com/2008/11/12/building-a-universal-remote-with-an-arduino/
- */
+ * 
+ * 			Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)                      
+ * 
+ * 	This file is part of Triggertrap. See Triggertrap.com for more information.
+ * 
+ ***********************************************************************************/
 
 #include "TTIRremote.h"
 #include "TTIRremoteInt.h"

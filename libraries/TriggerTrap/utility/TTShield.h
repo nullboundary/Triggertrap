@@ -1,18 +1,16 @@
 /************************************************************************************
  * 	
  * 	Name    : Triggertrap TTShield.h                        
- * 	Author  : Noah Shibley, NoMi Design                         
+ * 	Author  : Noah Shibley / NoMi Design                         
  * 	Date    : Dec 12th 2011                                    
  * 	Version : 0.1                                              
  * 	Notes   : 
- *			  
  * 
- * 	 Copyright (c) 2011 NoMi Design All right reserved.
+ * 			Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)                      
  * 
- *     
- *
+ * 	Copyright (c) 2011 NoMi Design (http://n0m1.com) All right reserved.
  * 
- * 	This file is part of Triggertrap.
+ * 	This file is part of Triggertrap. See Triggertrap.com for more information.
  * 
  * 		    Triggertrap is free software: you can redistribute it and/or modify
  * 		    it under the terms of the GNU General Public License as published by

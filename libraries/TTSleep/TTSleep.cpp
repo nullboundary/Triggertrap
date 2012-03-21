@@ -1,13 +1,13 @@
 /************************************************************************************
  * 	
- * 	Name    : Triggertrap sleep.cpp                         
- * 	Author  : Noah Shibley, NoMi Design n0m1.com                      
+ * 	Name    : Triggertrap TTsleep.cpp                         
+ * 	Author  : Noah Shibley / NoMi Design                     
  * 	Date    : July 10th 2011                                    
  * 	Version : 0.1                                              
  * 	Notes   : Most of this code comes from "Cloudy" on the arduino form
  *			  http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1292898715
  * 
- * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-K)                      
+ * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)                      
  * 
  * 	Copyright (c) 2011 NoMi Design All right reserved.
  * 

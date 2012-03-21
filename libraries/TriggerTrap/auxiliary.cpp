@@ -1,14 +1,14 @@
 /************************************************************************************
  * 	
- * 	Name    : Triggertrap light.h                         
- * 	Author  : Noah Shibley, NoMi Design                         
+ * 	Name    : Triggertrap auxiliary.cpp                         
+ * 	Author  : Noah Shibley / NoMi Design                         
  * 	Date    : July 10th 2011                                    
  * 	Version : 0.1                                              
- * 	Notes   : The ambient light sensor. Sub class of Sensor, inherits all Sensor functions           
+ * 	Notes   : The aux sensor port. Sub class of Sensor, inherits all Sensor functions           
  * 
- * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-K)                      
+ * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)                      
  * 
- * 	Copyright (c) 2011 NoMi Design All right reserved.
+ * 	Copyright (c) 2012 NoMi Design All right reserved.
  * 
  * 	This file is part of Triggertrap. See Triggertrap.com for more information.
  * 

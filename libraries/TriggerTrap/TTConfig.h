@@ -1,12 +1,27 @@
 /************************************************************************************
  * 	
  * 	Name    : Triggertrap TTConfig.h
- * 	Author  : Noah Shibley, NoMi Design
+ * 	Author  : Noah Shibley / NoMi Design
  * 	Date    : July 10th 2011
  * 	Version : 0.1
- * 	Notes   : Configuration Files
+ * 	Notes   : Configuration File for Triggertrap
  * 
- * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-K)                      
+ * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)                      
+ * 
+ * 	This file is part of Triggertrap. See Triggertrap.com for more information.
+ * 
+ * 		    Triggertrap is free software: you can redistribute it and/or modify
+ * 		    it under the terms of the GNU General Public License as published by
+ * 		    the Free Software Foundation, either version 3 of the License, or
+ * 		    (at your option) any later version.
+ * 
+ * 		    Triggertrap is distributed in the hope that it will be useful,
+ * 		    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * 		    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * 		    GNU General Public License for more details.
+ * 
+ * 		    You should have received a copy of the GNU General Public License
+ * 		    along with Triggertrap.  If not, see <http://www.gnu.org/licenses/>.
  * 
  ***********************************************************************************/
 
@@ -24,7 +39,8 @@
  * 
  ***********************************************************************************/
 
-  //#define TT_SHIELD
+ #define TT_SHIELD
+
 
 /*** SERIAL DEBUGGING ***************************************************************
  * 	
@@ -34,7 +50,8 @@
  * 
  ***********************************************************************************/
 
-  //#define SERIAL_DEBUG 
+// #define SERIAL_DEBUG 
+
 
 /*** HARDWARE QA TESTING ***********************************************************
  * 	
@@ -44,7 +61,8 @@
  * 
  ***********************************************************************************/
 
- // #define HARDWARE_TEST
+// #define HARDWARE_TEST
+
 
 /*** CHOOSE CAMERAS TO TRIGGER OVER INFRA-RED ***************************************
  * 	
@@ -58,6 +76,7 @@
  * 'commented out' will be skipped by the Triggertrap - this makes triggering faster.
  * 
  ***********************************************************************************/
+
  #define CANON   
  #define FUJI
  #define NIKON	
@@ -82,11 +101,11 @@
  * 
  ***********************************************************************************/
  	
- const int DEFAULT_SHUTTER_TIME = 150;   // duration of shutter signal, in ms. Default: 150 
- const int DEFAULT_FOCUS_TIME = 500;     // duration of focus signal, in ms. Default: 500 
- const unsigned int UI_SLEEP_MS = 30000; // time before device goes to sleep, in ms. Default: 30000
+ const int DEFAULT_SHUTTER_TIME = 150;   	// duration of shutter signal, in ms. Default: 150 
+ const int DEFAULT_FOCUS_TIME = 500;     	// duration of focus signal, in ms. Default: 500 
+ const unsigned int UI_SLEEP_MS = 30000; 	// time before device goes to sleep, in ms. Default: 30000
  
- 
+
 
 /*** ADVANCED SETTINGS **************************************************************
  * 	
@@ -95,31 +114,31 @@
  *  unless you know what you're doing! 
  * 
  ***********************************************************************************/
-    #define FIRMWARE_VERSION "0.3.30"               //The current firmware version of this TT
+    #define FIRMWARE_VERSION "0.3.31"       //The current firmware version of this TT
 
  #ifdef TT_SHIELD
-	const byte START_BUTTON = 7;				// D7 = Digital in - Start button
+	const byte START_BUTTON = 7;			// D7  = Digital in - Start button
 	const byte FOCUS_TRIGGER_PIN = 9;		// D13 = Digital out - Camera Trigger A
     const byte SHUTTER_TRIGGER_PIN = 8;		// D12 = Digital out - Camera Trigger B
-	const byte LASER_SENSOR = A3; 
-	const byte AMBIENT_LIGHT_SENSOR = A3;
-	const byte SOUND_IN = A5;
-	const byte AUX = A0;  //Aux Pin
+	const byte LASER_SENSOR = A3; 			// A3  = Laser sensor
+	const byte AMBIENT_LIGHT_SENSOR = A3;	// A3  = Ambient light sensor
+	const byte SOUND_IN = A5;				// A5  = Sound sensor
+	const byte AUX = A0;  					// A0  = Auxiliary port
  #else //Normal TT
-	const byte POWER_UI = PORTB6;				// A3 = Digital out - UI power mosfet switch
-	const byte KEY_PAD_LEDS = PORTB7;				// D4 = Digital out - LED on keypad
-	const byte START_BUTTON = 2;				// D2 = Digital in - Start button 
-	const byte KEY_CHANGE = 3;				// D3 = Digital in - key change interrupt for touch ic
+	const byte POWER_UI = PORTB6;			// A3  = Digital out - UI power mosfet switch
+	const byte KEY_PAD_LEDS = PORTB7;		// D4  = Digital out - LED on keypad
+	const byte START_BUTTON = 2;			// D2  = Digital in - Start button 
+	const byte KEY_CHANGE = 3;				// D3  = Digital in - key change interrupt for touch ic
 	const byte FOCUS_TRIGGER_PIN = 13;		// D13 = Digital out - Camera Trigger A
-    const byte SHUTTER_TRIGGER_PIN = 12;		// D12 = Digital out - Camera Trigger B
-	const byte LASER_SENSOR = A6; 	//Laser Sensor
-	const byte AMBIENT_LIGHT_SENSOR = A0;
-	const byte SOUND_IN = A7;
-	const byte AUX = A2;  //Aux Pin
+    const byte SHUTTER_TRIGGER_PIN = 12;	// D12 = Digital out - Camera Trigger B
+	const byte LASER_SENSOR = A6; 			// A6  = Laser Sensor
+	const byte AMBIENT_LIGHT_SENSOR = A0;	// A0  = Ambient light sensor
+	const byte SOUND_IN = A7;				// A7  = Sound sensor
+	const byte AUX = A2;  					// A2  = Auxiliary port
  #endif
 
- 
- const byte NUM_OF_SENSORS = 5; //the number of sensor triggers
+
+ const byte NUM_OF_SENSORS = 5; 			//the number of sensor triggers
 
 
 
