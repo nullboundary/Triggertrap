@@ -9,7 +9,7 @@
  * 
  * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)                      
  * 
- * 	Copyright (c) 2011 NoMi Design All right reserved.
+ * 	Copyright (c) 2012 NoMi Design (http://n0m1.com) All right reserved.
  * 
  * 	This file is part of Triggertrap. See Triggertrap.com for more information.
  * 
