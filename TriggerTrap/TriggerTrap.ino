@@ -1,29 +1,36 @@
 /************************************************************************************
  * 	
- * 	Name    : Trigger Trap                          
- * 	Author  : Noah Shibley, NoMi Design                         
- * 	Date    : July 10th 2011                                    
- * 	Version : 0.1                                              
- * 	Notes   : Boxed Vanilla Version                      
+ * 	Name    : Triggertrap Arduino Sketch                         
+ * 	Author  : Noah Shibley / NoMi Design                         
+ * 	Date    : March 21, 2012                                    
+ * 	Version : 0.3.30                                              
+ * 	Notes   : First open-source release of Triggertrap code for Triggertrap Device
+ * 				and Triggertrap Shield for Arduino. 
  * 
- * 	Copyright (c) 2011 NoMi Design.
+ * 				For more information see Triggertrap.com and github.com/triggertrap
  * 
- * 	This file is part of Trigger Trap.
+ * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)                      
  * 
- * 		    Trigger Trap is free software: you can redistribute it and/or modify
+ * 	Copyright (c) 2011 NoMi Design All right reserved.
+ * 
+ * 	This file is part of Triggertrap. See Triggertrap.com for more information.
+ * 
+ * 		    Triggertrap is free software: you can redistribute it and/or modify
  * 		    it under the terms of the GNU General Public License as published by
  * 		    the Free Software Foundation, either version 3 of the License, or
  * 		    (at your option) any later version.
  * 
- * 		    Trigger Trap is distributed in the hope that it will be useful,
+ * 		    Triggertrap is distributed in the hope that it will be useful,
  * 		    but WITHOUT ANY WARRANTY; without even the implied warranty of
  * 		    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * 		    GNU General Public License for more details.
  * 
  * 		    You should have received a copy of the GNU General Public License
- * 		    along with Trigger Trap.  If not, see <http://www.gnu.org/licenses/>.
+ * 		    along with Triggertrap.  If not, see <http://www.gnu.org/licenses/>.
  * 
  ***********************************************************************************/
+
+
 #include <I2C.h>
 #include <PinChangeInt.h>
 #include <PinChangeIntConfig.h>
