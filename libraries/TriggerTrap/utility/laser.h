@@ -56,19 +56,18 @@ public:
  
  //to change the behavior of these functions for laser, edit here
   //Or add a new function here, to customize laser sensor
-  /*
-	boolean start()
   
-   */
+	boolean rise();
+  
+   
 
-  /*
-	boolean getStop()
   
-   	*/
-  /*
-	boolean change()
+	boolean fall();
+  
+  
+	boolean change();
    	
-  */
+  
 
 	void incSetting(char buffer[], int inc);
 	

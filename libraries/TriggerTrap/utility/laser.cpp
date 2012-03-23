@@ -72,7 +72,7 @@ const int LASER_THRESHOLD = 2;
 	abortTrigger = false; 
 	setOption(LASER_TYPE,0);
 	setOption(LASER_DELAY,0);
-	setOption(LASER_THRESHOLD,128);
+	setOption(LASER_THRESHOLD,250);
 	select_ = 0; 
     sensorPin_ = LASER_SENSOR;
 	focusPulseTime_ = DEFAULT_FOCUS_TIME;
@@ -85,7 +85,10 @@ const int LASER_THRESHOLD = 2;
 
   int Laser::sensorLevel()
   {
+	  
+	 // analogReference(DEFAULT);
 	  sensorLevel_ = analogRead(sensorPin_) >> 2;
+	 // analogReference(INTERNAL);
 	  return sensorLevel_;
   }
 
@@ -93,7 +96,7 @@ const int LASER_THRESHOLD = 2;
   {
 	
 	
-	setOption(LASER_THRESHOLD,128); //just set laser to always be 128. Its really the safest value
+	setOption(LASER_THRESHOLD,200); //just set laser to always be 128. Its really the safest value
    
  	boolean laserStatus = false;
 
@@ -135,25 +138,90 @@ const int LASER_THRESHOLD = 2;
 
   //to change the behavior of these functions for laser, edit here
   //Or add a new function here, to customize laser sensor
-  /*
-	boolean high()
-   	{
-   	
-   	}
-   	*/
+  
+boolean Laser::rise()
+{
+boolean changed = change();
 
-  /*
-	boolean low()
-   	{
-   	
-   	}
-   	*/
-  /*
-	boolean change()
-   	{
-   	
-   	}
-   	*/
+if(changed == true) //trigger changed state
+{
+if(sensorLevel_ > option(LASER_THRESHOLD)) //sesnor data being received, any value above threshold
+{
+return true;
+
+}
+else //sensor, 0 value
+{
+return false;
+}
+}
+else //sensor didn't change state, still high or low...
+{
+return false;
+}
+
+}
+
+boolean Laser::fall()
+{
+boolean changed = change();
+
+if(changed == true) //sensor changed state
+{
+if(sensorLevel_ <= option(LASER_THRESHOLD)) //sensor low, stopped
+{
+return true;
+
+}
+else //sensor recieving data
+{
+return false;
+}
+}
+else //sensor didn't change state
+{
+return false;
+}
+
+}
+  
+  
+  
+  
+  
+boolean Laser::change()
+{
+boolean state = triggerState_;
+int threshold = option(LASER_THRESHOLD); //get setting option 2 threshold
+
+//analogReference(DEFAULT);
+sensorLevel_ = analogRead(sensorPin_) >> 2; //shift 1024 to 255
+//analogReference(INTERNAL);
+
+//state is high, or state is low, depending on change above or below threshold
+if(sensorLevel_ > threshold) //true above
+{
+state = true;
+
+}
+else if(sensorLevel_ <= threshold) //false below
+{
+state = false;
+}
+
+//trigger either on or off, not measuring soundValue
+if(state != triggerState_)
+{
+triggerState_ = state;
+return true; //changed its status above or below threshold
+
+}
+else //nothing changing here
+{
+return false;
+}
+}
+
 
 /***********************************************************
  * 

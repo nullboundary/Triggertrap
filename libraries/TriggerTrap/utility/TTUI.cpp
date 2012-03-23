@@ -148,18 +148,42 @@
 		//LCD Stuff
 		TCCR1B = TCCR1B & 0b11111000 | 0x01; //-- sets the pwm base
 
-		pinMode (10, OUTPUT); // lcd contrast output 
+		//pinMode (10, OUTPUT); // lcd contrast output not required to set output for analogWrite
 
 		if(batteryPower() == true)
 		{
-			long lcdContrast = analogRead(A1);
-			lcdContrast = 175 - ((lcdContrast * 5)  / 32);
+			long lcdContrast = analogRead(A1); // disgard first 
+			lcdContrast = analogRead(A1);
+			
+			// case switch to handle non-linear contrast curve
+			switch (lcdContrast) {
+				case 1 ... 613:
+				  // 0v0 to 3v1
+				  lcdContrast = map(lcdContrast, 550, 613, 128, 61);
+				  break;
+				case 614 ... 791:
+				  // 3v1 to 4v0
+				  lcdContrast = map(lcdContrast, 614, 791, 60, 35);
+				  break;
+				case 792 ... 1023:
+				  // 4v0 to 5v2
+				  lcdContrast = map(lcdContrast, 792, 1023, 36, 1);
+				  break;				
+				
+				default: 
+				break;
+			}
+			
+						
+			
+			//lcdContrast = 205 - ((lcdContrast * 6)  / 32); // was 175 on proto - ?kraz
 			analogWrite (10, lcdContrast);
+			//analogWrite (10, 0);
 
 		}
 		else
 		{
-			byte lcdContrast = 25; 
+			byte lcdContrast = 30; 
 			analogWrite (10, lcdContrast);
 
 		}
@@ -545,8 +569,10 @@ void TTUI::uiPowerOn()
 			touch.begin();
 		#else //Normal TT
 			PORTB &= ~ (1<<PORTB6);    // enable Vsw power to touch IC and LCD
-	        delay (150);             // wait for power to stabilize and hw to start
-		 	touch.begin(KEY_CHANGE);         //re init touch keys
+	        touch.begin(KEY_CHANGE);         //re init touch keys
+			delay (300);             // wait for power to stabilize and hw to start
+		 	
+			
 	
           	  if(onBatteryPower == false) //USB connected
 	          {
@@ -556,16 +582,49 @@ void TTUI::uiPowerOn()
 	          }
 	          else //battery power
 	          {
-	              // restart the LCD     
-	            LiquidCrystal(A3,4,5, 6, 7, 8, 9);
-	            begin(8,2);    
-	            display(); 
+	            // restart the LCD     
 	            // test battery level and set LCD contrast PWM
-	            long lcdContrast = analogRead(A1);
-	            lcdContrast = 175 - ((lcdContrast * 5)  / 32);
-	            analogWrite (10, lcdContrast);
+	       		// if device has gone full sleep mode, reset analog ref
+				
+				
+				long lcdContrast = analogRead(A1); 
+				
+				
+				
+	            				
+				switch (lcdContrast) {
+				case 1 ... 613:
+				  // 0v0 to 3v1
+				  lcdContrast = map(lcdContrast, 550, 613, 128, 61);
+				  break;
+				case 614 ... 791:
+				  // 3v1 to 4v0
+				  lcdContrast = map(lcdContrast, 614, 791, 60, 35);
+				  break;
+				case 792 ... 1023:
+				  // 4v0 to 5v2
+				  lcdContrast = map(lcdContrast, 792, 1023, 36, 1);
+				  break;				
+				
+				default: 
+				break;
+				
+				analogWrite (10, lcdContrast);
+			
+			}
+				
+	            
+				LiquidCrystal(A3,4,5, 6, 7, 8, 9);
+	       
+				begin(8,2);   
+	            display(); 
+				
+				//lcdContrast = 175 - ((lcdContrast * 5)  / 32);
+	           // analogWrite (10, lcdContrast);
+				//analogWrite (10, 0); 
 
-	           }
+	           	
+			   }
 		#endif //ifdef TT_SHIELD
 		
 
@@ -603,18 +662,27 @@ void TTUI::uiPowerOff()
 	            // Prevent leakage current: Bring all pins connected to devices on Vsw to ground.
 	            // Shutdown LCD
 	            noDisplay();                 // clear output
-	            digitalWrite(A3,LOW);        // LCD RS
+				delay(250);
+				
+				analogWrite (10, 0);        // LCD Contrast PWM
+				//digitalWrite(10,LOW);         // LCD Contrast PWM
+								
+				digitalWrite(5,LOW);        // LCD EN
+				digitalWrite(A3,LOW);       // LCD RS
 	            digitalWrite(4,LOW);        // LCD RW
-	            digitalWrite(5,LOW);        // LCD EN
+	            
 	            digitalWrite(6,LOW);        // LCD DB4
 	            digitalWrite(7,LOW);        // LCD DB5
 	            digitalWrite(8,LOW);        // LCD DB6
 	            digitalWrite(9,LOW);        // LCD DB7
-	            analogWrite (10, 0);        // LCD Contrast PWM
+	            
 	            // Shutdown main power to LCD and Touch IC
-	            PORTB |= (1<<PORTB6);            // turn off Vsw_SW
+	            				
+				PORTB |= (1<<PORTB6);            // turn off Vsw_SW
 	            // i2c pins SDA and SCL are already input with internal pullups disabled
 	            // KEY_CHG interrupt is already input without pullup
+				
+				
 	         }
 	 #endif //ifdef TTShield	
     
@@ -650,10 +718,13 @@ void TTUI::uiPowerOff()
 	
 	  	sleep_mode();  //sleep now
 		//----------------------------- ZZZZZZ sleeping here----------------------
-	    sleep_disable(); //disable sleep, awake now
+	    //delay(100);
+		sleep_disable(); //disable sleep, awake now
+		//delay(100);
 		attachInterrupt(0,startDownHandler,FALLING); //trigger ISR function on start button press.
+		//delay(100);
 		uiPowerOn();
-	    
+	    //delay(100);
       }
 	 #endif //end TT_Shield
     }
