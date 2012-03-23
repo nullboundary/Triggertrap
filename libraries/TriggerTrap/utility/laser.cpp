@@ -95,7 +95,7 @@ const int LASER_THRESHOLD = 2;
   {
 	
 	
-	setOption(LASER_THRESHOLD,200); //just set laser to always be 128. Its really the safest value
+	setOption(LASER_THRESHOLD,250); //just set laser to always be 128. Its really the safest value
    
  	boolean laserStatus = false;
 

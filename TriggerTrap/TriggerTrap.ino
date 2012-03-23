@@ -39,7 +39,6 @@
 #include <LiquidCrystal_SR_LCD3.h>
 #include <AtTouch.h>
 #include <TTSleep.h>
-#include <TTIRremote.h>
 #include <TriggerTrap.h>
 
 
