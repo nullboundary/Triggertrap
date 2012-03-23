@@ -1,17 +1,18 @@
 /************************************************************************************
  * 	
  * 	Name    : Triggertrap Arduino Sketch                         
- * 	Author  : Noah Shibley / NoMi Design                         
+ * 	Author  : Noah Shibley   / NoMi Design - http://n0m1.com
+ * 	  		: Michael Grant  / NoMi Design - http://n0m1.com
+ *          : Haje Jan Kamps / Triggertrap - http://triggertrap.com                        
  * 	Date    : March 21, 2012                                    
- * 	Version : 0.3.30                                              
- * 	Notes   : First open-source release of Triggertrap code for Triggertrap Device
- * 				and Triggertrap Shield for Arduino. 
+ * 	Version : 0.3.32                                              
+ * 	Notes   : Triggertrap code for Triggertrap Device and Triggertrap Shield for Arduino. 
  * 
  * 				For more information see Triggertrap.com and github.com/triggertrap
  * 
  * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)                      
  * 
- * 	Copyright (c) 2011 NoMi Design All right reserved.
+ * 	Copyright (c) 2012 NoMi Design (http://n0m1.com) All right reserved.
  * 
  * 	This file is part of Triggertrap. See Triggertrap.com for more information.
  * 
@@ -30,7 +31,6 @@
  * 
  ***********************************************************************************/
 
-
 #include <I2C.h>
 #include <PinChangeInt.h>
 #include <PinChangeIntConfig.h>
@@ -41,9 +41,6 @@
 #include <TTSleep.h>
 #include <TriggerTrap.h>
 
-
-
-
 const int LASER_MODE = 0;
 const int SOUND_MODE = 1;
 const int LIGHT_MODE = 2;
@@ -52,8 +49,6 @@ const int AUX_MODE = 4;
 
 
 TriggerTrap tt;
-
-
 
 /***********************************************************
  * 
@@ -98,8 +93,6 @@ void loop() {
      {
        //Serial.println("aux trigger");
      }    
-    
-    
     
   }
 
