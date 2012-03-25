@@ -46,14 +46,15 @@
  * These modes are defined below. 
  ***********************************************************************************/
 
+//menu listing values
 int const AUX_RISE_MODE = 0;
 int const AUX_FALL_MODE = 1;
 int const AUX_CHANGE_MODE = 2;
 
-//Mode Menu Listing
+//Mode Menu Listing, saved in flash mem
 const prog_char auxMenu[] PROGMEM= {"Aux"};
 
- //Option Menu titles
+ //Option Menu titles, saved in flash mem
 const prog_char trigType[] PROGMEM="type";
 const prog_char trigDelay[] PROGMEM="delay";
 const prog_char trigThreshold[] PROGMEM = "threshold";
@@ -61,6 +62,7 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
 
   Aux::Aux() 
   {
+	//initialize all class variables
 	maxOptionMenu = 3;
     triggerState_ = false; //off
 	abortTrigger = false; 
@@ -78,39 +80,57 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
 };
  
   
-
+/***********************************************************
+ * 
+ * sensorLevel
+ *
+ * return the current analog value from the aux sensor. Range 0-255
+ * 
+ ***********************************************************/
   int Aux::sensorLevel()
   {
-    sensorLevel_ = analogRead(sensorPin_) >> 2;
+    sensorLevel_ = analogRead(sensorPin_) >> 2; //shift analog input to a range of 0-255
 	return sensorLevel_;
   }
 
 
-  boolean Aux::trigger()
-  {
+/***********************************************************
+ * 
+ * trigger
+ *
+ * trigger the camera, if the sensor value has changed, the shutter will activate
+ * 
+ ***********************************************************/
+ boolean Aux::trigger()
+ {
     boolean auxStatus = false;
 
 	shutter(true); 
 
+
     switch (option(TRIG_TYPE))
     {
-    case AUX_RISE_MODE:
+    	case AUX_RISE_MODE:
 
-      auxStatus = rise();
-      break;
-    case AUX_FALL_MODE:
+        	auxStatus = rise();
 
-      auxStatus = fall();
-      break;
-    case AUX_CHANGE_MODE:
+        break;
+        case AUX_FALL_MODE:
 
-      auxStatus = change();
-      break;
-    default: //no default option
-      break;
+      		auxStatus = fall();
+
+      	break;
+    	case AUX_CHANGE_MODE:
+
+      		auxStatus = change();
+
+      	break;
+    	default: //no default option
+      	break;
     }
 
-     if(auxStatus == true)
+
+     if(auxStatus == true) //set all values ready to activate the shutter
     {
 		delayCount = millis(); //start counting till delay is up
 		focusReady = true; 
@@ -122,19 +142,26 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
 	{
     	return auxStatus;
 	}
-  }
+}
 
-  // To change the behavior of these functions for the aux sensor, edit
-  // or add a new function here, to customize aux sensor
+
+/***********************************************************
+ * 
+ * To change the behavior of these functions for the aux sensor, edit
+ * or add a new function here to customize aux sensor. By editing these functions 
+ * below you are overriding the default function behavior in Aux's parent class. 
+ * 
+ ***********************************************************/
+
   /*
-	boolean Aux::high()
+	boolean Aux::rise()
    	{
    	
    	}
    	*/
 
   /*
-	boolean Aux::low()
+	boolean Aux::fall()
    	{
    	
    	}
@@ -145,6 +172,14 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
    	
    	}
    	*/
+
+/***********************************************************
+ * 
+ * getModeMenu
+ *
+ * return the string value of Mode Menu for this sensor from the flash memory
+ * 
+ ***********************************************************/
 	void Aux::getModeMenu(char buffer[])
   {
 	 strcpy_P(buffer, auxMenu); 

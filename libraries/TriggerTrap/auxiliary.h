@@ -51,34 +51,70 @@ public:
 
 	Aux();
 
+/***********************************************************
+ * 
+ * sensorLevel
+ *
+ * return the current analog value from the aux sensor. Range 0-255
+ * 
+ ***********************************************************/
 	int sensorLevel();
 
+/***********************************************************
+ * 
+ * trigger
+ *
+ * trigger the camera, if the sensor value has changed, the shutter will activate
+ * 
+ ***********************************************************/
 	boolean trigger();
 	
-	void setThreshold(int threshold){ setOption(2,threshold); } //TODO change 2 to something more clear, define
+/***********************************************************
+ * 
+ * setThreshold
+ *
+ * set the aux threshold value
+ * 
+ ***********************************************************/	
+	void setThreshold(int threshold){ setOption(2,threshold); } 
 		
-  //To change the behavior of these functions for the light sensor, edit here
-  //Or add a new function here, to customize light sensor
-  /*
-	boolean start();
-   	*/
+/***********************************************************
+ * 
+ * To change the behavior of these functions for the aux sensor,uncomment 
+ * the function prototypes below and edit new functions in auxiliary.cpp
+ * 
+ ***********************************************************/
 
   /*
-	boolean getStop();
+	boolean rise();
    	*/
+
+
+  /*
+	boolean fall();
+   	*/
+
   /*
 	boolean change();
    	*/
 
-
+/***********************************************************
+ * 
+ * getModeMenu
+ *
+ * return the string value of Mode Menu for this sensor from the flash memory
+ * 
+ ***********************************************************/
 	void getModeMenu(char buffer[]);
-	
+
+/***********************************************************
+ * 
+ * getActiveMessage
+ *
+ * get the current sensors LCD message to print during trap Active mode.
+ * 
+ ***********************************************************/	
 	void getActiveMessage(char buffer[]);
-
-//	void getOptionMenu(char buffer[]);
-
-//	void getSettingMenu(char buffer[]);
-
 
 private:
 
