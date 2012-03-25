@@ -151,8 +151,8 @@
 
 		if(batteryPower() == true)
 		{
-			long lcdContrast = analogRead(A1); // disgard first 
-			lcdContrast = analogRead(A1);
+			long lcdContrast = analogRead(A1); 
+			// lcdContrast = analogRead(A1);
 			
 			// case switch to handle non-linear contrast curve
 			switch (lcdContrast) {
@@ -559,7 +559,9 @@ void TTUI::bttnDown(boolean hold)
 ***********************************************************/
 void TTUI::uiPowerOn()
 {
-    if(state_UIPower == false) //if ui power off
+    
+	
+	if(state_UIPower == false) //if ui power off
     {
           state_UIPower = true;     
 		   previousMillis_UIPower = millis();  //clock countdown start time
@@ -567,6 +569,7 @@ void TTUI::uiPowerOn()
 		#ifdef TT_SHIELD
 			touch.begin();
 		#else //Normal TT
+			
 			PORTB &= ~ (1<<PORTB6);    // enable Vsw power to touch IC and LCD
 	        touch.begin(KEY_CHANGE);         //re init touch keys
 			delay (300);             // wait for power to stabilize and hw to start
@@ -582,15 +585,16 @@ void TTUI::uiPowerOn()
 	          else //battery power
 	          {
 	            // restart the LCD     
-	            // test battery level and set LCD contrast PWM
-	       		// if device has gone full sleep mode, reset analog ref
+	            LiquidCrystal(A3,4,5, 6, 7, 8, 9);
+	       		begin(8,2);   
+	            display(); 
 				
+				// under certain conditions ADC doesnot resart from deep sleep
+				ADCSRA |= (1 << ADEN);  // Enable ADC 
 				
+				// test battery level and set LCD contrast PWM
 				long lcdContrast = analogRead(A1); 
 				
-				
-				
-	            				
 				switch (lcdContrast) {
 				case 1 ... 613:
 				  // 0v0 to 3v1
@@ -608,19 +612,15 @@ void TTUI::uiPowerOn()
 				default: 
 				break;
 				
-				analogWrite (10, lcdContrast);
+				}
 			
-			}
+				// set the contrast PWM output
+				analogWrite (10, lcdContrast);
+								       
+				// prototype LCD has linear contrast curve					
+				// lcdContrast = 175 - ((lcdContrast * 5)  / 32);
+				// analogWrite (10, lcdContrast);
 				
-	            
-				LiquidCrystal(A3,4,5, 6, 7, 8, 9);
-	       
-				begin(8,2);   
-	            display(); 
-				
-				//lcdContrast = 175 - ((lcdContrast * 5)  / 32);
-	           // analogWrite (10, lcdContrast);
-				//analogWrite (10, 0); 
 
 	           	
 			   }
@@ -737,7 +737,7 @@ void TTUI::uiPowerOff()
 boolean TTUI::batteryPower()  
 {
 		
-	  if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB connected
+	  if(digitalRead(0) == HIGH && digitalRead(1) == HIGH) //USB connected
 	  {
 		onBatteryPower = false; 
 		return false;
