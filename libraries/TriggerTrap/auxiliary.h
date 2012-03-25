@@ -9,8 +9,14 @@
  * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)                      
  * 
  * 	Copyright (c) 2012 NoMi Design (http://n0m1.com) All right reserved.
-s * 
+ * 
  * 	This file is part of Triggertrap. See Triggertrap.com for more information.
+ *
+ *  For more information about the Auxiliary port on the TTv1 and TT-k devices,
+ *   including information about the voltages and types of signal the Aux mode
+ *   expects in order to be able to function correctly,  please refer to the 
+ *   Aux mode in the Triggertrap user manual. 
+ *   URL: http://triggertrap.com/user-manual/#AuxMode  
  * 
  * 		    Triggertrap is free software: you can redistribute it and/or modify
  * 		    it under the terms of the GNU General Public License as published by

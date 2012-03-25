@@ -48,6 +48,13 @@ The only thing we are keeping control over is the Triggertrap name and logo. Ful
 
 # Changenotes
 
+## 0.3.32 (23 March 2012)
+
+* Fixes a bug in the production Triggertrap where the laser sensor was too sensitive
+* Fixes a bug in the production Triggertrap where the LCD display came up way too dark
+* Adds additional documentation licence information that was missed out in the initial release
+* Removes accidentally included .DS_Store files
+
 ## 0.3.31 (21 March 2012)
 
 First open-source release of the Triggertrap codebase. 

@@ -11,6 +11,13 @@
  * 	Copyright (c) 2012 NoMi Design (http://n0m1.com) All right reserved.
  * 
  * 	This file is part of Triggertrap. See Triggertrap.com for more information.
+ *
+ *  For more information about the Auxiliary port on the TTv1 and TT-k devices,
+ *   including information about the voltages and types of signal the Aux mode
+ *   expects in order to be able to function correctly,  please refer to the 
+ *   Aux mode in the Triggertrap user manual. 
+ *   URL: http://triggertrap.com/user-manual/#AuxMode
+ *
  * 
  * 		    Triggertrap is free software: you can redistribute it and/or modify
  * 		    it under the terms of the GNU General Public License as published by
@@ -29,6 +36,15 @@
 
 #include "auxiliary.h"
 
+/************************************************************************************
+ * There are three different 'modes' for the auxiliary sensor. 
+ * 'on rise' triggers whenever the signal goes up through the threshold level. 
+ * 'on fall' triggers whenever the signal goes down through the threshold level. 
+ * 'on change' triggers whenever the signal crosses the threshold level
+ *  (so basically, 'on change' is both 'on rise' and 'on fall')
+ *
+ * These modes are defined below. 
+ ***********************************************************************************/
 
 int const AUX_RISE_MODE = 0;
 int const AUX_FALL_MODE = 1;
@@ -108,8 +124,8 @@ const prog_char trigThreshold[] PROGMEM = "threshold";
 	}
   }
 
-  //To change the behavior of these functions for the aux sensor, edit here
-  //Or add a new function here, to customize aux sensor
+  // To change the behavior of these functions for the aux sensor, edit
+  // or add a new function here, to customize aux sensor
   /*
 	boolean Aux::high()
    	{

@@ -114,7 +114,7 @@
  *  unless you know what you're doing! 
  * 
  ***********************************************************************************/
-    #define FIRMWARE_VERSION "0.3.31"       //The current firmware version of this TT
+    #define FIRMWARE_VERSION "0.3.32"       //The current firmware version of this TT
 
  #ifdef TT_SHIELD
 	const byte START_BUTTON = 7;			// D7  = Digital in - Start button
