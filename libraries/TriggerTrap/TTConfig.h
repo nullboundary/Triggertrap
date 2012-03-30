@@ -1,9 +1,10 @@
-/************************************************************************************
+g/************************************************************************************
  * 	
  * 	Name    : Triggertrap TTConfig.h
  * 	Author  : Noah Shibley / NoMi Design
+ *			  Haje Jan Kamps / Triggertrap Ltd
  * 	Date    : July 10th 2011
- * 	Version : 0.1
+ * 	Version : 0.2
  * 	Notes   : Configuration File for Triggertrap
  * 
  * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)                      
@@ -30,13 +31,16 @@
 
 /*** CHOOSE YOUR VERSION OF THE TRIGGERTRAP ***************************************
  * 	
- * 	There are two different versions of the Triggertrap. If you are developing for 
- *  the Arduino-compatible Shield version, un-comment the  //#define TT_SHIELD 
- *  statement below. 
+ * 	There are two different versions of the Triggertrap. 
+ *
+ *  By default, this source code is configured to be run on the Triggertrap Shield
+ *  for Arduino. 
  * 
  *  If you are developing for the Triggertrap Device (with the touch-sensitive 
- *  buttons on the front), leave it commented.          
+ *  buttons on the front), comment out the #define TT_SHIELD statement below.        
  * 
+ *  If you are developing for Triggertrap Shield for Arduino, leave it uncommented.
+ *
  ***********************************************************************************/
 
  #define TT_SHIELD
