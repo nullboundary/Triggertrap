@@ -1,10 +1,9 @@
-g/************************************************************************************
+/************************************************************************************
  * 	
  * 	Name    : Triggertrap TTConfig.h
  * 	Author  : Noah Shibley / NoMi Design
- *			  Haje Jan Kamps / Triggertrap Ltd
  * 	Date    : July 10th 2011
- * 	Version : 0.2
+ * 	Version : 0.3
  * 	Notes   : Configuration File for Triggertrap
  * 
  * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)                      
@@ -31,19 +30,18 @@ g/******************************************************************************
 
 /*** CHOOSE YOUR VERSION OF THE TRIGGERTRAP ***************************************
  * 	
- * 	There are two different versions of the Triggertrap. 
- *
- *  By default, this source code is configured to be run on the Triggertrap Shield
- *  for Arduino. 
+ * 	There are two different versions of the Triggertrap. If you are developing for 
+ *  the Arduino-compatible Shield version, leave the #define statement below alone. 
  * 
- *  If you are developing for the Triggertrap Device (with the touch-sensitive 
- *  buttons on the front), comment out the #define TT_SHIELD statement below.        
+ *  If you wish to install this code on the Triggertrap v1 (TTv1), you need to comment
+ *  out the line below. In doing so, the code will be configured for the TTv1. 
  * 
- *  If you are developing for Triggertrap Shield for Arduino, leave it uncommented.
- *
+ *  If you don't know which device you have, you probably shouldn't be installing 
+ *  any code on it ;) 
+ * 
  ***********************************************************************************/
 
- #define TT_SHIELD
+#define TT_SHIELD
 
 
 /*** SERIAL DEBUGGING ***************************************************************
@@ -54,7 +52,7 @@ g/******************************************************************************
  * 
  ***********************************************************************************/
 
-// #define SERIAL_DEBUG 
+//#define SERIAL_DEBUG 
 
 
 /*** HARDWARE QA TESTING ***********************************************************
@@ -65,7 +63,7 @@ g/******************************************************************************
  * 
  ***********************************************************************************/
 
-// #define HARDWARE_TEST
+//#define HARDWARE_TEST
 
 
 /*** CHOOSE CAMERAS TO TRIGGER OVER INFRA-RED ***************************************
@@ -110,7 +108,6 @@ g/******************************************************************************
  const unsigned int UI_SLEEP_MS = 30000; 	// time before device goes to sleep, in ms. Default: 30000
  
 
-
 /*** ADVANCED SETTINGS **************************************************************
  * 	
  * 	Below, we're defining the pins we are using etc. In normal use, you shouldn't 
@@ -118,7 +115,7 @@ g/******************************************************************************
  *  unless you know what you're doing! 
  * 
  ***********************************************************************************/
-    #define FIRMWARE_VERSION "0.3.32"       //The current firmware version of this TT
+    #define FIRMWARE_VERSION "0.3.33b"       //The current firmware version of this TT
 
  #ifdef TT_SHIELD
 	const byte START_BUTTON = 7;			// D7  = Digital in - Start button
@@ -141,9 +138,6 @@ g/******************************************************************************
 	const byte AUX = A2;  					// A2  = Auxiliary port
  #endif
 
-
- const byte NUM_OF_SENSORS = 5; 			//the number of sensor triggers
-
-
+ const byte NUM_OF_SENSORS = 6; 			//the number of sensor triggers
 
 #endif //TT_CONFIG_H
