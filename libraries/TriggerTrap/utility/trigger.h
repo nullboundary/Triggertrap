@@ -141,7 +141,7 @@ virtual void decSetting(char buffer[], int dec=1);
  * get the current Mode menu string and place it in the char buffer for LCD or serial
  * 
  ***********************************************************/
-virtual	void getModeMenu(char buffer[]) = 0;
+virtual	void getModeMenu(char buffer[]);
 
 /***********************************************************
  * 
@@ -333,7 +333,7 @@ protected:
 	
   int triggerIndex; //trigger list index number. Used with eeprom memory offset values 
   byte maxOptionMenu; //option menu highest menu number. set to 3 for 3 option bttn menus
-  unsigned int optionValues[5];	//option menu settings values
+  unsigned int optionValues[3];	//option menu settings values
   boolean triggerState_; //On or OFF, based on above or below the threshold
   byte select_; //trigger on START,STOP or CHANGE
   byte sensorLevel_; //incoming sensor value
@@ -363,7 +363,7 @@ protected:
 	//values to save into eeprom
 	struct __eeprom_data {
 	  byte optionSelect; //select_
-	  unsigned int optionVal[5]; //optionValues array
+	  unsigned int optionVal[3]; //optionValues array
 	  boolean cameraFocus;
 	  boolean cameraShutter;
 	  boolean cameraIR;

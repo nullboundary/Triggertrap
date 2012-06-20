@@ -36,14 +36,7 @@ TriggerTrap::TriggerTrap()
 
 void TriggerTrap::setup()
 {
-	triggers[0] = &laser;
-	triggers[1] = &mic;
-	triggers[2] = &light;
-	triggers[3] = &timeLapse;
-	triggers[4] = &aux;
-	triggers[5] = &bulbRamp;
-	
-	tui.setup(triggers);
+  tui.setup(laser,mic,light,timeLapse,aux); //pass the sensors to the UI
 }
 
 void TriggerTrap::update()
@@ -62,7 +55,7 @@ boolean TriggerTrap::trigger()
 	   case TIMELAPSE_TRIG:
 		triggerStatus = timeLapse.trigger();
 	   break;
-	
+
 	   case LASER_TRIG:
 	   triggerStatus = laser.trigger();
 	   break;
@@ -77,10 +70,6 @@ boolean TriggerTrap::trigger()
 
 	   case AUX_TRIG:
 	   triggerStatus = aux.trigger();
-	   break;
-	
-	   case BULB_TRIG:
-	   triggerStatus = bulbRamp.trigger();
 	   break;
 
 	   default: //no default option.

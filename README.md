@@ -48,12 +48,6 @@ The only thing we are keeping control over is the Triggertrap name and logo. Ful
 
 # Changenotes
 
-## 0.3.33b (18 June 2012)
-
-* Adds the Bulb Ramping mode (beta version)
-* Fixes a number of other small bugs
-* Increases code readability (Well, a little, anyway)
-
 ## 0.3.32 (23 March 2012)
 
 * Fixes a bug in the production Triggertrap where the laser sensor was too sensitive

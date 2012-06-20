@@ -65,7 +65,7 @@
    * begin
    * 
    ***********************************************************/
-  void TTUI::setup(Trigger *sensors[])
+  void TTUI::setup(Trigger& laser, Trigger& sound, Trigger& light,Trigger& timeLapse, Trigger& aux)
   {
 
 	#ifdef SERIAL_DEBUG
@@ -82,17 +82,17 @@
 
 	 analogReference(INTERNAL);
 	
-	//assign sensor[] pointers to triggers[] array
-	for(int i=0;i<NUM_OF_SENSORS;++i)
-	{
-		triggers[i] = sensors[i];
-	}
-		
+	//set triggers into array
+	triggers[0] = &laser;
+	triggers[1] = &sound;
+	triggers[2] = &light;
+	triggers[3] = &timeLapse;
+	triggers[4] = &aux;
+	
 	triggers[0]->restoreSystem(); //restore system menu settings from trigger 0. Could work with any trigger though
 	boolean focusSetting = triggers[0]->getFocus();
 	boolean shutterSetting = triggers[0]->getShutter();
 	boolean IRSetting = triggers[0]->getIRShutter();
-	
 	
 	for(uint8_t i=0;i<NUM_OF_SENSORS;++i)
 	{
@@ -280,26 +280,22 @@ void TTUI::updateLCD()
 	int now = millis()/100; //100 ms 
 	int elapsed = now - activeRefreshTime;
 
-	if(elapsed > 2)  //300ms
+	if(elapsed > 3)  //300ms
 	{
 		activeRefreshTime = now;
 	
 	
 		if(trapActive_ == true)
 		{
-			
 			if(batteryPower() == false) //USB connected
 			{
-				
 				clear();
 				printMode(0);
 
 				char printBuffer[9];
-			
 				triggers[currentTrigger]->getActiveMessage(printBuffer);
 				setCursor(0,1);
 				print(printBuffer);
-				
 					
 			}
 		}
@@ -546,7 +542,6 @@ void TTUI::bttnDown(boolean hold)
 			//speed up increment if held down for a long time
 			unsigned long holdTime = millis() - touch.getStartTime();
 			if(holdTime > 10000) { decVal = 5; } //increase after 10sec
-			if(holdTime > 15000) { decVal = 10; } //increase after 15sec
 		}
 	}
 	

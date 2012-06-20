@@ -299,8 +299,7 @@ void Laser::incSetting(char buffer[], int inc)
 
 void Laser::getModeMenu(char buffer[])
 {
-
-	strcpy_P(buffer, laserMenu); 
+	 strcpy_P(buffer, laserMenu); 
 	
 }
 

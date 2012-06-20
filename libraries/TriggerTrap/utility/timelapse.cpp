@@ -247,8 +247,8 @@ void TimeLapse::decSetting(char buffer[],int dec)
 		switch (select_)
 	    {
 	     case TIME_DELAY:
-	 	  decOption(TIME_DELAY, 54000,dec); //max time in secs
-		  if(option(TIME_DELAY) == 0) //delay 0 is infinity 
+	 	  decOption(TIME_DELAY, 54000,dec); //max secs
+		  if(option(TRIG_DELAY) == 0) //delay 0 is infinity 
 		  {
 				buffer[0] = 0;
 				strcat(buffer,"Off");
@@ -260,7 +260,7 @@ void TimeLapse::decSetting(char buffer[],int dec)
 		  }
 	      break;
 	    case TIME_DELTA:
-	      decOption(TIME_DELTA, 54000,dec); //max time in secs
+	      decOption(TIME_DELTA, 54000,dec);
 		  if(option(TIME_DELTA) == 0) //delay 0 is none 
 		  {
 				buffer[0] = 0;
@@ -310,7 +310,7 @@ void TimeLapse::incSetting(char buffer[],int inc)
 	    {
 	     case TIME_DELAY:
 	 	   incOption(TIME_DELAY, 54000,inc); //max secs
-		  if(option(TIME_DELAY) == 0) //delay 0 is infinity 
+		  if(option(TRIG_DELAY) == 0) //delay 0 is infinity 
 		  {
 				buffer[0] = 0;
 				strcat(buffer,"Off");

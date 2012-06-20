@@ -51,7 +51,6 @@
 #include <utility/trigger.h>
 #include <utility/sound.h>
 #include <utility/timeLapse.h>
-#include <utility/bulbRamp.h>
 #include <auxiliary.h>
 
 	const int LASER_TRIG = 0;
@@ -59,7 +58,6 @@
 	const int LIGHT_TRIG = 2;
 	const int TIMELAPSE_TRIG = 3; 
 	const int AUX_TRIG= 4;
-	const int BULB_TRIG = 5; 
 
 
 class TriggerTrap {
@@ -85,14 +83,11 @@ private:
 		TTUI tui;
 	#endif
 
-	Trigger *triggers[NUM_OF_SENSORS];
-
 	Laser laser;
 	Light light;
 	Sound mic; 
 	Aux aux;
 	TimeLapse timeLapse;
-	BulbRamp bulbRamp; 
 
 
 };

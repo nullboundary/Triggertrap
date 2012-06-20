@@ -93,7 +93,7 @@ onRise,onFall,onChange
   void Trigger::incSelect()
   {
 	select_++;
-	select_ = select_ % maxOptionMenu;  
+	select_ = select_ % maxOptionMenu;  //TODO hard coded needs to be set somewhere..
   }
 
 /***********************************************************
@@ -797,13 +797,11 @@ void Trigger::IRTransmit()
  *
  * 
  * 
- *
- * 	void Trigger::getModeMenu(char buffer[])
- * {
- *	
- *		//	strcpy_P(buffer, (char*)pgm_read_word(&(menu))); 
- * }
  ***********************************************************/
+  	void Trigger::getModeMenu(char buffer[])
+  {
+		//	strcpy_P(buffer, (char*)pgm_read_word(&(menu))); 
+  }
 
 /***********************************************************
  * 
@@ -837,8 +835,6 @@ void Trigger::saveState()
 	   eeprom_write(optionValues[0], optionVal[0],objectMemoryOffset);
 	   eeprom_write(optionValues[1], optionVal[1],objectMemoryOffset);
 	   eeprom_write(optionValues[2], optionVal[2],objectMemoryOffset);
-	   eeprom_write(optionValues[3], optionVal[3],objectMemoryOffset);
-	   eeprom_write(optionValues[4], optionVal[4],objectMemoryOffset);
 	 
 
 }
@@ -863,8 +859,6 @@ void Trigger::restoreState()
 	eeprom_read(optionValues[0], optionVal[0],objectMemoryOffset);
 	eeprom_read(optionValues[1], optionVal[1],objectMemoryOffset);
 	eeprom_read(optionValues[2], optionVal[2],objectMemoryOffset);
-	eeprom_read(optionValues[3], optionVal[3],objectMemoryOffset);
-	eeprom_read(optionValues[4], optionVal[4],objectMemoryOffset);
 
 }
 
@@ -928,8 +922,6 @@ void Trigger::initState()
 	   eeprom_write(0, optionVal[0],objectMemoryOffset);
 	   eeprom_write(0, optionVal[1],objectMemoryOffset);
 	   eeprom_write(0, optionVal[2],objectMemoryOffset);
-	   eeprom_write(0, optionVal[3],objectMemoryOffset);
-	   eeprom_write(0, optionVal[4],objectMemoryOffset);
 	   eeprom_write(false,cameraFocus,objectMemoryOffset);
 	   eeprom_write(true,cameraShutter,objectMemoryOffset);
 	   eeprom_write(false,cameraIR,objectMemoryOffset);
