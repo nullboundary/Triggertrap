@@ -39,7 +39,7 @@
  * 
  ***********************************************************************************/
 
- #define TT_SHIELD
+ //#define TT_SHIELD
 
 
 /*** SERIAL DEBUGGING ***************************************************************
@@ -50,7 +50,7 @@
  * 
  ***********************************************************************************/
 
-// #define SERIAL_DEBUG 
+ //#define SERIAL_DEBUG 
 
 
 /*** HARDWARE QA TESTING ***********************************************************
@@ -114,7 +114,7 @@
  *  unless you know what you're doing! 
  * 
  ***********************************************************************************/
-    #define FIRMWARE_VERSION "0.3.32"       //The current firmware version of this TT
+    #define FIRMWARE_VERSION "0.3.33"       //The current firmware version of this TT
 
  #ifdef TT_SHIELD
 	const byte START_BUTTON = 7;			// D7  = Digital in - Start button
@@ -138,7 +138,7 @@
  #endif
 
 
- const byte NUM_OF_SENSORS = 5; 			//the number of sensor triggers
+ const byte NUM_OF_SENSORS = 6; 			//the number of sensor triggers
 
 
 

@@ -36,7 +36,18 @@ TriggerTrap::TriggerTrap()
 
 void TriggerTrap::setup()
 {
-  tui.setup(laser,mic,light,timeLapse,aux); //pass the sensors to the UI
+	//pass in sleep object for timelapse and bulbramp sleep
+	timeLapse.begin(sleep);
+	bulbRamp.begin(sleep);
+
+	triggers[0] = &laser;
+	triggers[1] = &mic;
+	triggers[2] = &light;
+	triggers[3] = &timeLapse;
+	triggers[4] = &aux;
+	triggers[5] = &bulbRamp;
+	
+	tui.setup(triggers);
 }
 
 void TriggerTrap::update()
@@ -50,31 +61,8 @@ boolean TriggerTrap::trigger()
 	 
   	if(tui.trapActive()) //if start button pressed = true
     {
-	   switch (tui.trigger()) //which trigger are we using.
-	   {
-	   case TIMELAPSE_TRIG:
-		triggerStatus = timeLapse.trigger();
-	   break;
-
-	   case LASER_TRIG:
-	   triggerStatus = laser.trigger();
-	   break;
-
-	   case SOUND_TRIG:
-	   triggerStatus = mic.trigger();
-	   break;
-
-	   case LIGHT_TRIG:
-		triggerStatus = light.trigger();
-	   break;  
-
-	   case AUX_TRIG:
-	   triggerStatus = aux.trigger();
-	   break;
-
-	   default: //no default option.
-	   break;
-	   }
+    	//call trigger function of active sensor object, held in triggers array
+    	triggerStatus = triggers[tui.trigger()]->trigger(); 
 	}
 	
 	return triggerStatus;

@@ -44,7 +44,16 @@ class TimeLapse : public Trigger{
 public:
 
 
-	TimeLapse();
+TimeLapse();
+
+/***********************************************************
+ * 
+ * begin
+ *
+ *  pass in the a reference to the sleep object, for sleeping during timelapse
+ * 
+ ***********************************************************/
+void begin(Sleep& sleep){sleep_ = &sleep; }
 
 /***********************************************************
  * 
@@ -141,9 +150,7 @@ private:
  ***********************************************************/
 	void startTimer();
 
-	void sleepNow(unsigned long elapsedTime);
-
-   	Sleep sleep;
+   	Sleep *sleep_;
  
 
 
