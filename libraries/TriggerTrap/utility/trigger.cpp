@@ -881,10 +881,9 @@ void Trigger::saveSystem()
 	int objectMemoryOffset = triggerIndex*16;
 	
 	  eeprom_write(focusArmed,cameraFocus,objectMemoryOffset);
-
-	   eeprom_write(shutterArmed,cameraShutter,objectMemoryOffset);
-
-	   eeprom_write(IRShutter_,cameraIR,objectMemoryOffset);
+	  eeprom_write(shutterArmed,cameraShutter,objectMemoryOffset);
+	  eeprom_write(IRShutter_,cameraIR,objectMemoryOffset);
+	  eeprom_write(TTContrast,LCDContrast,objectMemoryOffset);
 
 }
 
@@ -906,6 +905,8 @@ void Trigger::restoreSystem()
 	if(shutterArmed == 255) shutterArmed = true; 
 	eeprom_read(IRShutter_,cameraIR,objectMemoryOffset);
 	if(IRShutter_ == 255) IRShutter_ = false;
+	eeprom_read(TTContrast,LCDContrast,objectMemoryOffset);
+	if(TTContrast == 255) TTContrast = 30;
 }
 
 /***********************************************************
@@ -933,6 +934,7 @@ void Trigger::initState()
 	   eeprom_write(false,cameraFocus,objectMemoryOffset);
 	   eeprom_write(true,cameraShutter,objectMemoryOffset);
 	   eeprom_write(false,cameraIR,objectMemoryOffset);
+	   eeprom_write(30,LCDContrast,objectMemoryOffset);
 }
 
 /***********************************************************

@@ -61,7 +61,9 @@ const byte MODE_MENU= 1; //mode menu
 const byte OPTION_MENU = 2;//option menu
 const byte UP_MENU = 3; //up menu
 const byte DOWN_MENU = 4;  //down menu
-const byte SETTING_MENU = 5;
+const byte SETTING_MENU = 5; //system menu
+
+const byte SYSTEM_NUM_OPTIONS = 4; //total number of system menu options
 
 extern "C" void startDownHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
 extern "C" void startUpHandler(void) __attribute__ ((signal));  //ISR function for interrupt 
@@ -154,6 +156,8 @@ private:
 	  boolean systemSetting; //value of current system setting. on/off
 	  
 	  byte systemMenu; //index value of the system menu.
+
+	  int lcdContrast; //lcd contrast value 0-255
 	
 	  static TTUI* pTTUI; //ptr to TTUI class for the ISR
 

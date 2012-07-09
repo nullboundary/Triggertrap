@@ -276,6 +276,17 @@ boolean getIRShutter() { return IRShutter_; }
 
 /***********************************************************
  * 
+ * getContrast
+ *
+ * returns system LCD contrast from eeprom. Should be moved to TTUI, and out of trigger 
+ * 
+ ***********************************************************/
+byte getContrast() { return TTContrast; }
+
+void setContrast(byte contrast) { TTContrast = contrast; }
+
+/***********************************************************
+ * 
  * saveState
  *
  * save all settings values to eeprom
@@ -345,6 +356,7 @@ protected:
   boolean focusArmed;  //use focus 
   boolean shutterArmed; //use shutter
   boolean IRShutter_; //use IR shutter?
+  byte TTContrast; //adjust lcd contrast, total hack to put it in here...but its easier this way for saving to eeprom
   boolean focusReady;
   boolean shutterReady; //trigger is ready, take a picture
   boolean IRReady;
@@ -367,6 +379,7 @@ protected:
 	  boolean cameraFocus;
 	  boolean cameraShutter;
 	  boolean cameraIR;
+    byte LCDContrast; //total hack to put it in here...but its easier this way.
 	};
 
 /***********************************************************
