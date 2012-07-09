@@ -142,7 +142,8 @@ boolean TimeLapse::trigger()
 		if(focusActive == false && shutterActive == false) //don't sleep if shutter is triggered
 		{
 	
-			sleepNow(remainTime); //sleep now if there is time left to sleep
+			sleep_->pwrDownMode(); //deepest sleep
+			sleep_->sleepDelay(abortTrigger,remainTime,shotCounter_);
 			remainTime = 0;
 		
 		}	
@@ -207,7 +208,7 @@ unsigned int TimeLapse::countDownInt()
 
 boolean TimeLapse::batteryPower()
 {
-	if(digitalRead(0) == HIGH || digitalRead(1) == HIGH) //USB connected
+	if(digitalRead(0) == HIGH && digitalRead(1) == HIGH) //USB connected
 	{
 		return false; //USB
 	}
@@ -215,22 +216,6 @@ boolean TimeLapse::batteryPower()
 	{
 		return true; //battery
 	}
-}
-
-
-/***********************************************************
- * 
- * SleepNow
- *
- *  
- * 
- ***********************************************************/
-void TimeLapse::sleepNow(unsigned long remainTime)
-{
-
-	sleep.pwrDownMode(); //deepest sleep
-	sleep.sleepDelay(abortTrigger,remainTime,shotCounter_);
-	  
 }
 
 /***********************************************************
@@ -247,8 +232,8 @@ void TimeLapse::decSetting(char buffer[],int dec)
 		switch (select_)
 	    {
 	     case TIME_DELAY:
-	 	  decOption(TIME_DELAY, 54000,dec); //max secs
-		  if(option(TRIG_DELAY) == 0) //delay 0 is infinity 
+	 	  decOption(TIME_DELAY, 54000,dec); //max time in secs
+		  if(option(TIME_DELAY) == 0) //delay 0 is infinity 
 		  {
 				buffer[0] = 0;
 				strcat(buffer,"Off");
@@ -260,7 +245,7 @@ void TimeLapse::decSetting(char buffer[],int dec)
 		  }
 	      break;
 	    case TIME_DELTA:
-	      decOption(TIME_DELTA, 54000,dec);
+	      decOption(TIME_DELTA, 54000,dec); //max time in secs
 		  if(option(TIME_DELTA) == 0) //delay 0 is none 
 		  {
 				buffer[0] = 0;
@@ -310,7 +295,7 @@ void TimeLapse::incSetting(char buffer[],int inc)
 	    {
 	     case TIME_DELAY:
 	 	   incOption(TIME_DELAY, 54000,inc); //max secs
-		  if(option(TRIG_DELAY) == 0) //delay 0 is infinity 
+		  if(option(TIME_DELAY) == 0) //delay 0 is infinity 
 		  {
 				buffer[0] = 0;
 				strcat(buffer,"Off");

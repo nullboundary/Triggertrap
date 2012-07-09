@@ -36,12 +36,14 @@
 	const prog_char systemFocus[] PROGMEM="Focus";
 	const prog_char systemShutter[] PROGMEM = "Shutter";
 	const prog_char systemIR[] PROGMEM="IRremote";
+	const prog_char systemContrast[] PROGMEM="Contrast";
 
 	const prog_char * systemOptionMenu[] PROGMEM  = 	//options menu
 	{   	
 	systemFocus,
 	systemShutter,
 	systemIR,
+	systemContrast,
 	};
 	
 	
@@ -65,7 +67,7 @@
    * begin
    * 
    ***********************************************************/
-  void TTUI::setup(Trigger& laser, Trigger& sound, Trigger& light,Trigger& timeLapse, Trigger& aux)
+  void TTUI::setup(Trigger *sensors[])
   {
 
 	#ifdef SERIAL_DEBUG
@@ -82,17 +84,19 @@
 
 	 analogReference(INTERNAL);
 	
-	//set triggers into array
-	triggers[0] = &laser;
-	triggers[1] = &sound;
-	triggers[2] = &light;
-	triggers[3] = &timeLapse;
-	triggers[4] = &aux;
-	
+	//assign sensor[] pointers to triggers[] array
+	for(int i=0;i<NUM_OF_SENSORS;++i)
+	{
+		triggers[i] = sensors[i];
+	}
+		
+	//TODO: move system menu eeprom settings out of Trigger.cpp into TTUI.cpp	
 	triggers[0]->restoreSystem(); //restore system menu settings from trigger 0. Could work with any trigger though
 	boolean focusSetting = triggers[0]->getFocus();
 	boolean shutterSetting = triggers[0]->getShutter();
 	boolean IRSetting = triggers[0]->getIRShutter();
+	lcdContrast = triggers[0]->getContrast();
+	
 	
 	for(uint8_t i=0;i<NUM_OF_SENSORS;++i)
 	{
@@ -151,26 +155,29 @@
 
 		if(batteryPower() == true)
 		{
-			long lcdContrast = analogRead(A1); 
-			// lcdContrast = analogRead(A1);
-			
-			// case switch to handle non-linear contrast curve
-			switch (lcdContrast) {
-				case 1 ... 613:
-				  // 0v0 to 3v1
-				  lcdContrast = map(lcdContrast, 550, 613, 128, 61);
-				  break;
-				case 614 ... 791:
-				  // 3v1 to 4v0
-				  lcdContrast = map(lcdContrast, 614, 791, 60, 35);
-				  break;
-				case 792 ... 1023:
-				  // 4v0 to 5v2
-				  lcdContrast = map(lcdContrast, 792, 1023, 36, 1);
-				  break;				
+			if(lcdContrast == 30) //probably means its from a blank eeprom.
+			{	
+				lcdContrast = analogRead(A1); 
+				// lcdContrast = analogRead(A1);
 				
-				default: 
-				break;
+				// case switch to handle non-linear contrast curve
+				switch (lcdContrast) {
+					case 1 ... 613:
+					  // 0v0 to 3v1
+					  lcdContrast = map(lcdContrast, 550, 613, 128, 61);
+					  break;
+					case 614 ... 791:
+					  // 3v1 to 4v0
+					  lcdContrast = map(lcdContrast, 614, 791, 60, 35);
+					  break;
+					case 792 ... 1023:
+					  // 4v0 to 5v2
+					  lcdContrast = map(lcdContrast, 792, 1023, 36, 1);
+					  break;				
+					
+					default: 
+					break;
+				}		
 			}
 			
 						
@@ -182,7 +189,7 @@
 		}
 		else
 		{
-			byte lcdContrast = 30; 
+			lcdContrast = 30; 
 			analogWrite (10, lcdContrast);
 
 		}
@@ -287,15 +294,19 @@ void TTUI::updateLCD()
 	
 		if(trapActive_ == true)
 		{
+			
 			if(batteryPower() == false) //USB connected
 			{
+				
 				clear();
 				printMode(0);
 
 				char printBuffer[9];
+			
 				triggers[currentTrigger]->getActiveMessage(printBuffer);
 				setCursor(0,1);
 				print(printBuffer);
+				
 					
 			}
 		}
@@ -483,7 +494,7 @@ void TTUI::initStart(unsigned long startTime)
 		else //system Menu
 		{
 			incSystemOption++;
-			incSystemOption = incSystemOption % 3;
+			incSystemOption = incSystemOption % SYSTEM_NUM_OPTIONS; //mod num system menu items. 
 		}
 	}
 	
@@ -542,6 +553,7 @@ void TTUI::bttnDown(boolean hold)
 			//speed up increment if held down for a long time
 			unsigned long holdTime = millis() - touch.getStartTime();
 			if(holdTime > 10000) { decVal = 5; } //increase after 10sec
+			if(holdTime > 15000) { decVal = 10; } //increase after 15sec
 		}
 	}
 	
@@ -592,28 +604,30 @@ void TTUI::uiPowerOn()
 				// under certain conditions ADC doesnot resart from deep sleep
 				ADCSRA |= (1 << ADEN);  // Enable ADC 
 				
-				// test battery level and set LCD contrast PWM
-				long lcdContrast = analogRead(A1); 
-				
-				switch (lcdContrast) {
-				case 1 ... 613:
-				  // 0v0 to 3v1
-				  lcdContrast = map(lcdContrast, 550, 613, 128, 61);
-				  break;
-				case 614 ... 791:
-				  // 3v1 to 4v0
-				  lcdContrast = map(lcdContrast, 614, 791, 60, 35);
-				  break;
-				case 792 ... 1023:
-				  // 4v0 to 5v2
-				  lcdContrast = map(lcdContrast, 792, 1023, 36, 1);
-				  break;				
-				
-				default: 
-				break;
-				
+				if(lcdContrast == 30) //might mean its restored from a blank eeprom
+				{	
+					// test battery level and set LCD contrast PWM
+					lcdContrast = analogRead(A1); 
+					
+					switch (lcdContrast) {
+					case 1 ... 613:
+					  // 0v0 to 3v1
+					  lcdContrast = map(lcdContrast, 550, 613, 128, 61);
+					  break;
+					case 614 ... 791:
+					  // 3v1 to 4v0
+					  lcdContrast = map(lcdContrast, 614, 791, 60, 35);
+					  break;
+					case 792 ... 1023:
+					  // 4v0 to 5v2
+					  lcdContrast = map(lcdContrast, 792, 1023, 36, 1);
+					  break;				
+					
+					default: 
+					break;
+					
+					}
 				}
-			
 				// set the contrast PWM output
 				analogWrite (10, lcdContrast);
 								       
@@ -776,8 +790,22 @@ void TTUI::setSystemSettingMenu(char buffer[],int change)
 				for(uint8_t i=0;i<NUM_OF_SENSORS;++i)
 				{
 					triggers[i]->focusOn(systemSetting);
-				}	
-			}	
+				}
+
+		
+			}
+			if(systemSetting == true)
+			{
+				buffer[0] = 0;
+				strcat(buffer,"On");
+				strcat(buffer,"\0");
+			}
+			else if(systemSetting == false)
+			{
+				buffer[0] = 0;
+				strcat(buffer,"Off");
+				strcat(buffer,"\0");
+			}			
 		}
 		else if(incSystemOption == 1)
 		{
@@ -790,7 +818,20 @@ void TTUI::setSystemSettingMenu(char buffer[],int change)
 				{
 					triggers[i]->shutterOn(systemSetting);
 				}
-			}		
+				
+			}
+			if(systemSetting == true)
+			{
+				buffer[0] = 0;
+				strcat(buffer,"On");
+				strcat(buffer,"\0");
+			}
+			else if(systemSetting == false)
+			{
+				buffer[0] = 0;
+				strcat(buffer,"Off");
+				strcat(buffer,"\0");
+			}				
 		}
 
 		else if(incSystemOption == 2)
@@ -804,23 +845,43 @@ void TTUI::setSystemSettingMenu(char buffer[],int change)
 				{
 					triggers[i]->IRShutterOn(systemSetting);
 				}
-			}		
-		}	
+				
+			}
+			if(systemSetting == true)
+			{
+				buffer[0] = 0;
+				strcat(buffer,"On");
+				strcat(buffer,"\0");
+			}
+			else if(systemSetting == false)
+			{
+				buffer[0] = 0;
+				strcat(buffer,"Off");
+				strcat(buffer,"\0");
+			}			
+		}
+
+		else if(incSystemOption == 3) //contrast menu
+		{
+			//systemSetting = triggers[0]->getIRShutter();
+			
+			if(change != 0)	//don't update settings if its just an LCD refresh
+			{
+				lcdContrast += change; 
+				lcdContrast = abs(lcdContrast); //only 0 - 255
+				lcdContrast = lcdContrast % 255; 
+				analogWrite (10, lcdContrast);
+				triggers[0]->setContrast(lcdContrast);
+				
+			}
+			buffer[0] = 0;
+			itoa (lcdContrast,buffer,10);
+			strcat(buffer,"\0");		
+		}		
 		
 	
 
-		if(systemSetting == true)
-		{
-			buffer[0] = 0;
-			strcat(buffer,"On");
-			strcat(buffer,"\0");
-		}
-		else if(systemSetting == false)
-		{
-			buffer[0] = 0;
-			strcat(buffer,"Off");
-			strcat(buffer,"\0");
-		}
+		
 
 }
 
@@ -918,7 +979,7 @@ void TTUI::printDec(int row,int decVal)
 	}
 	else //system menu
 	{	
-		setSystemSettingMenu(printBuffer,decVal);
+		setSystemSettingMenu(printBuffer,-decVal);
 	}
 	
 		setCursor(0,row);

@@ -44,16 +44,22 @@ You should have received a copy of the GNU General Public License along with Tri
 
 ## Restrictions
 
-The only thing we are keeping control over is the Triggertrap name and logo. Full details of the Triggertrap licence is available on http://triggertrap.com/license/
+The only thing we are keeping control over is the Triggertrap trademarks (name and logo). Full details of the Triggertrap licence is available on http://triggertrap.com/license/ 
 
 # Changenotes
 
-## 0.3.32 (23 March 2012)
+## 0.3.34 (9 July 2012)
 
-* Fixes a bug in the production Triggertrap where the laser sensor was too sensitive
-* Fixes a bug in the production Triggertrap where the LCD display came up way too dark
-* Adds additional documentation licence information that was missed out in the initial release
-* Removes accidentally included .DS_Store files
+* Formally introduces Bulb Ramping into the Triggertrap Firmware
+* Adds a menu item for adjusting your screen contrast for TTv1 (System -> Contrast)
+* Bugfix: Fixes sleep problem introduced in 0.3.33b
+* Tidies up code in TriggerTrap.cpp for easier hackability & readability
+* 
+
+## 0.3.33b (18 June 2012)
+
+* Introduces the Bulb Ramping feature
+* Breaks several other features ;) (that is why this version was only ever a beta...)
 
 ## 0.3.31 (21 March 2012)
 

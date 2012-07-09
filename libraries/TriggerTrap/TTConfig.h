@@ -1,46 +1,46 @@
 /************************************************************************************
- * 	
- * 	Name    : Triggertrap TTConfig.h
- * 	Author  : Noah Shibley / NoMi Design
- *			  Haje Jan Kamps / Triggertrap Ltd
- * 	Date    : July 10th 2011
- * 	Version : 0.2
- * 	Notes   : Configuration File for Triggertrap
- * 
- * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)                      
- * 
- * 	This file is part of Triggertrap. See Triggertrap.com for more information.
- * 
- * 		    Triggertrap is free software: you can redistribute it and/or modify
- * 		    it under the terms of the GNU General Public License as published by
- * 		    the Free Software Foundation, either version 3 of the License, or
- * 		    (at your option) any later version.
- * 
- * 		    Triggertrap is distributed in the hope that it will be useful,
- * 		    but WITHOUT ANY WARRANTY; without even the implied warranty of
- * 		    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * 		    GNU General Public License for more details.
- * 
- * 		    You should have received a copy of the GNU General Public License
- * 		    along with Triggertrap.  If not, see <http://www.gnu.org/licenses/>.
- * 
- ***********************************************************************************/
+*
+* Name : Triggertrap TTConfig.h
+* Author : Noah Shibley / NoMi Design
+* Haje Jan Kamps / Triggertrap Ltd
+* Date : July 10th 2011
+* Version : 0.2
+* Notes : Configuration File for Triggertrap
+*
+* Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)
+*
+* This file is part of Triggertrap. See Triggertrap.com for more information.
+*
+* Triggertrap is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* Triggertrap is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with Triggertrap. If not, see <http://www.gnu.org/licenses/>.
+*
+***********************************************************************************/
 
 #ifndef TT_CONFIG_H
 #define TT_CONFIG_H
 
 /*** CHOOSE YOUR VERSION OF THE TRIGGERTRAP ***************************************
- * 	
- * 	There are two different versions of the Triggertrap. If you are developing for 
- *  the Arduino-compatible Shield version, leave the #define statement below alone. 
- * 
- *  If you wish to install this code on the Triggertrap v1 (TTv1), you need to comment
- *  out the line below. In doing so, the code will be configured for the TTv1. 
- * 
- *  If you don't know which device you have, you probably shouldn't be installing 
- *  any code on it ;) 
- * 
- ***********************************************************************************/
+*
+* There are two different versions of the Triggertrap. If you are developing for
+* the Arduino-compatible Shield version, leave the #define statement below alone.
+*
+* If you wish to install this code on the Triggertrap v1 (TTv1), you need to comment
+* out the line below. In doing so, the code will be configured for the TTv1.
+*
+* If you don't know which device you have, you probably shouldn't be installing
+* any code on it ;)
+*
+***********************************************************************************/
 
  #define TT_SHIELD
 
@@ -53,7 +53,7 @@
  * 
  ***********************************************************************************/
 
-// #define SERIAL_DEBUG 
+ //#define SERIAL_DEBUG 
 
 
 /*** HARDWARE QA TESTING ***********************************************************
@@ -117,7 +117,7 @@
  *  unless you know what you're doing! 
  * 
  ***********************************************************************************/
-    #define FIRMWARE_VERSION "0.3.32"       //The current firmware version of this TT
+    #define FIRMWARE_VERSION "0.3.34"       //The current firmware version of this TT
 
  #ifdef TT_SHIELD
 	const byte START_BUTTON = 7;			// D7  = Digital in - Start button
@@ -141,7 +141,7 @@
  #endif
 
 
- const byte NUM_OF_SENSORS = 5; 			//the number of sensor triggers
+ const byte NUM_OF_SENSORS = 6; 			//the number of sensor triggers
 
 
 

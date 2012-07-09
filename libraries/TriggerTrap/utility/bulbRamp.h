@@ -1,10 +1,10 @@
 /************************************************************************************
  * 	
- * 	Name    : Triggertrap timelapse.h                         
+ * 	Name    : Triggertrap BulbRamp.h                         
  * 	Author  : Noah Shibley / NoMi Design                         
  * 	Date    : July 10th 2011                                    
  * 	Version : 0.1                                              
- * 	Notes   : Timelapse interval trigger          
+ * 	Notes   : BulbRamp interval trigger          
  * 
  * 			Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)                      
  * 
@@ -27,8 +27,8 @@
  * 
  ***********************************************************************************/
 
-#ifndef TIMELAPSE_H
-#define TIMELAPSE_H
+#ifndef BULBRAMP_H
+#define BULBRAMP_H
 
 //#include "globals.h"
 #include "trigger.h"
@@ -39,12 +39,12 @@
 #include "WProgram.h"
 #endif
 
-class TimeLapse : public Trigger{
+class BulbRamp : public Trigger{
 
 public:
 
 
-TimeLapse();
+	BulbRamp();
 
 /***********************************************************
  * 
@@ -53,7 +53,7 @@ TimeLapse();
  *  pass in the a reference to the sleep object, for sleeping during timelapse
  * 
  ***********************************************************/
-void begin(Sleep& sleep){sleep_ = &sleep; }
+void begin(Sleep& sleep){ sleep_ = &sleep; }
 
 /***********************************************************
  * 
@@ -68,7 +68,7 @@ boolean trigger();
  * 
  * delayFirstShot
  *
- *  set the delay for the first shot in a timelapse sequence
+ *  set the delay for the first shot in a bulbRamp sequence
  * 
  ***********************************************************/	
 boolean delayFirstShot();
@@ -136,7 +136,14 @@ boolean batteryPower();
  * 
  ***********************************************************/
 	void getOptionMenu(char buffer[]);
-	
+
+/***********************************************************
+ * 
+ * getActiveMessage
+ *
+ *  The message to print on the LCD while TT is active
+ * 
+ ***********************************************************/
 	void getActiveMessage(char buffer[]);
 
 private:
@@ -150,9 +157,42 @@ private:
  ***********************************************************/
 	void startTimer();
 
-   	Sleep *sleep_;
- 
+/***********************************************************
+ * 
+ * incDecFraction
+ *
+ *  inc and dec a fractional amount
+ * 
+ ***********************************************************/
+	void incDecFraction(int optionConst, boolean incDec, int inc, char buffer[]);
 
+/***********************************************************
+ * 
+ * setIntervalLimits
+ *
+ *  set the limits to match the start and end
+ * 
+ ***********************************************************/
+	void setIntervalLimits();
+
+/***********************************************************
+ * 
+ * fractionToString
+ *
+ *  convert number to string for printing on LCD
+ * 
+ ***********************************************************/
+	void fractionToString(int optionConst, int fraction, char buffer[]);
+
+   	
+ 	Sleep *sleep_;
+	int startExposure; //value for start exposure
+	int endExposure;  //value for end exposure
+	unsigned int msValue;  //bulb exposure time in milliseconds
+	int fractionIndex; //index for the fraction array
+	int longExposure; //not necessarily the same as start/stop
+	unsigned int startDuration;
+	unsigned int elapsedDuration;
 
 };
 

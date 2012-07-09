@@ -141,7 +141,7 @@ virtual void decSetting(char buffer[], int dec=1);
  * get the current Mode menu string and place it in the char buffer for LCD or serial
  * 
  ***********************************************************/
-virtual	void getModeMenu(char buffer[]);
+virtual	void getModeMenu(char buffer[]) = 0;
 
 /***********************************************************
  * 
@@ -276,6 +276,17 @@ boolean getIRShutter() { return IRShutter_; }
 
 /***********************************************************
  * 
+ * getContrast
+ *
+ * returns system LCD contrast from eeprom. Should be moved to TTUI, and out of trigger 
+ * 
+ ***********************************************************/
+byte getContrast() { return TTContrast; }
+
+void setContrast(byte contrast) { TTContrast = contrast; }
+
+/***********************************************************
+ * 
  * saveState
  *
  * save all settings values to eeprom
@@ -333,7 +344,7 @@ protected:
 	
   int triggerIndex; //trigger list index number. Used with eeprom memory offset values 
   byte maxOptionMenu; //option menu highest menu number. set to 3 for 3 option bttn menus
-  unsigned int optionValues[3];	//option menu settings values
+  unsigned int optionValues[5];	//option menu settings values
   boolean triggerState_; //On or OFF, based on above or below the threshold
   byte select_; //trigger on START,STOP or CHANGE
   byte sensorLevel_; //incoming sensor value
@@ -345,6 +356,7 @@ protected:
   boolean focusArmed;  //use focus 
   boolean shutterArmed; //use shutter
   boolean IRShutter_; //use IR shutter?
+  byte TTContrast; //adjust lcd contrast, total hack to put it in here...but its easier this way for saving to eeprom
   boolean focusReady;
   boolean shutterReady; //trigger is ready, take a picture
   boolean IRReady;
@@ -363,10 +375,11 @@ protected:
 	//values to save into eeprom
 	struct __eeprom_data {
 	  byte optionSelect; //select_
-	  unsigned int optionVal[3]; //optionValues array
+	  unsigned int optionVal[5]; //optionValues array
 	  boolean cameraFocus;
 	  boolean cameraShutter;
 	  boolean cameraIR;
+    byte LCDContrast; //total hack to put it in here...but its easier this way.
 	};
 
 /***********************************************************
