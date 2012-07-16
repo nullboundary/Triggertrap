@@ -52,6 +52,7 @@ The only thing we are keeping control over is the Triggertrap trademarks (name a
 
 * Bugfix: Fixes a tiny bug where the screen contrast (menu option added in 0.3.35) wasn't saved to EEPROM properly. 
 * Bugfix: Elegant little hack that reads the LCD contrast setting twice, discarding the first reading, ensuring that the readings are accurate, especially when Triggertrap wakes from sleep. 
+* Tagging with 0.3.35
 
 ## 0.3.34 (9 July 2012)
 
