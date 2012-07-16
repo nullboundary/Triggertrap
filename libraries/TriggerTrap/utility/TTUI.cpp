@@ -155,10 +155,13 @@
 
 		if(batteryPower() == true)
 		{
+			// under certain conditions ADC doesnot resart from deep sleep
+			ADCSRA |= (1 << ADEN);  // Enable ADC 
+			
 			if(lcdContrast == 30) //probably means its from a blank eeprom.
 			{	
 				lcdContrast = analogRead(A1); 
-				// lcdContrast = analogRead(A1);
+				lcdContrast = analogRead(A1); // read twice, toss first
 				
 				// case switch to handle non-linear contrast curve
 				switch (lcdContrast) {
@@ -608,6 +611,7 @@ void TTUI::uiPowerOn()
 				{	
 					// test battery level and set LCD contrast PWM
 					lcdContrast = analogRead(A1); 
+					lcdContrast = analogRead(A1);  // read twice, toss first
 					
 					switch (lcdContrast) {
 					case 1 ... 613:

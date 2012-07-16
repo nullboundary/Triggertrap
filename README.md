@@ -48,13 +48,17 @@ The only thing we are keeping control over is the Triggertrap trademarks (name a
 
 # Changenotes
 
+## 0.3.35 (16 July 2012)
+
+* Bugfix: Fixes a tiny bug where the screen contrast (menu option added in 0.3.35) wasn't saved to EEPROM properly. 
+* Bugfix: Elegant little hack that reads the LCD contrast setting twice, discarding the first reading, ensuring that the readings are accurate, especially when Triggertrap wakes from sleep. 
+
 ## 0.3.34 (9 July 2012)
 
 * Formally introduces Bulb Ramping into the Triggertrap Firmware
 * Adds a menu item for adjusting your screen contrast for TTv1 (System -> Contrast)
 * Bugfix: Fixes sleep problem introduced in 0.3.33b
 * Tidies up code in TriggerTrap.cpp for easier hackability & readability
-* 
 
 ## 0.3.33b (18 June 2012)
 

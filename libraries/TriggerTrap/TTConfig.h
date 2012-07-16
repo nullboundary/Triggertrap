@@ -4,7 +4,7 @@
 * Author : Noah Shibley / NoMi Design
 * Haje Jan Kamps / Triggertrap Ltd
 * Date : July 10th 2011
-* Version : 0.2
+* Version : 0.3.35
 * Notes : Configuration File for Triggertrap
 *
 * Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)
@@ -117,7 +117,7 @@
  *  unless you know what you're doing! 
  * 
  ***********************************************************************************/
-    #define FIRMWARE_VERSION "0.3.34"       //The current firmware version of this TT
+    #define FIRMWARE_VERSION "0.3.35"       //The current firmware version of this TT
 
  #ifdef TT_SHIELD
 	const byte START_BUTTON = 7;			// D7  = Digital in - Start button
