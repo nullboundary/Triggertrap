@@ -44,9 +44,27 @@ You should have received a copy of the GNU General Public License along with Tri
 
 ## Restrictions
 
-The only thing we are keeping control over is the Triggertrap name and logo. Full details of the Triggertrap licence is available on http://triggertrap.com/license/
+The only thing we are keeping control over is the Triggertrap trademarks (name and logo). Full details of the Triggertrap licence is available on http://triggertrap.com/license/ 
 
 # Changenotes
+
+## 0.3.35 (16 July 2012)
+
+* Bugfix: Fixes a tiny bug where the screen contrast (menu option added in 0.3.35) wasn't saved to EEPROM properly. 
+* Bugfix: Elegant little hack that reads the LCD contrast setting twice, discarding the first reading, ensuring that the readings are accurate, especially when Triggertrap wakes from sleep. 
+* Tagging with 0.3.35
+
+## 0.3.34 (9 July 2012)
+
+* Formally introduces Bulb Ramping into the Triggertrap Firmware
+* Adds a menu item for adjusting your screen contrast for TTv1 (System -> Contrast)
+* Bugfix: Fixes sleep problem introduced in 0.3.33b
+* Tidies up code in TriggerTrap.cpp for easier hackability & readability
+
+## 0.3.33b (18 June 2012)
+
+* Introduces the Bulb Ramping feature
+* Breaks several other features ;) (that is why this version was only ever a beta...)
 
 ## 0.3.32 (23 March 2012)
 

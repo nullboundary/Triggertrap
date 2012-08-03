@@ -1,20 +1,19 @@
 /************************************************************************************
  * 	
- * 	Name    : Triggertrap Arduino Sketch                         
- * 	Author  : Noah Shibley   / NoMi Design - http://n0m1.com
- * 	  		: Michael Grant  / NoMi Design - http://n0m1.com
- *          : Haje Jan Kamps / Triggertrap - http://triggertrap.com                        
- * 	Date    : March 21, 2012                                    
- * 	Version : 0.3.32                                              
+ *      Name    : Triggertrap Arduino Sketch                         
+ *      Author  : Noah Shibley   / NoMi Design - http://n0m1.com
+ *              : Michael Grant  / NoMi Design - http://n0m1.com
+ *              : Haje Jan Kamps / Triggertrap - http://triggertrap.com                        
+ *      Updated : July 16, 2012                                    
+ *      Version : 0.3.35                                              
  * 	Notes   : Triggertrap code for Triggertrap Device and Triggertrap Shield for Arduino. 
+ *                For more information see Triggertrap.com and github.com/triggertrap
  * 
- * 				For more information see Triggertrap.com and github.com/triggertrap
+ *                Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)                      
  * 
- * 			  Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)                      
+ *      Copyright (c) 2012 NoMi Design (http://n0m1.com) All right reserved.
  * 
- * 	Copyright (c) 2012 NoMi Design (http://n0m1.com) All right reserved.
- * 
- * 	This file is part of Triggertrap. See Triggertrap.com for more information.
+ *      This file is part of Triggertrap. See Triggertrap.com for more information.
  * 
  * 		    Triggertrap is free software: you can redistribute it and/or modify
  * 		    it under the terms of the GNU General Public License as published by
