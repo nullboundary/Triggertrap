@@ -1,6 +1,6 @@
 ##############################################################
 
-ttv1.name=Trigger Trap V1.0
+ttv1.name=Triggertrap v1
 
 ttv1.upload.protocol=arduino
 ttv1.upload.maximum_size=30720
