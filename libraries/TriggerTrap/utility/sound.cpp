@@ -40,7 +40,7 @@
 	const char PROGMEM soundThreshold[] = "threshld";
 	const char PROGMEM soundDelay[]="delay";
 
-	const char PROGMEM * soundOptionMenu[]  = 	   //options menu
+	const char PROGMEM * const soundOptionMenu[]  = 	   //options menu
 	{   
 	soundThreshold,	
 	soundDelay,

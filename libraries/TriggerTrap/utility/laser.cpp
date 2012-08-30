@@ -43,7 +43,7 @@ int const CHANGE_LASER_MODE = 2;
 	const char PROGMEM laserType[] = "type";
 	const char PROGMEM laserDelay[]="delay";
 
-	const char PROGMEM * laserOptionMenu[]  = 	   //options menu
+	const char PROGMEM * const laserOptionMenu[]  = 	   //options menu
 	{   
 	laserType,	
 	laserDelay,
@@ -55,7 +55,7 @@ int const CHANGE_LASER_MODE = 2;
  const char PROGMEM onChange[]="On Chnge";
 
 
-const char PROGMEM * laserSettingMenu[]  = 	   // setting menu options
+const char PROGMEM * const laserSettingMenu[]  = 	   // setting menu options
 {   
 	onMake,onBreak,onChange
 };

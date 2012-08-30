@@ -39,7 +39,7 @@ const char PROGMEM trigThreshold[] = "threshld";
 const char PROGMEM trigDelay[]="delay";
 const char PROGMEM trigType[]="type";
 
-const char PROGMEM * selectMenu[]  = 	   //options menu
+const char PROGMEM * const selectMenu[]  = 	   //options menu
 {   
 trigThreshold,	
 trigDelay,
@@ -53,7 +53,7 @@ const char PROGMEM onFall[]="On Fall";
 const char PROGMEM onChange[]="On Chnge";
 
 
-const char PROGMEM * settingMenu[]  = 	   // select menu options
+const char PROGMEM * const settingMenu[]  = 	   // select menu options
 {   
 onRise,onFall,onChange
 };

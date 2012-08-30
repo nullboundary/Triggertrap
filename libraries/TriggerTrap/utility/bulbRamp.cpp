@@ -39,7 +39,7 @@ const char PROGMEM duration[] = "duration";
 const char PROGMEM startExposure[] = "start";
 const char PROGMEM endExposure[] = "end";
 
-const char PROGMEM * bulbOptionMenu[]  = 	   //options menu order
+const char PROGMEM * const bulbOptionMenu[]  = 	   //options menu order
 {   
 delta,
 startdelay,

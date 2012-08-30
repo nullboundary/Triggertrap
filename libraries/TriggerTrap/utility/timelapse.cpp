@@ -37,7 +37,7 @@ const char PROGMEM delta[]="interval";
 const char PROGMEM startdelay[]="delay1st";
 const char PROGMEM numShots[] = "#shots";
 
-const char PROGMEM * timeSelectMenu[]  = 	   //options menu order
+const char PROGMEM * const timeSelectMenu[]  = 	   //options menu order
 {   
 delta,
 startdelay,

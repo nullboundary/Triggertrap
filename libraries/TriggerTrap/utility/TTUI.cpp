@@ -38,7 +38,7 @@
 	const char PROGMEM systemIR[]="IRremote";
 	const char PROGMEM systemContrast[]="Contrast";
 
-	const char PROGMEM * systemOptionMenu[]  = 	//options menu
+	const char PROGMEM * const systemOptionMenu[]  = 	//options menu
 	{   	
 	systemFocus,
 	systemShutter,
