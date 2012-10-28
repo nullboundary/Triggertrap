@@ -125,7 +125,7 @@
 	const byte START_BUTTON = 7;			// D7  = Digital in - Start button
 	const byte FOCUS_TRIGGER_PIN = 9;		// D13 = Digital out - Camera Trigger A
     const byte SHUTTER_TRIGGER_PIN = 8;		// D12 = Digital out - Camera Trigger B
-	const byte LASER_SENSOR = A3; 			// A3  = Laser sensor
+	const byte LASER_SENSOR = A4; 			// A4  = Laser sensor
 	const byte AMBIENT_LIGHT_SENSOR = A3;	// A3  = Ambient light sensor
 	const byte SOUND_IN = A5;				// A5  = Sound sensor
 	const byte AUX = A0;  					// A0  = Auxiliary port
