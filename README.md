@@ -48,6 +48,11 @@ The only thing we are keeping control over is the Triggertrap trademarks (name a
 
 # Changenotes
 
+## 0.3.36 (6 March 2013)
+* Bugfix: IR signal overflow fix for Nikon cameras when using shield only.
+* Bugfix: Adjustment to IR timings for Sony cameras.
+* Enhancement: Integration of Timelapse modifications from Duane Cassone. 
+
 ## 0.3.35 (16 July 2012)
 
 * Bugfix: Fixes a tiny bug where the screen contrast (menu option added in 0.3.35) wasn't saved to EEPROM properly. 
