@@ -4,7 +4,7 @@
 * Author : Noah Shibley / NoMi Design
 * Haje Jan Kamps / Triggertrap Ltd
 * Date : July 10th 2011
-* Version : 0.3.35
+* Version : 0.3.36
 * Notes : Configuration File for Triggertrap
 *
 * Code for Triggertrap device (TTv1) and Triggertrap Shield (TT-k)
@@ -118,14 +118,14 @@
  * 
  ***********************************************************************************/
 
-    #define FIRMWARE_VERSION "0.3.35"       //The current firmware version of this TT
+    #define FIRMWARE_VERSION "0.3.36"       //The current firmware version of this TT
 
 
  #ifdef TT_SHIELD
 	const byte START_BUTTON = 7;			// D7  = Digital in - Start button
 	const byte FOCUS_TRIGGER_PIN = 9;		// D13 = Digital out - Camera Trigger A
     const byte SHUTTER_TRIGGER_PIN = 8;		// D12 = Digital out - Camera Trigger B
-	const byte LASER_SENSOR = A3; 			// A3  = Laser sensor
+	const byte LASER_SENSOR = A4; 			// A4  = Laser sensor
 	const byte AMBIENT_LIGHT_SENSOR = A3;	// A3  = Ambient light sensor
 	const byte SOUND_IN = A5;				// A5  = Sound sensor
 	const byte AUX = A0;  					// A0  = Auxiliary port

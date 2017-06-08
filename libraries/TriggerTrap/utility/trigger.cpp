@@ -159,7 +159,7 @@ void Trigger::decOption(int menuOption, unsigned int maxValue, int dec)
  * 
  * 
  ***********************************************************/
-void Trigger::setTriggerPulseTime(int focusPulseTime, int shutterPulseTime) 
+void Trigger::setTriggerPulseTime(unsigned long focusPulseTime, unsigned long shutterPulseTime) 
 {
 	focusPulseTime_ = focusPulseTime;
 	shutterPulseTime_ = shutterPulseTime;
@@ -385,7 +385,10 @@ void Trigger::resetShutter(boolean resetNow)
   {
 
 	  shutterReady = false; //don't take a picture again until its done taking a picture already!
-	
+		#ifdef SERIAL_DEBUG
+		Serial.println(millis() - shutterDelay);
+		Serial.println (shutterPulseTime_);
+		#endif
 	 if(resetNow == true || (millis() - shutterDelay > shutterPulseTime_)) 
 	 {
 	   	
@@ -659,6 +662,36 @@ void Trigger::formatTimeString(unsigned int data, char buffer[])
 
 /***********************************************************
  * 
+ * formatTimeStringLapse
+ *
+ * 
+ * 
+ ***********************************************************/
+void Trigger::formatTimeStringLapse(unsigned int data, char buffer[])
+{
+	//setting the first char to 0 causes str functions to think 
+	//of the buffer as empty, like a clear buffer.
+	buffer[0] = 0;
+	char tempBuffer[5];
+	//transform delay seconds into min and add to tempbuffer
+	utoa (data/600,tempBuffer,10);
+	//add minute data to buffer
+	strcat(buffer, tempBuffer);
+	//add minute symbol to buffer
+	strcat(buffer,":");
+	//transform delay seconds into remainder seconds
+	if(data%600 < 100) strcat(buffer,"0");
+	if(data%600 < 10) strcat(buffer,"0");
+	utoa(data%600,tempBuffer,10);
+	//add second data to buffer
+	strcat(buffer,tempBuffer);
+	//add second symbol to buffer
+	strcat(buffer,'\0');
+		
+}
+
+/***********************************************************
+ * 
  * formatMSString
  *
  * 
@@ -758,7 +791,7 @@ void Trigger::IRTransmit()
 	#ifdef SONYCAM
 		for (int i = 0; i < 3; ++i) {
 			irsend.sendSony(0xB4B8F,20); // or maybe 0x7478F both found here: http://sebastian.setz.name/arduino/my-libraries/multi-camera-ir-control#comment-110
-			delay(100);
+			delay(10); // changed from 100 - 0.3.36
 		}
 	#endif
 	
